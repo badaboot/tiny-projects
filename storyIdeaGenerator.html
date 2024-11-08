@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Story idea generator</title>
+    <style>
+      button {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Story idea generator</h1>
+    <div>Sin: <span id="sin"></span></div>
+    <div>Genre: <span id="genre"></span></div>
+    <div>Setting: <span id="setting"></span></div>
+    <div>Situation <span id="situation"></span></div>
+    <button id="generate">Generate</button>
+  </body>
+  <script>
+    const sins = [
+      "lust",
+      "gluttony",
+      "pride",
+      "sloth",
+      "greed",
+      "envy",
+      "wrath",
+    ];
+    const settings = [
+      "library",
+      "thrift store",
+      "grocery store",
+      "book store",
+      "hospital",
+      "Zoom",
+      "airport",
+    ];
+    const situations = [
+      "date",
+      "job interview",
+      "lunch",
+      "dinner",
+      "outdoors",
+      "visit family",
+    ];
+    const genres = [
+      "comedy",
+      "science fiction",
+      "fantasy", // includes magical realism
+      "thriller",
+      "horor",
+      "romance",
+    ];
+    const getNumber = (arr) => {
+      return arr[Math.floor(Math.random() * arr.length)];
+    };
+    document.getElementById("generate").addEventListener(
+      "click",
+      function () {
+        document.getElementById("sin").textContent = getNumber(sins);
+        document.getElementById("genre").textContent = getNumber(genres);
+        document.getElementById("setting").textContent = getNumber(settings);
+        document.getElementById("situation").textContent =
+          getNumber(situations);
+      },
+      false
+    );
+  </script>
+</html>
