@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Advent calendar</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #advent {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 10px;
+        row-gap: 1em;
+        max-width: 600px;
+        margin: 20px auto;
+      }
+      @media screen and (max-width: 600px) {
+        #advent {
+          grid-template-columns: repeat(2, 1fr);
+          margin: 12px;
+        }
+      }
+      @media screen and (max-width: 400px) {
+        #advent {
+          display: block;
+        }
+      }
+      #advent div {
+        border: 1px solid red;
+        height: 100px;
+        border-radius: 4px;
+      }
+      div.clicked {
+        background: pink;
+      }
+      h1,
+      p {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Advent calendar</h1>
+    <p>Click on a date below to reveal something.</p>
+    <div id="advent"></div>
+    <script>
+      const arr = new Array(25).fill(0);
+      const container = document.getElementById("advent");
+      arr.forEach((_, i) => {
+        const newNode = document.createElement("div");
+        newNode.textContent = i + 1;
+
+        newNode.addEventListener("click", function (e) {
+          this.classList.add("clicked");
+          // check if everything is clicked
+          if (document.querySelectorAll(".clicked").length === arr.length) {
+            const newText = document.createTextNode("Finished!");
+
+            container.appendChild(newText);
+          }
+        });
+        container.appendChild(newNode);
+      });
+    </script>
+  </body>
+</html>
