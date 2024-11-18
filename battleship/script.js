@@ -19,12 +19,10 @@ grid.forEach((row) => {
   row.forEach(() => {
     const cellDiv = document.createElement("div");
     cellDiv.classList.add("cell");
-    cellDiv.textContent = 0;
     colDiv.appendChild(cellDiv);
   });
   container.appendChild(colDiv);
 });
-
 const shipSizeMap = {
   Carrier: { size: 5, num: 1, coords: [] },
   Battleship: { size: 4, num: 2, coords: [] },
@@ -35,7 +33,7 @@ const shipSizeMap = {
 let infoText = "To find: ";
 const shipKeys = Object.keys(shipSizeMap);
 shipKeys.forEach((k, index) => {
-  infoText += `${shipSizeMap[k].num} ${k}`;
+  infoText += `${shipSizeMap[k].num} x ${k}: size ${shipSizeMap[k].size}`;
   infoText += index === shipKeys.length - 1 ? "." : ", ";
 });
 document.getElementById("info").textContent = infoText;
@@ -112,8 +110,12 @@ shipKeys.forEach((shipName) => {
   }
 });
 
+const hitCoords = new Set();
 Array.from(document.querySelectorAll(".cell")).forEach((c) => {
   c.addEventListener("click", (e) => {
+    // ignore already clicked cells
+    if (e.target.classList.contains("hit")) return;
+    e.target.classList.add("hit");
     const parents = Array.from(container.children);
     const siblings = Array.from(e.target.parentElement.children);
     const x = siblings.indexOf(e.target);
@@ -121,12 +123,29 @@ Array.from(document.querySelectorAll(".cell")).forEach((c) => {
 
     const str = JSON.stringify([x, y]);
     if (allShipCoords.has(str)) {
+      hitCoords.add(str);
+      // find which ship has sunk
+      for (let k of shipKeys) {
+        const index = shipSizeMap[k].coords.findIndex((arr) => {
+          return arr.every((elem) => hitCoords.has(JSON.stringify(elem)));
+        });
+        if (index > -1) {
+          shipSizeMap[k].coords[index].forEach((s) => {
+            hitCoords.delete(JSON.stringify(s));
+          });
+          shipSizeMap[k].coords.splice(index, 1);
+          document.getElementById("hits").textContent += `Sunk ${k}.`;
+          break; // only looking for 1 ship
+        }
+      }
       allShipCoords.delete(str);
       // show 'YOU WON' instead of 'HIT'
       if (allShipCoords.size === 0) {
         document.getElementById("finish").classList.remove("hide");
         document.getElementById("hit").classList.add("hide");
-      } else document.getElementById("hit").classList.remove("hide");
+      } else {
+        document.getElementById("hit").classList.remove("hide");
+      }
     } else {
       document.getElementById("hit").classList.add("hide");
     }
@@ -134,19 +153,19 @@ Array.from(document.querySelectorAll(".cell")).forEach((c) => {
 });
 
 // draw boats for testing purposes
-shipKeys.forEach((shipName) => {
-  shipSizeMap[shipName].coords.forEach((coords) => {
-    coords.forEach(([x, y]) => {
-      if (shipName === "Carrier") cols[y].children[x].style.background = "pink";
-      if (shipName === "Battleship")
-        cols[y].children[x].style.background = "yellow";
-      if (shipName === "Destroyer")
-        cols[y].children[x].style.background = "lightblue";
-      if (shipName === "Submarine")
-        cols[y].children[x].style.background = "lightgreen";
-      if (shipName === "Patrol Boat")
-        cols[y].children[x].style.background = "orange";
-      cols[y].children[x].textContent = `${shipName}`;
-    });
-  });
-});
+// shipKeys.forEach((shipName) => {
+//   shipSizeMap[shipName].coords.forEach((coords) => {
+//     coords.forEach(([x, y]) => {
+//       // if (shipName === "Carrier") cols[y].children[x].style.background = "pink";
+//       // if (shipName === "Battleship")
+//       //   cols[y].children[x].style.background = "yellow";
+//       // if (shipName === "Destroyer")
+//       //   cols[y].children[x].style.background = "lightblue";
+//       // if (shipName === "Submarine")
+//       //   cols[y].children[x].style.background = "lightgreen";
+//       // if (shipName === "Patrol Boat")
+//       //   cols[y].children[x].style.background = "orange";
+//       cols[y].children[x].textContent = `${shipName}`;
+//     });
+//   });
+// });

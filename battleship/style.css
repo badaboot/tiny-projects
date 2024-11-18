@@ -7,6 +7,7 @@ body {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   border: 1px solid blue;
+  background: lightblue;
 }
 #wrapper {
   display: flex;
@@ -19,22 +20,26 @@ body {
 #top-menu {
   margin-left: 40px;
 }
+.hit {
+  background: blue;
+}
 #top-menu div {
   display: flex;
-  width: 660px;
+  width: 620px;
   margin: 0 auto;
 }
 #left-menu {
-  width: 40px;
+  width: 60px;
 }
 .cell {
   cursor: pointer;
+  width: 60px;
   border: 1px solid blue;
-  height: 40px;
+  height: 60px;
 }
 .disabled-cell {
   border: 1px solid brown;
-  height: 40px;
+  height: 60px;
 }
 
 .hide {
