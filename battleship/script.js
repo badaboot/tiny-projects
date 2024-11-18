@@ -152,6 +152,9 @@ Array.from(document.querySelectorAll(".cell")).forEach((c) => {
   });
 });
 
+document.getElementById("again").addEventListener("click", () => {
+  location.reload();
+});
 // draw boats for testing purposes
 // shipKeys.forEach((shipName) => {
 //   shipSizeMap[shipName].coords.forEach((coords) => {

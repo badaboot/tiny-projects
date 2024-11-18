@@ -2,12 +2,14 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
+  box-sizing: border-box;
 }
 #grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   border: 1px solid blue;
   background: lightblue;
+  border-radius: 12px;
 }
 #wrapper {
   display: flex;
@@ -43,6 +45,7 @@ body {
   width: 60px;
   border: 1px solid blue;
   height: 60px;
+  border-radius: 12px;
 }
 .disabled-cell {
   border: 1px solid brown;
