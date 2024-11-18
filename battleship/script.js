@@ -1,6 +1,19 @@
 // draw grid
 const container = document.getElementById("grid");
-const grid = new Array(10).fill(0).map(() => new Array(10).fill(0));
+const LIMIT = 10;
+const grid = new Array(LIMIT).fill(0).map(() => new Array(LIMIT).fill(0));
+// left column is disabled, show numbers only
+const colDiv = document.createElement("div");
+for (let i = 0; i < LIMIT; i++) {
+  const cellDiv = document.createElement("div");
+  cellDiv.textContent = i;
+  cellDiv.classList.add("disabled-cell");
+  colDiv.appendChild(cellDiv);
+}
+document.getElementById("left-menu").appendChild(colDiv);
+document.getElementById("top-menu").innerHTML =
+  document.getElementById("left-menu").innerHTML;
+
 grid.forEach((row) => {
   const colDiv = document.createElement("div");
   row.forEach(() => {
@@ -15,10 +28,17 @@ grid.forEach((row) => {
 const shipSizeMap = {
   Carrier: { size: 5, num: 1, coords: [] },
   Battleship: { size: 4, num: 2, coords: [] },
-  Destroyer: { size: 3, num: 3, coords: [] },
-  Submarine: { size: 3, num: 4, coords: [] },
-  "Patrol Boat": { size: 2, num: 5, coords: [] },
+  // Destroyer: { size: 3, num: 3, coords: [] },
+  // Submarine: { size: 3, num: 4, coords: [] },
+  // "Patrol Boat": { size: 2, num: 5, coords: [] },
 };
+let infoText = "To find: ";
+const shipKeys = Object.keys(shipSizeMap);
+shipKeys.forEach((k, index) => {
+  infoText += `${shipSizeMap[k].num} ${k}`;
+  infoText += index === shipKeys.length - 1 ? "." : ", ";
+});
+document.getElementById("info").textContent = infoText;
 
 const allShipCoords = new Set();
 
@@ -52,7 +72,7 @@ const verifyGeneratedCoords = (generatedCoordinates, shipName) => {
 // generate coordinates
 // eg. Carrier: { size: 5, num: 1, coords: [[1, 1], [2, 1], [3, 1], [4, 1], [5, 1]]},
 const cols = document.getElementById("grid").children;
-Object.keys(shipSizeMap).forEach((shipName) => {
+shipKeys.forEach((shipName) => {
   const { size, num } = shipSizeMap[shipName];
   let count = num;
   let arr = [];
@@ -102,9 +122,11 @@ Array.from(document.querySelectorAll(".cell")).forEach((c) => {
     const str = JSON.stringify([x, y]);
     if (allShipCoords.has(str)) {
       allShipCoords.delete(str);
-      if (allShipCoords.size === 0)
+      // show 'YOU WON' instead of 'HIT'
+      if (allShipCoords.size === 0) {
         document.getElementById("finish").classList.remove("hide");
-      else document.getElementById("hit").classList.remove("hide");
+        document.getElementById("hit").classList.add("hide");
+      } else document.getElementById("hit").classList.remove("hide");
     } else {
       document.getElementById("hit").classList.add("hide");
     }
@@ -112,7 +134,7 @@ Array.from(document.querySelectorAll(".cell")).forEach((c) => {
 });
 
 // draw boats for testing purposes
-Object.keys(shipSizeMap).forEach((shipName) => {
+shipKeys.forEach((shipName) => {
   shipSizeMap[shipName].coords.forEach((coords) => {
     coords.forEach(([x, y]) => {
       if (shipName === "Carrier") cols[y].children[x].style.background = "pink";
