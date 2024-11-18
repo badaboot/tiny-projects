@@ -19,6 +19,7 @@ body {
 }
 #top-menu {
   margin-left: 40px;
+  font-size: 40px;
 }
 .hit {
   background: blue;
@@ -27,9 +28,15 @@ body {
   display: flex;
   width: 620px;
   margin: 0 auto;
+  /* verically center */
+  align-items: center;
 }
 #left-menu {
   width: 60px;
+  font-size: 40px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 60px;
 }
 .cell {
   cursor: pointer;
@@ -40,6 +47,8 @@ body {
 .disabled-cell {
   border: 1px solid brown;
   height: 60px;
+  /* horizontally center */
+  justify-content: center;
 }
 
 .hide {
