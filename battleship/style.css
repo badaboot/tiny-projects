@@ -4,6 +4,9 @@ body {
   text-align: center;
   box-sizing: border-box;
 }
+#remaining {
+  text-align: left;
+}
 .disable {
   pointer-events: none;
   opacity: 0.6;
