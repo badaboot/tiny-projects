@@ -29,10 +29,10 @@ grid.forEach((row) => {
 });
 const shipSizeMap = {
   Carrier: { size: 5, num: 1, coords: [] },
-  Battleship: { size: 4, num: 2, coords: [] },
-  Destroyer: { size: 3, num: 3, coords: [] },
-  Submarine: { size: 3, num: 4, coords: [] },
-  "Patrol Boat": { size: 2, num: 5, coords: [] },
+  Battleship: { size: 4, num: 1, coords: [] },
+  Destroyer: { size: 3, num: 1, coords: [] },
+  Submarine: { size: 3, num: 1, coords: [] },
+  "Patrol Boat": { size: 2, num: 1, coords: [] },
 };
 const remainingElem = document.getElementById("remaining");
 const shipKeys = Object.keys(shipSizeMap);
