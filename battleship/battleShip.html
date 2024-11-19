@@ -8,17 +8,21 @@
   </head>
   <body>
     <h1>Battleship</h1>
-    <div id="info"></div>
     <div id="top-menu"></div>
-    <div id="wrapper">
-      <div id="left-menu"></div>
-      <div id="grid"></div>
-    </div>
-    <div id="hits"></div>
-    <div id="hit" class="hide">HIT</div>
-    <div id="finish" class="hide">
-      <p>YOU WON :)</p>
-      <button id="again">Play again</button>
+    <div class="flex">
+      <div id="wrapper">
+        <div id="left-menu"></div>
+        <div id="grid"></div>
+      </div>
+      <div id="stats">
+        <div>
+          Remaining:
+          <ul id="remaining"></ul>
+        </div>
+        <p># of ships sunk: <span id="sunk">0</span></p>
+
+        <button class="hide" id="again">Play again</button>
+      </div>
     </div>
     <script src="script.js"></script>
   </body>

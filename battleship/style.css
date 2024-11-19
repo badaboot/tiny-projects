@@ -4,6 +4,24 @@ body {
   text-align: center;
   box-sizing: border-box;
 }
+.disable {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.flex {
+  display: flex;
+  max-width: 900px;
+  margin: 0 auto;
+}
+#again {
+  font-size: 20px;
+}
+#stats {
+  margin: 0 auto;
+  flex: 120px;
+  font-size: 20px;
+  width: 270px;
+}
 #grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -20,11 +38,14 @@ body {
   margin-bottom: 20px;
 }
 #top-menu {
-  margin-left: 40px;
+  margin-left: -160px;
   font-size: 40px;
 }
 .hit {
   background: blue;
+}
+.isHit {
+  background: red;
 }
 #top-menu div {
   display: flex;

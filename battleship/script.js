@@ -13,6 +13,10 @@ for (let i = 0; i < LIMIT; i++) {
 document.getElementById("left-menu").appendChild(colDiv);
 document.getElementById("top-menu").innerHTML =
   document.getElementById("left-menu").innerHTML;
+// left menu is A, B, ...
+for (let child of colDiv.children) {
+  child.textContent = String.fromCharCode(65 + Number(child.textContent));
+}
 
 grid.forEach((row) => {
   const colDiv = document.createElement("div");
@@ -26,17 +30,20 @@ grid.forEach((row) => {
 const shipSizeMap = {
   Carrier: { size: 5, num: 1, coords: [] },
   Battleship: { size: 4, num: 2, coords: [] },
-  // Destroyer: { size: 3, num: 3, coords: [] },
-  // Submarine: { size: 3, num: 4, coords: [] },
-  // "Patrol Boat": { size: 2, num: 5, coords: [] },
+  Destroyer: { size: 3, num: 3, coords: [] },
+  Submarine: { size: 3, num: 4, coords: [] },
+  "Patrol Boat": { size: 2, num: 5, coords: [] },
 };
-let infoText = "To find: ";
+const remainingElem = document.getElementById("remaining");
 const shipKeys = Object.keys(shipSizeMap);
-shipKeys.forEach((k, index) => {
-  infoText += `${shipSizeMap[k].num} x ${k}: size ${shipSizeMap[k].size}`;
-  infoText += index === shipKeys.length - 1 ? "." : ", ";
-});
-document.getElementById("info").textContent = infoText;
+const updateRemaining = () => {
+  remainingElem.innerHTML = "";
+  shipKeys.forEach((k) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = `${shipSizeMap[k].coords.length} x ${k}: size ${shipSizeMap[k].size}`;
+    if (!!shipSizeMap[k].coords.length) remainingElem.appendChild(listItem);
+  });
+};
 
 const allShipCoords = new Set();
 
@@ -110,19 +117,21 @@ shipKeys.forEach((shipName) => {
   }
 });
 
+updateRemaining();
 const hitCoords = new Set();
 Array.from(document.querySelectorAll(".cell")).forEach((c) => {
   c.addEventListener("click", (e) => {
     // ignore already clicked cells
     if (e.target.classList.contains("hit")) return;
-    e.target.classList.add("hit");
     const parents = Array.from(container.children);
     const siblings = Array.from(e.target.parentElement.children);
     const x = siblings.indexOf(e.target);
     const y = parents.indexOf(e.target.parentElement);
-
     const str = JSON.stringify([x, y]);
-    if (allShipCoords.has(str)) {
+    const isHit = allShipCoords.has(str);
+    e.target.classList.add(isHit ? "isHit" : "hit");
+
+    if (isHit) {
       hitCoords.add(str);
       // find which ship has sunk
       for (let k of shipKeys) {
@@ -134,20 +143,26 @@ Array.from(document.querySelectorAll(".cell")).forEach((c) => {
             hitCoords.delete(JSON.stringify(s));
           });
           shipSizeMap[k].coords.splice(index, 1);
-          document.getElementById("hits").textContent += `Sunk ${k}.`;
+          const numSunk =
+            Number(document.getElementById("sunk").textContent.split(".")[0]) +
+            1;
+          document.getElementById(
+            "sunk"
+          ).textContent = `${numSunk}. Latest: ${k}`;
+          updateRemaining();
           break; // only looking for 1 ship
         }
       }
       allShipCoords.delete(str);
-      // show 'YOU WON' instead of 'HIT'
       if (allShipCoords.size === 0) {
-        document.getElementById("finish").classList.remove("hide");
-        document.getElementById("hit").classList.add("hide");
-      } else {
-        document.getElementById("hit").classList.remove("hide");
+        const children = document.getElementById("stats").children;
+        // remove remaining list div
+        document.getElementById("stats").removeChild(children[0]);
+        // the paragraph element
+        children[0].textContent = "YOU WON :)";
+        document.getElementById("again").classList.remove("hide");
+        container.classList.add("disable");
       }
-    } else {
-      document.getElementById("hit").classList.add("hide");
     }
   });
 });
