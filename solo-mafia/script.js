@@ -2,9 +2,10 @@ let numAllCount = 5;
 let mafiaFolkCount = 2;
 let townFolkCount = numAllCount - mafiaFolkCount;
 // TODO: self can be townsfolk OR mafia
-// TODO: randomize this
-const townsFolk = [0, 1, 2];
-const mafiaFolk = [3, 4];
+const allFolk = [0, 1, 2, 3, 4];
+shuffleArray(allFolk);
+mafiaFolk = [allFolk.pop(), allFolk.pop()].sort((a, b) => a - b);
+const townsFolk = allFolk.sort((a, b) => a - b);
 
 // TODO: self is a number, cannot pick self to be killed
 let isEnded = false;
