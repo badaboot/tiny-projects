@@ -11,13 +11,13 @@
     </style>
   </head>
   <body>
-    <p>Your role is townsfolk</p>
+    <p class="role">Your role is townsfolk. You are player #</p>
+    <div class="killed hide">Who died at night:</div>
 
     <div class="play">
       <p>players remaining: <span class="total">[0, 1, 2, 3, 4]</span></p>
       <p>Now is: <span class="dayTime">Day</span></p>
       <div class="kill hide">Who to kill: <input class="killInt" /></div>
-      <div class="killed hide">Who died at night:</div>
       <p><button class="next">Next</button></p>
     </div>
     <script src="./utils.js"></script>
