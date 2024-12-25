@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Kitchen sorting</title>
+    <style>
+      body {
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 0;
+        font-family: sans-serif;
+      }
+
+      .from {
+        border: 1px solid red;
+      }
+      .to {
+        border: 1px solid blue;
+      }
+      div.hide {
+        display: none;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+        font-size: 80px;
+      }
+      .container div {
+        background-color: #eee;
+        text-orientation: upright;
+        writing-mode: vertical-rl;
+        padding: 20px 0;
+        min-width: 110px;
+        border-radius: 12px;
+      }
+      .container div:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>kitchen sorting</h1>
+    <p>Sort foods into their respective plates</p>
+
+    <div class="container"></div>
+    <div class="won hide">
+      YOU WON
+      <p><button class="again">Play again</button></p>
+    </div>
+    <script src="utils.js"></script>
+    <script src="kitchen-sorting.js "></script>
+  </body>
+</html>
