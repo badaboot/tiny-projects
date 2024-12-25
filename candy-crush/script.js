@@ -8,6 +8,7 @@ const getArr = () =>
   new Array(8).fill(0).map(() => {
     return {
       isVisted: false,
+      isHidden: false,
       num: getRandomInt(3),
     };
   });
@@ -21,9 +22,12 @@ const checkCell = (rowIndex, colIndex, val, arr) => {
     colIndex >= 8
   )
     return;
-  console.log(rowIndex, colIndex);
 
-  if (matrix[rowIndex][colIndex].isVisted) return;
+  if (
+    matrix[rowIndex][colIndex].isVisted ||
+    matrix[rowIndex][colIndex].isHidden
+  )
+    return;
 
   if (matrix[rowIndex][colIndex].num === val) {
     matrix[rowIndex][colIndex].isVisted = true;
@@ -52,6 +56,12 @@ matrix.forEach((row, rowIndex) => {
       const coordsArr = [];
       checkCell(rowIndex, colIndex, cell.num, coordsArr);
       console.log(coordsArr);
+      if (coordsArr.length <= 2) return;
+      // only for 3+
+      coordsArr.forEach(([ri, ci]) => {
+        matrix[ri][ci].isHidden = true;
+        containerElem.children[ri].children[ci].classList.add("hide");
+      });
     });
     rowElem.appendChild(cellElem);
   });
