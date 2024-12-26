@@ -5,6 +5,15 @@ const LIMIT = 4;
 const arr = Array(16)
   .fill(0)
   .map((_, index) => Math.floor(index / LIMIT));
+
+// in-place
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i >= 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+};
+
 shuffleArray(arr);
 tubes[0] = arr.slice(0, 4);
 tubes[1] = arr.slice(4, 8);
