@@ -6,6 +6,7 @@ const getRandomInt = (max) => {
 const words = [
   "joy",
   "elf",
+  "bell",
   "stocking",
   "carol",
   "holiday",
@@ -36,6 +37,12 @@ for (let c of chosenWord) {
   wordElem.appendChild(divElem);
 }
 
+// endText: string
+const setEndElem = (endText) => {
+  endElem.children[0].textContent = endText;
+  endElem.classList.remove("hide");
+  letterPadElem.classList.add("hide");
+};
 alphabet.forEach((l, letterIndex) => {
   const divElem = document.createElement("div");
   divElem.textContent = l;
@@ -59,15 +66,11 @@ alphabet.forEach((l, letterIndex) => {
     }
     // if gallows is complete, display ended, play again?
     if (gallowsElems.length === 0) {
-      endElem.children[0].textContent = "You lost. The word was: " + chosenWord;
-      endElem.classList.remove("hide");
-      letterPadElem.classList.add("hide");
+      setEndElem(`You lost. The word was: ${chosenWord}`);
     }
     // if word is complete, display You won, play again?
     if (Array.from(wordElem.children).every((c) => c.textContent !== "_")) {
-      endElem.children[0].textContent = "You won.";
-      endElem.classList.remove("hide");
-      letterPadElem.classList.add("hide");
+      setEndElem("You won.");
     }
     guessedLetters.push(l);
     letterPadElem.children[letterIndex].classList.add("disabled");
