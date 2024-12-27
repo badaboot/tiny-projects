@@ -1,0 +1,234 @@
+body {
+  padding: 0;
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: #3c8d0d;
+}
+.end p {
+  font-size: 24px;
+  color: yellow;
+}
+h1 {
+  background-color: white;
+  text-align: center;
+  border: 0.5rem outset red;
+  border-radius: 12px;
+}
+div.hide {
+  display: none;
+}
+.word {
+  display: flex;
+  font-size: 64px;
+  height: 64px;
+}
+
+.word div {
+  margin-left: 12px;
+  width: 44px;
+  background: lightblue;
+  text-align: center;
+  border-radius: 4px 4px 0 0;
+}
+div .disabled {
+  background: lightgray;
+  pointer-events: none;
+}
+.letterPad {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  font-size: 64px;
+  gap: 10px 20px;
+  text-align: center;
+}
+
+.letterPad div {
+  background-color: lightyellow;
+  border: 8px solid orange;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 24px;
+  border-radius: 12px;
+}
+.container {
+  display: flex;
+  border: 12px dotted red;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.letterPad div:hover {
+  cursor: pointer;
+  background-color: gold;
+}
+
+/* begin gallow, code mostly from https://codepen.io/OastOne/pen/vYqLzxg*/
+
+#gallows {
+  position: relative;
+  overflow: hidden;
+  width: 200px;
+  min-height: 200px;
+  background: linear-gradient(#aaa, #d3d3d3);
+  border-radius: 5px;
+  box-shadow: inset 0 0 40px 0 #0006;
+}
+
+#gallows div {
+  position: absolute;
+}
+
+#gallows .ground {
+  border-radius: 400px;
+  background: black;
+  height: 400px;
+  width: 400px;
+  top: 175px;
+  left: -100px;
+}
+
+#gallows .upright {
+  width: 10px;
+  height: 170px;
+  background: black;
+  rotate: 5deg;
+  left: 140px;
+  top: 10px;
+  border-radius: 2px;
+}
+
+#gallows .crossbar {
+  width: 80px;
+  height: 8px;
+  background: #000;
+  rotate: 3deg;
+  left: 84px;
+  top: 10px;
+  border-radius: 2px;
+}
+
+#gallows .angle {
+  width: 7px;
+  height: 40px;
+  background: black;
+  rotate: -38deg;
+  top: 12px;
+  left: 131px;
+}
+
+#gallows .grass {
+  width: 2px;
+  height: 20px;
+  background: black;
+  border-radius: 50%;
+  rotate: -5deg;
+  top: 162px;
+  left: 131px;
+}
+
+#gallows .grass.b {
+  rotate: -18deg;
+  top: 167px;
+  left: 129px;
+}
+#gallows .grass.c {
+  rotate: 18deg;
+  top: 167px;
+  left: 144px;
+}
+
+#gallows .knot {
+  width: 4px;
+  height: 4px;
+  background: #000;
+  border-radius: 10px;
+  left: 89px;
+  top: 7px;
+}
+
+#gallows #body {
+  transform-origin: 90px 15px;
+  //rotate: 25deg
+}
+
+#gallows #body .rope {
+  width: 45px;
+  height: 4px;
+  background: radial-gradient(circle, #000 2px, #0000 0) 0 0/3px;
+  rotate: 90deg;
+  top: 36px;
+  left: 68px;
+}
+#gallows #body .noose {
+  width: 4px;
+  height: 14px;
+  border: 3px solid #000;
+  border-radius: 60% 45% 50%;
+  left: 85px;
+  top: 57px;
+}
+
+#gallows #body .head {
+  width: 24px;
+  height: 26px;
+  background: #0000;
+  border-radius: 50%;
+  rotate: -45deg;
+  top: 40px;
+  left: 70px;
+}
+
+#gallows #body .body {
+  width: 24px;
+  height: 50px;
+  background: #0000;
+  border-radius: 80% 50% 5% 15%;
+  top: 60px;
+  left: 74px;
+}
+#gallows #body .leg {
+  width: 9px;
+  height: 60px;
+  background: #0000;
+  border-radius: 90% 10% 3px 10px;
+  top: 90px;
+  left: 75px;
+}
+#gallows #body .leg.right {
+  width: 10px;
+  top: 95px;
+  left: 86px;
+}
+
+#gallows #body .arm {
+  width: 8px;
+  height: 50px;
+  background: #0000;
+  border-radius: 90% 10% 6px 90%;
+  top: 65px;
+  left: 73px;
+  rotate: 9deg;
+}
+
+#gallows #body * {
+  transition: transform 0.2s ease-in-out;
+}
+
+#gallows #body *.show {
+  background: #000;
+}
+#gallows #body *.die {
+  transform: translateY(10px);
+}
+
+#gallows #body .noose.show {
+  display: none;
+}
+
+#gallows #body .arm.right {
+  height: 55px;
+  border-radius: 10% 90% 90% 6px;
+  top: 62px;
+  left: 97px;
+  rotate: -9deg;
+}
+/* end gallow */
