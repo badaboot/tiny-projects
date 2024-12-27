@@ -30,8 +30,9 @@ div.hide {
   text-align: center;
   border-radius: 4px 4px 0 0;
 }
-div .disabled {
+.letterPad div.disabled {
   background: lightgray;
+  border-color: gray;
   pointer-events: none;
 }
 .letterPad {
