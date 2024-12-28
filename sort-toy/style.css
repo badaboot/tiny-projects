@@ -3,6 +3,8 @@ body {
   max-width: 700px;
   margin: 0 auto;
   text-align: center;
+  font-family: sans-serif;
+  background-color: darkgreen;
 }
 .grid {
   display: grid;
@@ -13,7 +15,18 @@ body {
   margin: 16px;
   background-color: burlywood;
 }
-
+.help {
+  background-color: white;
+  border: 0.5rem outset red;
+  border-radius: 12px;
+}
+.help h1 {
+  margin: 4px 0;
+}
+.help p {
+  margin: 0 0 4px 0;
+  padding: 0;
+}
 .hide {
   display: none;
 }
@@ -35,7 +48,6 @@ body {
   color: white;
   background: darkslategray;
   font-size: 24px;
-  font-family: sans-serif;
   position: absolute;
   left: 50%;
   top: 50%;

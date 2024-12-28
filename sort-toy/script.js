@@ -4,6 +4,8 @@ const startElem = document.getElementsByClassName("start")[0];
 const endElem = document.getElementsByClassName("end")[0];
 const LIMIT = 5;
 const GEM_KEY = "gem-best";
+let intervalID;
+
 let hits = 0;
 let misses = 0;
 const hitSound = new Audio("audio/yay.mp3");
@@ -16,9 +18,7 @@ const toIndex = (rowIndex, colIndex) => {
 };
 
 // 20 seconds to end of game
-const gameEndTimerId = window.setTimeout(function () {
-  showEndElem();
-}, 20000);
+let gameEndTimerId;
 
 grid.forEach((row) => {
   const rowElem = document.createElement("div");
@@ -64,20 +64,22 @@ while (i < LIMIT) {
   i++;
 }
 
-let intervalID;
-
+const removeColorsFromCell = (cellElem) => {
+  cellElem.classList.remove("red");
+  cellElem.classList.remove("yellow");
+  cellElem.classList.remove("blue");
+  cellElem.classList.remove("green");
+  cellElem.classList.remove("selected");
+};
 const amendPointsAccordingToColor = (selectedElem, color, cell, index) => {
   if (selectedElem.classList.contains(color) && cell === color) {
     hits += 1;
-    console.log("hit");
     hitSound.play();
   } else {
     misses += 1;
-    console.log("miss");
     missSound.play();
   }
-  selectedElem.classList.remove(color);
-  selectedElem.classList.remove("selected");
+  removeColorsFromCell(selectedElem);
   availableCells.push(index);
 };
 document.addEventListener("keydown", (event) => {
@@ -158,12 +160,17 @@ startElem.addEventListener("click", () => {
   fullElem.classList.add("hide");
   startElem.classList.add("hide");
   endElem.classList.add("hide");
+  gameEndTimerId = window.setTimeout(function () {
+    showEndElem();
+  }, 20000);
   intervalID = setInterval(() => {
     if (availableCells.length) {
       const [x, y] = getCoordinates(availableCells.pop());
       const colorName = colorNames[getRandomInt(0, 4)];
       grid[x][y] = colorName;
-      gridElem.children[x].children[y].classList.add(colorName);
+      const selectedElem = gridElem.children[x].children[y];
+      removeColorsFromCell(selectedElem);
+      selectedElem.classList.add(colorName);
     }
   }, 1000);
 });
