@@ -11,9 +11,13 @@ body {
   grid-template-columns: repeat(5, 1fr);
   font-size: 64px;
   text-align: center;
-  width: 100%;
+  width: 440px;
   margin: 16px;
   background-color: burlywood;
+}
+.right p,
+.left p {
+  margin: 0;
 }
 .help {
   background-color: white;
@@ -53,11 +57,15 @@ body {
   top: 50%;
   transform: translate(-50%, -50%);
 }
+.top {
+  margin-top: 20px;
+}
 .top,
 .bottom,
 .left,
 .right {
-  font-size: 80px;
+  font-size: 32px;
+  color: white;
 }
 .left,
 .right {
