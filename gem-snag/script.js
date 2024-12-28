@@ -6,6 +6,9 @@ const LIMIT = 5;
 const GEM_KEY = "gem-best";
 let hits = 0;
 let misses = 0;
+const hitSound = new Audio("audio/yay.mp3");
+const missSound = new Audio("audio/fail.mp3");
+
 const grid = new Array(LIMIT).fill(0).map(() => new Array(LIMIT).fill(0));
 const availableCells = new Array(LIMIT * LIMIT).fill(0).map((_, i) => i);
 const toIndex = (rowIndex, colIndex) => {
@@ -67,11 +70,14 @@ const amendPointsAccordingToColor = (selectedElem, color, cell, index) => {
   if (selectedElem.classList.contains(color) && cell === color) {
     hits += 1;
     console.log("hit");
+    hitSound.play();
   } else {
     misses += 1;
     console.log("miss");
+    missSound.play();
   }
   selectedElem.classList.remove(color);
+  selectedElem.classList.remove("selected");
   availableCells.push(index);
 };
 document.addEventListener("keydown", (event) => {
