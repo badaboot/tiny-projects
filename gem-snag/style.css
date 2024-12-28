@@ -1,0 +1,90 @@
+body {
+  padding: 0;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  font-size: 64px;
+  text-align: center;
+  width: 100%;
+  margin: 16px;
+  background-color: burlywood;
+}
+
+.hide {
+  display: none;
+}
+.full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(70, 6, 85, 0.5);
+  width: 100%;
+  height: 100%;
+}
+.end {
+  border-radius: 12px;
+  width: 320px;
+  height: 280px;
+  margin: 0 auto;
+  border: 20px solid goldenrod;
+  padding-bottom: 20px;
+  color: white;
+  background: darkslategray;
+  font-size: 24px;
+  font-family: sans-serif;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.top,
+.bottom,
+.left,
+.right {
+  font-size: 80px;
+}
+.left,
+.right {
+  align-self: center;
+}
+.red::before {
+  content: "🔴";
+}
+.yellow::before {
+  content: "🟡";
+}
+.green::before {
+  content: "🟢";
+}
+.blue::before {
+  content: "🔵";
+}
+.start {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 200;
+}
+.cell {
+  border: 1px solid brown;
+  height: 80px;
+}
+.cell.selected {
+  background-color: red;
+}
+.container {
+  display: flex;
+}
+.cell:hover,
+button:hover {
+  cursor: pointer;
+}
+button {
+  font-size: 28px;
+  padding: 8px 12px;
+}
