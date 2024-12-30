@@ -5,10 +5,10 @@ const endElem = document.getElementsByClassName("end")[0];
 const LIMIT = 5;
 const GEM_KEY = "gem-best";
 let intervalID;
-
+const audio = document.getElementsByTagName("audio")[0];
 let hits = 0;
 let misses = 0;
-const hitSound = new Audio("audio/yay.mp3");
+const hitSound = new Audio("audio/chime.mp3");
 const missSound = new Audio("audio/fail.mp3");
 
 const grid = new Array(LIMIT).fill(0).map(() => new Array(LIMIT).fill(0));
@@ -161,6 +161,8 @@ const showEndElem = () => {
 };
 
 startElem.addEventListener("click", () => {
+  audio.play();
+
   fullElem.classList.add("hide");
   startElem.classList.add("hide");
   endElem.classList.add("hide");
