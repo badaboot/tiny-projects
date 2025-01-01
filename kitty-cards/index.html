@@ -7,14 +7,54 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
+    <button class="showInfo">Instructions</button>
+    <div class="info hide overlay">
+      <p>
+        This is a turn-based game: each player fills the board with cards. The
+        cup's color determines the awarded points.
+      </p>
+      <p>To win, you need to have the highest points on the board.</p>
+
+      <p>You start the game with two cards.</p>
+      <p>
+        On your turn, you can either <b>play</b> a card or <b>draw</b> a card
+        from the draw deck.
+      </p>
+      <p>
+        To play a card, choose the card to place on the board and select a cell
+        to move the card to.
+      </p>
+      <ul>
+        <li>
+          Placing a card on a cup of the same color = 2x value of that card.
+        </li>
+        <li>
+          Placing a colored card on a blank teacup = 1x value on the card.
+        </li>
+        <li>
+          Placing a colored card on a colored cup of the wrong color = 0 points
+        </li>
+      </ul>
+      <p>Good luck!</p>
+      <button class="close">Close</button>
+    </div>
     <h1>Kitty cards</h1>
     <h3>Opponent: <span class="opponent-score"></span></h3>
     <div class="opponent flex"></div>
     <div class="grid"></div>
-    <h3>player: <span class="player-score"></span></h3>
+    <h3>Me: <span class="player-score"></span></h3>
 
     <div class="player flex"></div>
-
+    <div class="hide final overlay">
+      <div class="end">
+        <h2 class="result">Victory!</h2>
+        <div class="flex">
+          <h3>Me: <span class="player-score"></span></h3>
+          <h3>Opponent: <span class="opponent-score"></span></h3>
+        </div>
+        <button class="restart">Play again</button>
+      </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

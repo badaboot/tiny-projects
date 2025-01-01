@@ -19,14 +19,30 @@ const getColorFromInt = (integer) => {
 };
 let isPlayerTurn = true; // alternate between true and false. if false is opponent's turn
 const gridElem = document.getElementsByClassName("grid")[0];
-const oppoenntElem = document.getElementsByClassName("opponent")[0];
+const opponentElem = document.getElementsByClassName("opponent")[0];
 const playerElem = document.getElementsByClassName("player")[0];
-const playerScoreElem = document.getElementsByClassName("player-score")[0];
-const opponentScoreElem = document.getElementsByClassName("opponent-score")[0];
+const playerScoreElems = document.getElementsByClassName("player-score");
+const opponentScoreElems = document.getElementsByClassName("opponent-score");
+const infoElem = document.getElementsByClassName("info")[0];
+const finalElem = document.getElementsByClassName("final")[0];
+const resultTextElem = document.getElementsByClassName("result")[0];
+document.getElementsByClassName("showInfo")[0].addEventListener("click", () => {
+  infoElem.classList.remove("hide");
+});
 let playerScore = 0;
 let opponentScore = 0;
-opponentScoreElem.textContent = opponentScore;
-playerScoreElem.textContent = playerScore;
+updatePlayerScore = () => {
+  for (let elem of playerScoreElems) {
+    elem.textContent = playerScore;
+  }
+};
+updateOpponentScore = () => {
+  for (let elem of opponentScoreElems) {
+    elem.textContent = opponentScore;
+  }
+};
+updateOpponentScore();
+updatePlayerScore();
 
 // in-place
 const shuffleArray = (array) => {
@@ -62,15 +78,59 @@ const checkIsGameOver = () => {
   );
 };
 const opponentDoesSomething = () => {
-  console.log(`opponent's turn`);
-  // can draw
-  document.getElementsByClassName("cell")[4].click();
+  const drawCard = () => document.getElementsByClassName("cell")[4].click();
+  // can draw if no cards or card number is low
+  const maxNumber = Math.max(...opponentCards.map((c) => c.number));
+  if (opponentCards.length === 0 || maxNumber <= 6) {
+    drawCard();
+    return;
+  }
+  // put the card with highest number on the board, ideally on same colored cell
+  //   TODO: turn this into a loop
+  const indexOfHighestCard = opponentCards.findIndex(
+    (c) => c.number === maxNumber
+  );
+  const selectCard = opponentCards[indexOfHighestCard];
+  opponentElem.children[indexOfHighestCard].click();
+  const cellElems = Array.from(gridElem.children);
+  const indexOfSameColoredCell = cellElems.findIndex(
+    (cell) =>
+      cell.classList.contains(selectCard.color) &&
+      !cell.classList.contains("occupied")
+  );
+
+  if (indexOfSameColoredCell > -1) {
+    gridElem.children[indexOfSameColoredCell].click();
+    opponentCards.splice(indexOfHighestCard, 1);
+    return;
+  } else {
+    const blankCellIndex = cellElems.findIndex((cell) =>
+      colorArr.every((color) => !cell.classList.contains(color))
+    );
+    // find a blank one to click on
+    if (blankCellIndex > -1) {
+      gridElem.children[blankCellIndex].click();
+      opponentCards.splice(indexOfHighestCard, 1);
+      return;
+    }
+  }
+  drawCard();
 };
 const nextTurn = () => {
   isPlayerTurn = !isPlayerTurn;
   if (!isPlayerTurn) {
     opponentDoesSomething();
   }
+};
+const getScore = (cellColor, cardColor, cardNum) => {
+  if (cellColor === cardColor) {
+    return 2 * cardNum;
+  }
+  // don't match
+  if (cellColor === "white") {
+    return cardNum;
+  }
+  return 0;
 };
 for (let i = 0; i < 9; i++) {
   const color = g2[i];
@@ -88,31 +148,39 @@ for (let i = 0; i < 9; i++) {
         appendCards(playerElem, [newCard]);
       } else {
         opponentCards.push(newCard);
-        appendCards(oppoenntElem, [newCard]);
+        appendCards(opponentElem, [newCard]);
       }
       nextTurn();
       return;
     }
     const selectedCard = document.querySelector(".from");
     // need to select a card before clicking cell
-    if (!selectedCard) return;
+    if (!selectedCard || cellDiv.classList.contains("occupied")) return;
     const cardNum = parseInt(selectedCard.textContent, 10);
-    cellDiv.textContent = cardNum;
     cellDiv.classList.add("occupied");
     // add the score
     const cardColor = getCardColorFromClassList(selectedCard.classList);
+    const score = getScore(color, cardColor, cardNum);
+    // TODO: show 2x
+    cellDiv.textContent = score === 0 ? 0 : cardNum;
+
     if (isPlayerTurn) {
-      playerScore += color === cardColor ? 2 * cardNum : cardNum;
-      playerScoreElem.textContent = playerScore;
+      playerScore += score;
+      updatePlayerScore();
     } else {
-      opponentScore += cardColor ? 2 * cardNum : cardNum;
-      opponentScoreElem.textContent = opponentScore;
+      opponentScore += score;
+      updateOpponentScore();
     }
     // delete the card that's from
     selectedCard.parentElement.removeChild(selectedCard);
     // check if game is over
     if (checkIsGameOver()) {
-      alert("GAME OVER");
+      if (playerScore < opponentScore) {
+        resultTextElem.textContent = "Ooops!";
+      } else if (playerScore === opponentScore) {
+        resultTextElem.textContent = "Tie!";
+      }
+      finalElem.classList.remove("hide");
     } else {
       nextTurn();
     }
@@ -135,10 +203,10 @@ const appendCards = (parentElem, cardsArr) => {
     parentElem.appendChild(cardDiv);
 
     cardDiv.addEventListener("click", () => {
-      // cannot move opponent's cards, or move cards out of turn
+      // cannot move opponent's cards
       if (
-        cardDiv.parentElement.classList.contains("opponent") ||
-        !isPlayerTurn
+        isPlayerTurn &&
+        cardDiv.parentElement.classList.contains("opponent")
       ) {
         return false;
       }
@@ -147,8 +215,15 @@ const appendCards = (parentElem, cardsArr) => {
         c.classList.remove("from");
       }
       cardDiv.classList.add("from");
+      console.log("added from", cardDiv.textContent);
     });
   });
 };
-appendCards(oppoenntElem, opponentCards);
+appendCards(opponentElem, opponentCards);
 appendCards(playerElem, playerCards);
+document.getElementsByClassName("close")[0].addEventListener("click", () => {
+  infoElem.classList.add("hide");
+});
+document.getElementsByClassName("restart")[0].addEventListener("click", () => {
+  location.reload();
+});

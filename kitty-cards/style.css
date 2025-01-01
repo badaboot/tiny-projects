@@ -4,6 +4,11 @@ body {
   margin: 0 auto;
   text-align: center;
   font-family: sans-serif;
+  list-style-position: inside;
+}
+.info {
+  color: white;
+  text-align: center;
 }
 .grid {
   margin-top: 20px;
@@ -16,6 +21,48 @@ body {
   border: 2px solid brown;
   width: 100%;
   height: 100px;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(48, 3, 58, 0.8);
+  width: 100%;
+  height: 100%;
+}
+h3:has(.player-score) {
+  background: pink;
+  color: white;
+}
+h3:has(.player-score) {
+  background: magenta;
+  color: white;
+}
+h3:has(.opponent-score) {
+  background: darkblue;
+  color: white;
+}
+.hide {
+  display: none;
+}
+
+.end {
+  width: 320px;
+  height: 280px;
+  margin: 0 auto;
+  color: white;
+  font-size: 24px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.end .flex {
+  justify-content: space-around;
+}
+.opponent .flex,
+.player .flex {
+  height: 160px;
 }
 .occupied::before {
   content: "🐱";
@@ -42,7 +89,7 @@ body {
 }
 
 .blue {
-  background-color: blue;
+  background-color: darkturquoise;
 }
 .yellow {
   background-color: yellow;
