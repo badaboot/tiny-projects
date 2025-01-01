@@ -27,6 +27,22 @@ let playerScore = 0;
 let opponentScore = 0;
 opponentScoreElem.textContent = opponentScore;
 playerScoreElem.textContent = playerScore;
+
+// in-place
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i >= 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+};
+// 12 * 4 colors, from 1 to 12
+const deck = new Array(48).fill(0).map((_, index) => {
+  return {
+    color: getColorFromInt(Math.floor(index / 12) + 2), // input: 2 to 5
+    number: (index % 12) + 1,
+  };
+});
+shuffleArray(deck);
 // alternatively represent grid as 9 cells
 let g2 = new Array(9).fill(0);
 
@@ -39,7 +55,23 @@ const getCardColorFromClassList = (classList) => {
     }
   }
 };
-
+const checkIsGameOver = () => {
+  // all cells other than DRAW are occupied
+  return Array.from(document.getElementsByClassName("cell")).every(
+    (cell) => cell.classList.contains("occupied") || cell.textContent === "DRAW"
+  );
+};
+const opponentDoesSomething = () => {
+  console.log(`opponent's turn`);
+  // can draw
+  document.getElementsByClassName("cell")[4].click();
+};
+const nextTurn = () => {
+  isPlayerTurn = !isPlayerTurn;
+  if (!isPlayerTurn) {
+    opponentDoesSomething();
+  }
+};
 for (let i = 0; i < 9; i++) {
   const color = g2[i];
 
@@ -48,9 +80,9 @@ for (let i = 0; i < 9; i++) {
   cellDiv.classList.add(color);
 
   cellDiv.addEventListener("click", () => {
-    // TODO: need better way of seeing if it's player's turn because selectedCard might be null
+    // TODO: add animation for draw so it's not immediate
     if (cellDiv.textContent === "DRAW") {
-      const newCard = { color: "blue", number: 2 };
+      const newCard = deck.pop();
       if (isPlayerTurn) {
         playerCards.push(newCard);
         appendCards(playerElem, [newCard]);
@@ -58,9 +90,12 @@ for (let i = 0; i < 9; i++) {
         opponentCards.push(newCard);
         appendCards(oppoenntElem, [newCard]);
       }
+      nextTurn();
       return;
     }
     const selectedCard = document.querySelector(".from");
+    // need to select a card before clicking cell
+    if (!selectedCard) return;
     const cardNum = parseInt(selectedCard.textContent, 10);
     cellDiv.textContent = cardNum;
     cellDiv.classList.add("occupied");
@@ -75,6 +110,12 @@ for (let i = 0; i < 9; i++) {
     }
     // delete the card that's from
     selectedCard.parentElement.removeChild(selectedCard);
+    // check if game is over
+    if (checkIsGameOver()) {
+      alert("GAME OVER");
+    } else {
+      nextTurn();
+    }
   });
   gridElem.appendChild(cellDiv);
 }
@@ -83,27 +124,8 @@ centerCell.textContent = "DRAW";
 centerCell.classList.remove(getCardColorFromClassList(centerCell.classList));
 centerCell.classList.remove("white");
 
-// TODO: implement turns
-const opponentCards = [
-  {
-    color: "red",
-    number: 1,
-  },
-  {
-    color: "blue",
-    number: 10,
-  },
-];
-const playerCards = [
-  {
-    color: "green",
-    number: 1,
-  },
-  {
-    color: "yellow",
-    number: 10,
-  },
-];
+const opponentCards = [deck.pop(), deck.pop()];
+const playerCards = [deck.pop(), deck.pop()];
 const appendCards = (parentElem, cardsArr) => {
   cardsArr.forEach(({ color, number }) => {
     const cardDiv = document.createElement("div");
@@ -113,12 +135,18 @@ const appendCards = (parentElem, cardsArr) => {
     parentElem.appendChild(cardDiv);
 
     cardDiv.addEventListener("click", () => {
+      // cannot move opponent's cards, or move cards out of turn
+      if (
+        cardDiv.parentElement.classList.contains("opponent") ||
+        !isPlayerTurn
+      ) {
+        return false;
+      }
       // remove class from other cards
       for (let c of document.getElementsByClassName("card")) {
         c.classList.remove("from");
       }
       cardDiv.classList.add("from");
-      console.log(`${cardDiv.textContent} is from`);
     });
   });
 };
