@@ -2,9 +2,11 @@ body {
   padding: 0;
   max-width: 700px;
   margin: 0 auto;
-  text-align: center;
   font-family: sans-serif;
   list-style-position: inside;
+}
+h1 {
+  text-align: center;
 }
 .info {
   color: white;
@@ -15,7 +17,6 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   font-size: 64px;
-  text-align: center;
 }
 .cell {
   border: 2px solid brown;
@@ -26,36 +27,50 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: rgba(48, 3, 58, 0.8);
+  background-color: rgba(48, 3, 58, 0.9);
   width: 100%;
   height: 100%;
 }
-h3:has(.player-score) {
-  background: pink;
+h3 {
+  width: 300px;
+  padding: 4px;
   color: white;
 }
 h3:has(.player-score) {
-  background: magenta;
-  color: white;
+  background: #c71585;
 }
 h3:has(.opponent-score) {
-  background: darkblue;
-  color: white;
+  background: #7b68ee;
 }
 .hide {
   display: none;
 }
-
+.result {
+  font-size: 64px;
+}
+body > h3:first {
+  float: left;
+  text-align: left;
+  border-radius: 0 20px 20px 0;
+}
+body > h3:last-child {
+  float: right;
+  text-align: right;
+  border-radius: 20px 0 0 20px;
+}
 .end {
-  width: 320px;
+  width: 400px;
   height: 280px;
   margin: 0 auto;
   color: white;
-  font-size: 24px;
   position: absolute;
   left: 50%;
   top: 50%;
+  text-align: center;
   transform: translate(-50%, -50%);
+}
+.end h3 {
+  font-size: 24px;
 }
 .end .flex {
   justify-content: space-around;
@@ -72,6 +87,8 @@ h3:has(.opponent-score) {
 }
 .card {
   width: 120px;
+  text-align: center;
+
   height: 160px;
   border-radius: 12px;
   font-size: 80px;
@@ -82,15 +99,18 @@ h3:has(.opponent-score) {
   border: 20px solid gray;
 }
 .red {
-  background-color: red;
+  background-color: #ff69b4;
 }
 .green {
-  background-color: green;
+  background-color: lightgreen;
 }
 
 .blue {
   background-color: darkturquoise;
 }
 .yellow {
-  background-color: yellow;
+  background-color: gold;
+}
+button:hover {
+  cursor: pointer;
 }

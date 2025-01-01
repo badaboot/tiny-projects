@@ -77,6 +77,7 @@ const checkIsGameOver = () => {
     (cell) => cell.classList.contains("occupied") || cell.textContent === "DRAW"
   );
 };
+// TODO: hide these cards
 const opponentDoesSomething = () => {
   const drawCard = () => document.getElementsByClassName("cell")[4].click();
   // can draw if no cards or card number is low
@@ -215,7 +216,6 @@ const appendCards = (parentElem, cardsArr) => {
         c.classList.remove("from");
       }
       cardDiv.classList.add("from");
-      console.log("added from", cardDiv.textContent);
     });
   });
 };
