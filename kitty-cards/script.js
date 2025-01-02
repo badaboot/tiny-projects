@@ -17,6 +17,8 @@ const getColorFromInt = (integer) => {
       return "green";
   }
 };
+const hitSound = new Audio("audio/chime.mp3");
+const drawCardSound = new Audio("audio/draw.mp3");
 let isPlayerTurn = true; // alternate between true and false. if false is opponent's turn
 const gridElem = document.getElementsByClassName("grid")[0];
 const opponentElem = document.getElementsByClassName("opponent")[0];
@@ -24,11 +26,17 @@ const playerElem = document.getElementsByClassName("player")[0];
 const playerScoreElems = document.getElementsByClassName("player-score");
 const opponentScoreElems = document.getElementsByClassName("opponent-score");
 const infoElem = document.getElementsByClassName("info")[0];
+const creditElem = document.getElementsByClassName("credit")[0];
 const finalElem = document.getElementsByClassName("final")[0];
 const resultTextElem = document.getElementsByClassName("result")[0];
 document.getElementsByClassName("showInfo")[0].addEventListener("click", () => {
   infoElem.classList.remove("hide");
 });
+document
+  .getElementsByClassName("showCredits")[0]
+  .addEventListener("click", () => {
+    creditElem.classList.remove("hide");
+  });
 let playerScore = 0;
 let opponentScore = 0;
 updatePlayerScore = () => {
@@ -44,6 +52,9 @@ updateOpponentScore = () => {
 updateOpponentScore();
 updatePlayerScore();
 
+const sleep = (time) => {
+  return new Promise((resolve) => setTimeout(resolve, time));
+};
 // in-place
 const shuffleArray = (array) => {
   for (let i = array.length - 1; i >= 0; i--) {
@@ -51,19 +62,15 @@ const shuffleArray = (array) => {
     [array[i], array[j]] = [array[j], array[i]];
   }
 };
-// 12 * 4 colors, from 1 to 12
-const deck = new Array(48).fill(0).map((_, index) => {
+// MAX_NUM * 4 colors, from 1 to MAX_NUM
+const MAX_NUM = 6;
+const deck = new Array(4 * MAX_NUM).fill(0).map((_, index) => {
   return {
-    color: getColorFromInt(Math.floor(index / 12) + 2), // input: 2 to 5
-    number: (index % 12) + 1,
+    color: getColorFromInt(Math.floor(index / MAX_NUM) + 2), // input: 2 to 5
+    number: (index % MAX_NUM) + 1,
   };
 });
 shuffleArray(deck);
-// alternatively represent grid as 9 cells
-let g2 = new Array(9).fill(0);
-
-// 0 to 5
-g2 = g2.map(() => getColorFromInt(getRandomInt(6)));
 const getCardColorFromClassList = (classList) => {
   for (let color of colorArr) {
     if (classList.contains(color)) {
@@ -71,72 +78,82 @@ const getCardColorFromClassList = (classList) => {
     }
   }
 };
+// represent grid as 9 cells
+let g2 = new Array(9).fill(0);
+const timestamp = Date.now();
+const setupBoard = () => {
+  // ensure 3 different colors. Excludes 0, 1 which are white
+  for (let i = 0; i < 3; i++) {
+    g2[i] = timestamp % 2 ? i + 2 : i + 3; // 2 to 4 or 3 to 5
+  }
+
+  // + 3 random colors
+  for (let i = 3; i < 6; i++) {
+    g2[i] = getRandomInt(6); // 0 to 5
+  }
+  g2 = g2.map((num) => getColorFromInt(num));
+};
+setupBoard();
+const isDrawCell = (cellElem) => {
+  return cellElem.classList.contains("draw");
+};
 const checkIsGameOver = () => {
   // all cells other than DRAW are occupied
   return Array.from(document.getElementsByClassName("cell")).every(
-    (cell) => cell.classList.contains("occupied") || cell.textContent === "DRAW"
+    (cell) => cell.classList.contains("occupied") || isDrawCell(cell)
   );
 };
-// TODO: hide these cards
+const isUnoccupiedCell = (cellElem) => {
+  return !cellElem.classList.contains("occupied") && !isDrawCell(cellElem);
+};
 const opponentDoesSomething = () => {
   const drawCard = () => document.getElementsByClassName("cell")[4].click();
-  // click on the last item if score > player score. Doesn't matter which card is used
-  const cellElems = Array.from(gridElem.children);
-  if (
-    opponentScore > playerScore &&
-    cellElems.filter((cell) => !cell.classList.contains("occupied")).length ===
-      2 // one valid empty card + 'DRAW'
-  ) {
-    const index = cellElems.findIndex(
-      (cell) =>
-        !cell.classList.contains("occupied") && cell.textContent !== "DRAW"
-    );
-    const indexOfCard = 0;
-    opponentElem.children[indexOfCard].click();
-    gridElem.children[index].click();
-    opponentCards.splice(indexOfCard, 1);
-    return;
-  }
-  // can draw if no cards or card number is low
-  const maxNumber = Math.max(...opponentCards.map((c) => c.number));
-  if (opponentCards.length === 0 || maxNumber < 6) {
+  if (opponentCards.length === 0) {
     drawCard();
     return;
   }
-  // put the card with highest number on the board, ideally on same colored cell
-  //   TODO: turn this into a loop
-  const indexOfHighestCard = opponentCards.findIndex(
-    (c) => c.number === maxNumber
-  );
-  const selectCard = opponentCards[indexOfHighestCard];
-  opponentElem.children[indexOfHighestCard].click();
-  const indexOfSameColoredCell = cellElems.findIndex(
+  const cellElems = Array.from(gridElem.children);
+  const blankCellIndex = cellElems.findIndex(
     (cell) =>
-      cell.classList.contains(selectCard.color) &&
-      !cell.classList.contains("occupied") &&
-      cell.textContent !== "DRAW"
+      colorArr.every((color) => !cell.classList.contains(color)) &&
+      isUnoccupiedCell(cell)
+  );
+  const unoccupiedCellIndex = cellElems.findIndex((cell) =>
+    isUnoccupiedCell(cell)
   );
 
-  if (indexOfSameColoredCell > -1) {
-    gridElem.children[indexOfSameColoredCell].click();
-    opponentCards.splice(indexOfHighestCard, 1);
-    return;
-  } else {
-    const blankCellIndex = cellElems.findIndex(
-      (cell) =>
-        colorArr.every((color) => !cell.classList.contains(color)) &&
-        !cell.classList.contains("occupied") &&
-        cell.textContent !== "DRAW"
+  const colorIndexesObj = {};
+  colorArr.forEach((color) => {
+    colorIndexesObj[color] = cellElems.findIndex(
+      (cell) => cell.classList.contains(color) && isUnoccupiedCell(cell)
     );
-    console.log(blankCellIndex);
-    // find a blank one to click on
-    if (blankCellIndex > -1) {
-      gridElem.children[blankCellIndex].click();
-      opponentCards.splice(indexOfHighestCard, 1);
-      return;
+  });
+  let maxScore = 0;
+  let maxCellIndex = -1;
+  let maxCardIndex = -1;
+  opponentCards.forEach(({ color, number }, cardIndex) => {
+    const score = getScore(
+      colorIndexesObj[color] === -1 ? "" : color,
+      color,
+      number
+    );
+    if (score >= maxScore) {
+      maxScore = score;
+      maxCardIndex = cardIndex;
+      // if no matching colored cell exist, put in blank cell index
+      maxCellIndex =
+        colorIndexesObj[color] === -1 ? blankCellIndex : colorIndexesObj[color];
     }
+  });
+  opponentElem.children[maxCardIndex].click();
+  opponentCards.splice(maxCardIndex, 1);
+
+  if (maxCellIndex > -1) {
+    // blank space or matching colored space to click
+    gridElem.children[maxCellIndex].click();
+  } else {
+    gridElem.children[unoccupiedCellIndex].click();
   }
-  drawCard();
 };
 const playerContainerElement =
   document.getElementsByClassName("player-container")[0];
@@ -146,19 +163,20 @@ const setPlayerTurn = () => {
   if (isPlayerTurn) {
     opponentContainerElement.classList.add("glare");
     playerContainerElement.classList.remove("glare");
+    gridElem.classList.remove("glare");
     return;
   }
   playerContainerElement.classList.add("glare");
   opponentContainerElement.classList.remove("glare");
+  gridElem.classList.add("glare");
 };
-const nextTurn = () => {
+const nextTurn = async () => {
   isPlayerTurn = !isPlayerTurn;
-  setTimeout(() => {
-    setPlayerTurn();
-    if (!isPlayerTurn) {
-      opponentDoesSomething();
-    }
-  }, 2000);
+  setPlayerTurn();
+  await sleep(1000);
+  if (!isPlayerTurn) {
+    opponentDoesSomething();
+  }
 };
 setPlayerTurn();
 const getScore = (cellColor, cardColor, cardNum) => {
@@ -171,6 +189,11 @@ const getScore = (cellColor, cardColor, cardNum) => {
   }
   return 0;
 };
+const gameContinues = async (cellDiv) => {
+  await sleep(500);
+  cellDiv.classList.remove("shake");
+  nextTurn();
+};
 for (let i = 0; i < 9; i++) {
   const color = g2[i];
 
@@ -179,10 +202,10 @@ for (let i = 0; i < 9; i++) {
   cellDiv.classList.add(color);
 
   cellDiv.addEventListener("click", () => {
-    cellDiv.classList.add("shake");
-    setTimeout(() => cellDiv.classList.remove("shake"), 500);
+    if (isDrawCell(cellDiv)) {
+      drawCardSound.play();
+      cellDiv.classList.add("shake");
 
-    if (cellDiv.textContent === "DRAW") {
       const newCard = deck.pop();
       if (isPlayerTurn) {
         playerCards.push(newCard);
@@ -191,13 +214,17 @@ for (let i = 0; i < 9; i++) {
         opponentCards.push(newCard);
         appendCards(opponentElem, [newCard]);
       }
-      nextTurn();
+      gameContinues(cellDiv);
+
       return;
     }
-    const selectedCard = document.querySelector(".from");
     // need to select a card before clicking cell
+    const selectedCard = document.getElementsByClassName("from")[0];
     if (!selectedCard || cellDiv.classList.contains("occupied")) return;
-    const cardNum = parseInt(selectedCard.textContent, 10);
+    hitSound.play();
+    cellDiv.classList.add("shake");
+
+    const cardNum = parseInt(selectedCard.dataset.number, 10);
     cellDiv.classList.add("occupied");
     // add the score
     const cardColor = getCardColorFromClassList(selectedCard.classList);
@@ -214,7 +241,6 @@ for (let i = 0; i < 9; i++) {
     }
     // delete the card that's from
     selectedCard.parentElement.removeChild(selectedCard);
-    // check if game is over
     if (checkIsGameOver()) {
       if (playerScore < opponentScore) {
         resultTextElem.textContent = "Ooops!";
@@ -222,15 +248,16 @@ for (let i = 0; i < 9; i++) {
         resultTextElem.textContent = "Tie!";
       }
       finalElem.classList.remove("hide");
-    } else {
-      nextTurn();
+      return;
     }
+    // game goes on
+    gameContinues(cellDiv);
   });
   gridElem.appendChild(cellDiv);
 }
 const centerCell = gridElem.children[4];
-centerCell.textContent = "DRAW";
 centerCell.classList.remove(getCardColorFromClassList(centerCell.classList));
+centerCell.classList.add("draw");
 centerCell.classList.remove("white");
 
 const opponentCards = [deck.pop(), deck.pop()];
@@ -241,7 +268,12 @@ const appendCards = (parentElem, cardsArr) => {
     cardDiv.classList.add("card");
     cardDiv.classList.add("fade-in");
     cardDiv.classList.add(color);
-    cardDiv.textContent = number;
+    cardDiv.dataset.color = color;
+    cardDiv.dataset.number = number;
+    cardDiv.textContent = parentElem.classList.contains("player")
+      ? number
+      : "?";
+
     parentElem.appendChild(cardDiv);
 
     cardDiv.addEventListener("click", () => {
@@ -262,9 +294,19 @@ const appendCards = (parentElem, cardsArr) => {
 };
 appendCards(opponentElem, opponentCards);
 appendCards(playerElem, playerCards);
-document.getElementsByClassName("close")[0].addEventListener("click", () => {
-  infoElem.classList.add("hide");
+document.getElementsByClassName("close")[0].addEventListener("click", (e) => {
+  if (e.target.parentElement.classList.contains("info")) {
+    infoElem.classList.add("hide");
+  } else {
+    creditElem.classList.add("hide");
+  }
 });
+const startElem = document.getElementsByClassName("start")[0];
 document.getElementsByClassName("restart")[0].addEventListener("click", () => {
   location.reload();
+});
+startElem.addEventListener("click", (e) => {
+  const audio = document.getElementsByTagName("audio")[0];
+  audio.play();
+  e.target.parentElement.classList.add("hide");
 });

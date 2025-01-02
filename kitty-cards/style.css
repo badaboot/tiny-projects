@@ -1,29 +1,59 @@
 body {
   padding: 0;
-  max-width: 550px;
-  margin: 0 auto;
+  margin: 0;
   font-family: sans-serif;
   list-style-position: inside;
+  background-color: lightpink;
+}
+.container {
+  margin: 0 auto;
+  max-width: 500px;
+  background-color: white;
+  padding: 20px;
 }
 h1 {
+  margin: 0;
   text-align: center;
+  font-size: 52px;
 }
+.credit li {
+  margin: 4px 0;
+}
+.credit a {
+  color: white;
+}
+.credit,
 .info {
   color: white;
   text-align: center;
 }
+.opponent-container .card {
+  background-color: orange;
+}
+.draw {
+  background-image: url(./cards.svg);
+  background-size: cover;
+}
 .grid {
-  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  font-size: 64px;
+  font-size: 52px;
+  text-align: center;
 }
 .cell {
   border: 2px solid brown;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
   width: 100%;
-  height: 150px;
+  height: 140px;
 }
+.cell:not(.draw) {
+  font-size: 80px;
+}
+
 .overlay {
+  z-index: 20;
   position: absolute;
   top: 0;
   left: 0;
@@ -31,8 +61,26 @@ h1 {
   width: 100%;
   height: 100%;
 }
+button {
+  border-radius: 12px;
+  font-size: 32px;
+}
+.restart {
+  margin: 20px 0 0 0;
+  width: 260px;
+}
+.start {
+  width: 160px;
+}
+.start {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 200;
+}
 h3 {
-  width: 300px;
+  width: 160px;
   padding: 4px;
   color: white;
   margin: 10px 0;
@@ -46,13 +94,16 @@ h3:has(.opponent-score) {
 .hide {
   display: none;
 }
-.result {
-  font-size: 64px;
+
+h2 {
+  font-size: 52px;
+  margin: 12px 0 0 0;
 }
 .opponent-container h3 {
   float: left;
   text-align: left;
   border-radius: 0 20px 20px 0;
+  padding-left: 8px;
 }
 .opponent-container > div {
   clear: left;
@@ -61,6 +112,7 @@ h3:has(.opponent-score) {
   float: right;
   text-align: right;
   border-radius: 20px 0 0 20px;
+  padding-right: 8px;
 }
 .player-container > div {
   clear: right;
@@ -78,6 +130,7 @@ h3:has(.opponent-score) {
 }
 .end h3 {
   font-size: 24px;
+  width: 300px;
 }
 .end .flex {
   justify-content: space-around;
@@ -158,7 +211,7 @@ h3:has(.opponent-score) {
   width: 100px;
   text-align: center;
 
-  height: 120px;
+  height: 100px;
   border-radius: 12px;
   font-size: 80px;
   margin-right: 8px;
