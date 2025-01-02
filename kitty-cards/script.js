@@ -80,9 +80,26 @@ const checkIsGameOver = () => {
 // TODO: hide these cards
 const opponentDoesSomething = () => {
   const drawCard = () => document.getElementsByClassName("cell")[4].click();
+  // click on the last item if score > player score. Doesn't matter which card is used
+  const cellElems = Array.from(gridElem.children);
+  if (
+    opponentScore > playerScore &&
+    cellElems.filter((cell) => !cell.classList.contains("occupied")).length ===
+      2 // one valid empty card + 'DRAW'
+  ) {
+    const index = cellElems.findIndex(
+      (cell) =>
+        !cell.classList.contains("occupied") && cell.textContent !== "DRAW"
+    );
+    const indexOfCard = 0;
+    opponentElem.children[indexOfCard].click();
+    gridElem.children[index].click();
+    opponentCards.splice(indexOfCard, 1);
+    return;
+  }
   // can draw if no cards or card number is low
   const maxNumber = Math.max(...opponentCards.map((c) => c.number));
-  if (opponentCards.length === 0 || maxNumber <= 6) {
+  if (opponentCards.length === 0 || maxNumber < 6) {
     drawCard();
     return;
   }
@@ -93,11 +110,11 @@ const opponentDoesSomething = () => {
   );
   const selectCard = opponentCards[indexOfHighestCard];
   opponentElem.children[indexOfHighestCard].click();
-  const cellElems = Array.from(gridElem.children);
   const indexOfSameColoredCell = cellElems.findIndex(
     (cell) =>
       cell.classList.contains(selectCard.color) &&
-      !cell.classList.contains("occupied")
+      !cell.classList.contains("occupied") &&
+      cell.textContent !== "DRAW"
   );
 
   if (indexOfSameColoredCell > -1) {
@@ -105,9 +122,13 @@ const opponentDoesSomething = () => {
     opponentCards.splice(indexOfHighestCard, 1);
     return;
   } else {
-    const blankCellIndex = cellElems.findIndex((cell) =>
-      colorArr.every((color) => !cell.classList.contains(color))
+    const blankCellIndex = cellElems.findIndex(
+      (cell) =>
+        colorArr.every((color) => !cell.classList.contains(color)) &&
+        !cell.classList.contains("occupied") &&
+        cell.textContent !== "DRAW"
     );
+    console.log(blankCellIndex);
     // find a blank one to click on
     if (blankCellIndex > -1) {
       gridElem.children[blankCellIndex].click();
@@ -117,12 +138,29 @@ const opponentDoesSomething = () => {
   }
   drawCard();
 };
+const playerContainerElement =
+  document.getElementsByClassName("player-container")[0];
+const opponentContainerElement =
+  document.getElementsByClassName("opponent-container")[0];
+const setPlayerTurn = () => {
+  if (isPlayerTurn) {
+    opponentContainerElement.classList.add("glare");
+    playerContainerElement.classList.remove("glare");
+    return;
+  }
+  playerContainerElement.classList.add("glare");
+  opponentContainerElement.classList.remove("glare");
+};
 const nextTurn = () => {
   isPlayerTurn = !isPlayerTurn;
-  if (!isPlayerTurn) {
-    opponentDoesSomething();
-  }
+  setTimeout(() => {
+    setPlayerTurn();
+    if (!isPlayerTurn) {
+      opponentDoesSomething();
+    }
+  }, 2000);
 };
+setPlayerTurn();
 const getScore = (cellColor, cardColor, cardNum) => {
   if (cellColor === cardColor) {
     return 2 * cardNum;
@@ -141,7 +179,9 @@ for (let i = 0; i < 9; i++) {
   cellDiv.classList.add(color);
 
   cellDiv.addEventListener("click", () => {
-    // TODO: add animation for draw so it's not immediate
+    cellDiv.classList.add("shake");
+    setTimeout(() => cellDiv.classList.remove("shake"), 500);
+
     if (cellDiv.textContent === "DRAW") {
       const newCard = deck.pop();
       if (isPlayerTurn) {
