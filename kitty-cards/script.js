@@ -106,7 +106,7 @@ const checkIsGameOver = () => {
 const isUnoccupiedCell = (cellElem) => {
   return !cellElem.classList.contains("occupied") && !isDrawCell(cellElem);
 };
-const opponentDoesSomething = () => {
+const opponentDoesSomething = async () => {
   const drawCard = () => document.getElementsByClassName("cell")[4].click();
   if (opponentCards.length === 0) {
     drawCard();
@@ -175,7 +175,7 @@ const nextTurn = async () => {
   setPlayerTurn();
   await sleep(1000);
   if (!isPlayerTurn) {
-    opponentDoesSomething();
+    await opponentDoesSomething();
   }
 };
 setPlayerTurn();
@@ -192,7 +192,7 @@ const getScore = (cellColor, cardColor, cardNum) => {
 const gameContinues = async (cellDiv) => {
   await sleep(500);
   cellDiv.classList.remove("shake");
-  nextTurn();
+  await nextTurn();
 };
 for (let i = 0; i < 9; i++) {
   const color = g2[i];
@@ -201,7 +201,7 @@ for (let i = 0; i < 9; i++) {
   cellDiv.classList.add("cell");
   cellDiv.classList.add(color);
 
-  cellDiv.addEventListener("click", () => {
+  cellDiv.addEventListener("click", async () => {
     if (isDrawCell(cellDiv)) {
       drawCardSound.play();
       cellDiv.classList.add("shake");
@@ -214,7 +214,7 @@ for (let i = 0; i < 9; i++) {
         opponentCards.push(newCard);
         appendCards(opponentElem, [newCard]);
       }
-      gameContinues(cellDiv);
+      await gameContinues(cellDiv);
 
       return;
     }
@@ -247,11 +247,12 @@ for (let i = 0; i < 9; i++) {
       } else if (playerScore === opponentScore) {
         resultTextElem.textContent = "Tie!";
       }
+      // TODO: make grid read-only
       finalElem.classList.remove("hide");
+      cellDiv.classList.remove("shake");
       return;
     }
-    // game goes on
-    gameContinues(cellDiv);
+    await gameContinues(cellDiv);
   });
   gridElem.appendChild(cellDiv);
 }

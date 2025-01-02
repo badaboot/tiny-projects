@@ -207,6 +207,9 @@ h2 {
 .glare {
   opacity: 0.5;
 }
+.glare:hover {
+  pointer-events: none;
+}
 .card {
   width: 100px;
   text-align: center;
