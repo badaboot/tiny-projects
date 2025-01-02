@@ -196,8 +196,10 @@ const getScore = (cellColor, cardColor, cardNum) => {
   return 0;
 };
 const gameContinues = (cellDiv) => {
-  cellDiv.classList.remove("shake");
-  nextTurn();
+  setTimeout(() => {
+    cellDiv.classList.remove("shake");
+    nextTurn();
+  }, 500);
 };
 for (let i = 0; i < 9; i++) {
   const color = g2[i];
@@ -300,13 +302,16 @@ const appendCards = (parentElem, cardsArr) => {
 };
 appendCards(opponentElem, opponentCards);
 appendCards(playerElem, playerCards);
-document.getElementsByClassName("close")[0].addEventListener("click", (e) => {
-  if (e.target.parentElement.classList.contains("info")) {
-    infoElem.classList.add("hide");
-  } else {
-    creditElem.classList.add("hide");
-  }
-});
+for (let button of document.getElementsByClassName("close")) {
+  button.addEventListener("click", (e) => {
+    if (e.target.parentElement.classList.contains("info")) {
+      infoElem.classList.add("hide");
+    } else {
+      creditElem.classList.add("hide");
+    }
+  });
+}
+
 const startElem = document.getElementsByClassName("start")[0];
 document.getElementsByClassName("restart")[0].addEventListener("click", () => {
   location.reload();
