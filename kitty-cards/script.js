@@ -106,7 +106,7 @@ const checkIsGameOver = () => {
 const isUnoccupiedCell = (cellElem) => {
   return !cellElem.classList.contains("occupied") && !isDrawCell(cellElem);
 };
-const opponentDoesSomething = async () => {
+const opponentDoesSomething = () => {
   const drawCard = () => document.getElementsByClassName("cell")[4].click();
   if (opponentCards.length === 0) {
     drawCard();
@@ -170,12 +170,18 @@ const setPlayerTurn = () => {
   opponentContainerElement.classList.remove("glare");
   gridElem.classList.add("glare");
 };
-const nextTurn = async () => {
+let timeoutId;
+const nextTurn = () => {
   isPlayerTurn = !isPlayerTurn;
   setPlayerTurn();
-  await sleep(1000);
+
   if (!isPlayerTurn) {
-    await opponentDoesSomething();
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      opponentDoesSomething();
+    }, 1000);
   }
 };
 setPlayerTurn();
@@ -189,10 +195,9 @@ const getScore = (cellColor, cardColor, cardNum) => {
   }
   return 0;
 };
-const gameContinues = async (cellDiv) => {
-  await sleep(500);
+const gameContinues = (cellDiv) => {
   cellDiv.classList.remove("shake");
-  await nextTurn();
+  nextTurn();
 };
 for (let i = 0; i < 9; i++) {
   const color = g2[i];
@@ -201,7 +206,7 @@ for (let i = 0; i < 9; i++) {
   cellDiv.classList.add("cell");
   cellDiv.classList.add(color);
 
-  cellDiv.addEventListener("click", async () => {
+  cellDiv.addEventListener("click", () => {
     if (isDrawCell(cellDiv)) {
       drawCardSound.play();
       cellDiv.classList.add("shake");
@@ -214,7 +219,7 @@ for (let i = 0; i < 9; i++) {
         opponentCards.push(newCard);
         appendCards(opponentElem, [newCard]);
       }
-      await gameContinues(cellDiv);
+      gameContinues(cellDiv);
 
       return;
     }
@@ -252,7 +257,7 @@ for (let i = 0; i < 9; i++) {
       cellDiv.classList.remove("shake");
       return;
     }
-    await gameContinues(cellDiv);
+    gameContinues(cellDiv);
   });
   gridElem.appendChild(cellDiv);
 }
