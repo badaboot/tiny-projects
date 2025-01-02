@@ -1,6 +1,6 @@
 body {
   padding: 0;
-  max-width: 700px;
+  max-width: 550px;
   margin: 0 auto;
   font-family: sans-serif;
   list-style-position: inside;
@@ -21,7 +21,7 @@ h1 {
 .cell {
   border: 2px solid brown;
   width: 100%;
-  height: 100px;
+  height: 150px;
 }
 .overlay {
   position: absolute;
@@ -85,11 +85,27 @@ body > h3:last-child {
 .flex {
   display: flex;
 }
+.fade-in {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 2s;
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 .card {
-  width: 120px;
+  width: 100px;
   text-align: center;
 
-  height: 160px;
+  height: 120px;
   border-radius: 12px;
   font-size: 80px;
   margin-right: 8px;

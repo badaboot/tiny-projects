@@ -199,6 +199,7 @@ const appendCards = (parentElem, cardsArr) => {
   cardsArr.forEach(({ color, number }) => {
     const cardDiv = document.createElement("div");
     cardDiv.classList.add("card");
+    cardDiv.classList.add("fade-in");
     cardDiv.classList.add(color);
     cardDiv.textContent = number;
     parentElem.appendChild(cardDiv);
