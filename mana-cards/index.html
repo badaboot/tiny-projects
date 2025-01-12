@@ -8,6 +8,7 @@
   </head>
   <body>
     <section id="html5-drag" class="container">
+      <div>Power: <span id="powerCount"></span></div>
       <div class="flex">
         <article
           class="dropIt"
@@ -46,6 +47,7 @@
           ondragover="return dragOver(event)"
         ></article>
       </div>
+      <button id="power-up">Power up</button>
       <article
         id="holder"
         ondragenter="return dragEnter(event)"

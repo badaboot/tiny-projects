@@ -1,12 +1,13 @@
 /* inspired by https://codepen.io/jdigi/pen/MWwOQO */
-.container {
+.container,
+#holder {
   margin: 0 auto;
-  width: 625px;
+  max-width: 700px;
 }
 .drag {
   background-color: #e56a5a;
   border-radius: 5px;
-  border: 2px solid #ffe957\9;
+  border: 2px solid black;
   cursor: pointer;
   float: left;
   margin-left: 5px;
@@ -30,18 +31,45 @@
 .dropIt {
   background: #5eced2;
   border-radius: 5px;
-  height: 110px;
+  height: 80vh;
   margin: 0 auto;
   padding-top: 5px;
   width: 200px;
   border: 1px solid red;
 }
-
 #holder {
-  background: #fff;
-  border-radius: 5px;
-  height: 30vh;
+  width: 200px;
   margin: 0 auto;
-  padding-top: 5px;
-  width: 325px;
+}
+/* cards style based on https://codepen.io/gavinn/pen/xxzPqa */
+#holder div {
+  display: block;
+  width: 100px;
+  height: 150px;
+  background-color: white;
+  border: 3px solid black;
+  border-radius: 20px;
+  position: absolute;
+  padding: 10px;
+  font-size: 200%;
+  top: 100%;
+  font-weight: bold;
+}
+#holder div:nth-child(1) {
+  transform: rotate(-40deg) translateY(-200px);
+}
+#holder div:nth-child(2) {
+  transform: rotate(-20deg) translateY(-200px);
+}
+#holder div:nth-child(3) {
+  transform: rotate(0deg) translateY(-200px);
+}
+#holder div:nth-child(4) {
+  transform: rotate(20deg) translateY(-200px);
+}
+#holder div:nth-child(5) {
+  transform: rotate(40deg) translateY(-200px);
+}
+#holder div:nth-child(6) {
+  transform: rotate(60deg) translateY(-200px);
 }
