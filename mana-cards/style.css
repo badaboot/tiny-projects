@@ -1,0 +1,47 @@
+/* inspired by https://codepen.io/jdigi/pen/MWwOQO */
+.container {
+  margin: 0 auto;
+  width: 625px;
+}
+.drag {
+  background-color: #e56a5a;
+  border-radius: 5px;
+  border: 2px solid #ffe957\9;
+  cursor: pointer;
+  float: left;
+  margin-left: 5px;
+  height: 100px;
+  width: 100px;
+  -webkit-transition: background-color 0.25s ease-in;
+  -moz-transition: background-color 0.25s ease-in;
+  -ms-transition: background-color 0.25s ease-in;
+  -o-transition: background-color 0.25s ease-in;
+  transition: background-color 0.25s ease-in;
+}
+.drag:last-of-type {
+  margin-right: 5px;
+}
+.drag:hover {
+  background-color: #f94a34;
+}
+.flex {
+  display: flex;
+}
+.dropIt {
+  background: #5eced2;
+  border-radius: 5px;
+  height: 110px;
+  margin: 0 auto;
+  padding-top: 5px;
+  width: 200px;
+  border: 1px solid red;
+}
+
+#holder {
+  background: #fff;
+  border-radius: 5px;
+  height: 30vh;
+  margin: 0 auto;
+  padding-top: 5px;
+  width: 325px;
+}
