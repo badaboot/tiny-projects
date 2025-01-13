@@ -41,17 +41,27 @@
   width: 200px;
   margin: 0 auto;
 }
+.dropIt.disallow {
+  border: 20px solid red;
+}
+.dropIt.active {
+  border: 20px solid yellow;
+}
+.monster,
+#holder div {
+  color: white;
+  font-size: 48px;
+}
 /* cards style based on https://codepen.io/gavinn/pen/xxzPqa */
 #holder div {
   display: block;
   width: 100px;
   height: 150px;
-  background-color: white;
+  color: white;
   border: 3px solid black;
   border-radius: 20px;
   position: absolute;
   padding: 10px;
-  font-size: 200%;
   top: 100%;
   font-weight: bold;
 }

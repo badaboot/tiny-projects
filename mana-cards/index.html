@@ -8,8 +8,7 @@
   </head>
   <body>
     <section id="html5-drag" class="container">
-      <div>Power: <span id="powerCount"></span></div>
-      <div class="flex">
+      <div class="flex pipes">
         <article
           class="dropIt"
           ondragenter="return dragEnter(event)"
@@ -48,49 +47,15 @@
         ></article>
       </div>
       <button id="power-up">Power up</button>
+      <div>Power: <span id="powerCount"></span></div>
+      <div>Base health: <span id="baseHealth"></span></div>
+
       <article
         id="holder"
         ondragenter="return dragEnter(event)"
         ondrop="return dragDrop(event)"
         ondragover="return dragOver(event)"
-      >
-        <div
-          class="drag"
-          id="boxA"
-          draggable="true"
-          ondragstart="return dragStart(event)"
-        ></div>
-        <div
-          class="drag"
-          id="boxB"
-          draggable="true"
-          ondragstart="return dragStart(event)"
-        ></div>
-        <div
-          class="drag"
-          id="boxC"
-          draggable="true"
-          ondragstart="return dragStart(event)"
-        ></div>
-        <div
-          class="drag"
-          id="boxD"
-          draggable="true"
-          ondragstart="return dragStart(event)"
-        ></div>
-        <div
-          class="drag"
-          id="boxE"
-          draggable="true"
-          ondragstart="return dragStart(event)"
-        ></div>
-        <div
-          class="drag"
-          id="boxF"
-          draggable="true"
-          ondragstart="return dragStart(event)"
-        ></div>
-      </article>
+      ></article>
     </section>
 
     <!-- /#html5-drag -->
