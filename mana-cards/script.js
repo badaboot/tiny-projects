@@ -53,7 +53,7 @@ const makeMonsterWave = () => {
   }
 };
 
-// TODO: replace with particles
+// TODO: turn on and off intermittently
 const powerUpElem = document.getElementById("power-up");
 powerUpElem.addEventListener("click", () => {
   powerCountElem.textContent = parseInt(powerCountElem.textContent, 10) + 1;
