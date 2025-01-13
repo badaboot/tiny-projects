@@ -1,8 +1,54 @@
 /* inspired by https://codepen.io/jdigi/pen/MWwOQO */
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  list-style-position: inside;
+}
+h1 {
+  text-align: center;
+}
+button:hover {
+  cursor: pointer;
+}
+.start button {
+  margin-top: 10%;
+  display: inline-block;
+}
+.credit,
+.info,
+.start {
+  color: white;
+  text-align: center;
+}
+.overlay button {
+  width: 240px;
+  font-size: 48px;
+}
+
+#end {
+  text-align: center;
+  border-radius: 12px;
+  width: 320px;
+  height: 180px;
+  margin: 0 auto;
+  border: 20px solid goldenrod;
+  padding-bottom: 20px;
+  color: white;
+  background: darkslategray;
+  font-size: 24px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
 .container,
 #holder {
   margin: 0 auto;
   max-width: 700px;
+}
+.hide {
+  display: none;
 }
 .drag {
   background-color: #e56a5a;
@@ -52,12 +98,20 @@
   color: white;
   font-size: 48px;
 }
+.overlay {
+  z-index: 20;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(48, 3, 58, 0.9);
+  width: 100%;
+  height: 100%;
+}
 /* cards style based on https://codepen.io/gavinn/pen/xxzPqa */
 #holder div {
   display: block;
   width: 100px;
   height: 150px;
-  color: white;
   border: 3px solid black;
   border-radius: 20px;
   position: absolute;

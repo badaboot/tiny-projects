@@ -7,7 +7,34 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
+    <div class="overlay hide">
+      <div id="end">
+        <p id="duration">Duration:</p>
+        <p class="best">Your best:</p>
+        <button id="restart">Restart</button>
+      </div>
+    </div>
+    <div class="start overlay">
+      <button id="start">Start</button>
+      <button id="instruction">Instruction</button>
+    </div>
+    <div class="info hide overlay">
+      <h2>Instruction</h2>
+
+      <p>Defend your base from the bomb-laden invaders.</p>
+      <p>Use cards to decrease and eliminate bombs.</p>
+      <p>
+        Match cards to the bomb's color for full damage, else damage is halved.
+      </p>
+      <p>
+        You need to have power (mana) to use cards. Use POWER UP to increase
+        power.
+      </p>
+      <p>Good luck!</p>
+      <button class="close">Close</button>
+    </div>
     <section id="html5-drag" class="container">
+      <h1>Mana cards</h1>
       <div class="flex pipes">
         <article
           class="dropIt"
@@ -48,7 +75,7 @@
       </div>
       <button id="power-up">Power up</button>
       <div>Power: <span id="powerCount"></span></div>
-      <div>Base health: <span id="baseHealth"></span></div>
+      <div>Health: <span id="baseHealth"></span></div>
 
       <article
         id="holder"

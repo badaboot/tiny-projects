@@ -1,13 +1,15 @@
 const MAX_POWER = 8;
 const powerCountElem = document.getElementById("powerCount");
 const MAX_HEALTH = 16;
-const baseHelathCountElem = document.getElementById("baseHealth");
-baseHelathCountElem.textContent = MAX_HEALTH;
+const baseHealthCountElem = document.getElementById("baseHealth");
+baseHealthCountElem.textContent = MAX_HEALTH;
 powerCountElem.textContent = MAX_POWER;
 const pipeElems = document.getElementsByClassName("pipes")[0].children;
 const cardsElem = document.getElementById("holder");
 const COLORS = ["red", "green", "purple", "blue"];
-
+const GAME_KEY = "mana-cards-best";
+// TODO: keep track of how long game has been going on
+let durationInMs = 0;
 // return [0, max)
 const getRandomInt = (max) => {
   return Math.floor(Math.random() * max);
@@ -15,17 +17,42 @@ const getRandomInt = (max) => {
 const getColor = () => {
   return COLORS[getRandomInt(COLORS.length)];
 };
-
 const makeMonsterWave = () => {
   for (let pipe of pipeElems) {
     const newNode = document.createElement("div");
     newNode.classList.add("monster");
+    const intervalID = setInterval(() => {
+      const marginTop = newNode.style.marginTop || "0px";
+      const newMarginTop =
+        parseInt(marginTop.slice(0, marginTop.length - 2), 10) + 100;
+      if (newMarginTop > 600) {
+        clearInterval(intervalID);
+        // inflict damage + remove monsters
+        const newHealth =
+          parseInt(baseHealthCountElem.textContent, 10) - newNode.textContent;
+        baseHealthCountElem.textContent = Math.max(0, newHealth);
+        pipe.removeChild(newNode);
+        if (newHealth <= 0) {
+          // END GAME
+          const best = Math.max(localStorage.getItem(GAME_KEY), durationInMs);
+          localStorage.setItem(GAME_KEY, best);
+          document.getElementById("duration").textContent += " " + durationInMs;
+          document.getElementById("best").textContent += " " + best;
+          document.getElementById("end").parentElement.classList.remove("hide");
+        }
+        // TODO: this produces too many monsters
+        // setTimeout(() => {
+        //   makeMonsterWave();
+        // }, 500);
+      }
+      newNode.style.marginTop = newMarginTop + "px";
+    }, 1000);
     newNode.style.background = getColor();
     newNode.textContent = 1 + getRandomInt(5); // 1 to 5 inclusive
     pipe.appendChild(newNode);
   }
 };
-makeMonsterWave();
+
 // TODO: replace with particles
 const powerUpElem = document.getElementById("power-up");
 powerUpElem.addEventListener("click", () => {
@@ -130,5 +157,20 @@ const getCards = () => {
     cardsElem.appendChild(newNode);
   });
 };
-
 getCards();
+for (let button of document.getElementsByClassName("close")) {
+  button.addEventListener("click", () => {
+    button.parentElement.classList.add("hide");
+  });
+}
+document.getElementById("instruction").addEventListener("click", () => {
+  document.querySelector(".info").classList.remove("hide");
+});
+
+document.getElementById("restart").addEventListener("click", () => {
+  window.location.reload();
+});
+document.getElementById("start").addEventListener("click", (e) => {
+  e.target.parentElement.classList.add("hide");
+  makeMonsterWave();
+});
