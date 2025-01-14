@@ -8,8 +8,7 @@ const pipeElems = document.getElementsByClassName("pipes")[0].children;
 const cardsElem = document.getElementById("holder");
 const COLORS = ["red", "green", "purple", "blue"];
 const GAME_KEY = "mana-cards-best";
-// TODO: keep track of how long game has been going on
-let durationInMs = 0;
+let timestampStart;
 // return [0, max)
 const getRandomInt = (max) => {
   return Math.floor(Math.random() * max);
@@ -17,36 +16,48 @@ const getRandomInt = (max) => {
 const getColor = () => {
   return COLORS[getRandomInt(COLORS.length)];
 };
+const getIntervalID = (newNode) => {
+  const intervalID = setInterval(() => {
+    const marginTop = newNode.style.marginTop || "0px";
+    const newMarginTop =
+      parseInt(marginTop.slice(0, marginTop.length - 2), 10) + 100;
+    if (newMarginTop > 600) {
+      clearInterval(intervalID);
+      // inflict damage + remove monsters
+      const newHealth =
+        parseInt(baseHealthCountElem.textContent, 10) - newNode.textContent;
+      baseHealthCountElem.textContent = Math.max(0, newHealth);
+      if (newNode.parentElement) {
+        newNode.parentElement.removeChild(newNode);
+      }
+
+      if (newHealth <= 0) {
+        // END GAME
+        const diff = Math.abs(Math.floor(timestampStart - Date.now())) / 1000;
+        console.log(diff);
+        const best = Math.max(localStorage.getItem(GAME_KEY), diff);
+        localStorage.setItem(GAME_KEY, best);
+        document.getElementById("duration").textContent +=
+          " " + diff + " seconds";
+        document.getElementById("best").textContent += " " + best;
+        document.getElementById("end").parentElement.classList.remove("hide");
+      }
+      // TODO: this produces too many monsters
+      // setTimeout(() => {
+      //   makeMonsterWave();
+      // }, 500);
+    }
+    newNode.style.marginTop = newMarginTop + "px";
+  }, 1000);
+  return intervalID;
+};
+
 const makeMonsterWave = () => {
   for (let pipe of pipeElems) {
     const newNode = document.createElement("div");
     newNode.classList.add("monster");
-    const intervalID = setInterval(() => {
-      const marginTop = newNode.style.marginTop || "0px";
-      const newMarginTop =
-        parseInt(marginTop.slice(0, marginTop.length - 2), 10) + 100;
-      if (newMarginTop > 600) {
-        clearInterval(intervalID);
-        // inflict damage + remove monsters
-        const newHealth =
-          parseInt(baseHealthCountElem.textContent, 10) - newNode.textContent;
-        baseHealthCountElem.textContent = Math.max(0, newHealth);
-        pipe.removeChild(newNode);
-        if (newHealth <= 0) {
-          // END GAME
-          const best = Math.max(localStorage.getItem(GAME_KEY), durationInMs);
-          localStorage.setItem(GAME_KEY, best);
-          document.getElementById("duration").textContent += " " + durationInMs;
-          document.getElementById("best").textContent += " " + best;
-          document.getElementById("end").parentElement.classList.remove("hide");
-        }
-        // TODO: this produces too many monsters
-        // setTimeout(() => {
-        //   makeMonsterWave();
-        // }, 500);
-      }
-      newNode.style.marginTop = newMarginTop + "px";
-    }, 1000);
+    const intervalID = getIntervalID(newNode);
+    newNode.dataset.intervalID = intervalID;
     newNode.style.background = getColor();
     newNode.textContent = 1 + getRandomInt(5); // 1 to 5 inclusive
     pipe.appendChild(newNode);
@@ -114,6 +125,7 @@ function dragDrop(ev) {
       const trueNum =
         color === monsterChild.style.background ? power : power / 2;
       if (monsterChild.textContent <= trueNum) {
+        // TODO: also need to cancel timeout...
         ev.target.removeChild(monsterChild);
       } else {
         monsterChild.textContent -= trueNum;
@@ -173,4 +185,5 @@ document.getElementById("restart").addEventListener("click", () => {
 document.getElementById("start").addEventListener("click", (e) => {
   e.target.parentElement.classList.add("hide");
   makeMonsterWave();
+  timestampStart = Date.now();
 });
