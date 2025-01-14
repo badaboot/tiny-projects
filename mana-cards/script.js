@@ -1,14 +1,17 @@
-const MAX_POWER = 8;
-const powerCountElem = document.getElementById("powerCount");
 const MAX_HEALTH = 16;
 const baseHealthCountElem = document.getElementById("baseHealth");
 baseHealthCountElem.textContent = MAX_HEALTH;
-powerCountElem.textContent = MAX_POWER;
 const pipeElems = document.getElementsByClassName("pipes")[0].children;
 const cardsElem = document.getElementById("holder");
 const COLORS = ["red", "green", "purple", "blue"];
 const GAME_KEY = "mana-cards-best";
+const backgroundMusic = new Audio("audio/piano.mp3");
+const hitSound = new Audio("audio/chime.mp3");
+const drawCardSound = new Audio("audio/draw.mp3");
+
 let timestampStart;
+let startNextWave = false;
+let isGameEnd = false;
 // return [0, max)
 const getRandomInt = (max) => {
   return Math.floor(Math.random() * max);
@@ -16,11 +19,43 @@ const getRandomInt = (max) => {
 const getColor = () => {
   return COLORS[getRandomInt(COLORS.length)];
 };
+
+const millisToMinutesAndSeconds = (millis) => {
+  const date = new Date(millis);
+  return `${date.getMinutes()} minutes ${date.getSeconds()} seconds`;
+};
+
+const gameLoopIntervalID = setInterval(() => {
+  if (isGameEnd) endGame();
+  if (startNextWave) {
+    makeMonsterWave();
+    startNextWave = false;
+  }
+}, 1000);
+
+const endGame = () => {
+  clearInterval(gameLoopIntervalID);
+  // stop the monster wave
+  for (let pipe of pipeElems) {
+    for (let child of pipe.children) {
+      child.parentElement.removeChild(child);
+    }
+  }
+  const diff = Date.now() - timestampStart;
+  const best = Math.max(localStorage.getItem(GAME_KEY), diff);
+  localStorage.setItem(GAME_KEY, best);
+  document.getElementById("duration").textContent +=
+    " " + millisToMinutesAndSeconds(diff);
+  document.getElementById("best").textContent +=
+    " " + millisToMinutesAndSeconds(best);
+  document.getElementById("end").parentElement.classList.remove("hide");
+};
+
 const getIntervalID = (newNode) => {
   const intervalID = setInterval(() => {
     const marginTop = newNode.style.marginTop || "0px";
     const newMarginTop =
-      parseInt(marginTop.slice(0, marginTop.length - 2), 10) + 100;
+      parseInt(marginTop.slice(0, marginTop.length - 2), 10) + 50;
     if (newMarginTop > 600) {
       clearInterval(intervalID);
       // inflict damage + remove monsters
@@ -33,19 +68,11 @@ const getIntervalID = (newNode) => {
 
       if (newHealth <= 0) {
         // END GAME
-        const diff = Math.abs(Math.floor(timestampStart - Date.now())) / 1000;
-        console.log(diff);
-        const best = Math.max(localStorage.getItem(GAME_KEY), diff);
-        localStorage.setItem(GAME_KEY, best);
-        document.getElementById("duration").textContent +=
-          " " + diff + " seconds";
-        document.getElementById("best").textContent += " " + best;
-        document.getElementById("end").parentElement.classList.remove("hide");
+        isGameEnd = true;
+        startNextWave = false;
+      } else {
+        startNextWave = true;
       }
-      // TODO: this produces too many monsters
-      // setTimeout(() => {
-      //   makeMonsterWave();
-      // }, 500);
     }
     newNode.style.marginTop = newMarginTop + "px";
   }, 1000);
@@ -64,12 +91,6 @@ const makeMonsterWave = () => {
   }
 };
 
-// TODO: turn on and off intermittently
-const powerUpElem = document.getElementById("power-up");
-powerUpElem.addEventListener("click", () => {
-  powerCountElem.textContent = parseInt(powerCountElem.textContent, 10) + 1;
-});
-
 let selectedCardId;
 function dragStart(ev) {
   ev.dataTransfer.effectAllowed = "move";
@@ -87,22 +108,15 @@ const removeClassFromAllElems = (className) => {
 const getSelectedCard = () => {
   if (selectedCardId !== undefined) {
     const card = document.getElementById(selectedCardId);
-    return {
-      power: parseInt(card.textContent, 10),
-      color: card.style.background,
-    };
+    return card.style.background;
   }
-  return 0;
+  return "";
 };
+
 function dragEnter(ev) {
   removeClassFromAllElems("active");
-  removeClassFromAllElems("disallow");
-  const { power } = getSelectedCard();
   if (ev.target.classList.contains("dropIt")) {
-    const remainingPower = parseInt(powerCountElem.textContent, 10);
-    let isActive = remainingPower > 0;
-    if (remainingPower < power) isActive = false;
-    ev.target.classList.add(isActive ? "active" : "disallow");
+    ev.target.classList.add("active");
   }
   ev.stopPropagation();
   return false;
@@ -114,28 +128,35 @@ function dragOver(ev) {
 
 // function defined for when drop element on target
 function dragDrop(ev) {
-  const { power, color } = getSelectedCard();
   if (ev.target.classList.contains("dropIt")) {
     ev.target.classList.remove("active");
-    ev.target.classList.remove("disallow");
     const monsterChild = ev.target.children.length
       ? ev.target.children[0]
       : undefined;
+
     if (monsterChild) {
-      const trueNum =
-        color === monsterChild.style.background ? power : power / 2;
-      if (monsterChild.textContent <= trueNum) {
-        // TODO: also need to cancel timeout...
+      hitSound.play();
+      const color = getSelectedCard();
+      cardsElem.removeChild(document.getElementById(selectedCardId));
+      // destroy it
+      if (monsterChild.style.background === color) {
+        clearInterval(monsterChild.dataset.intervalID);
         ev.target.removeChild(monsterChild);
       } else {
-        monsterChild.textContent -= trueNum;
+        // half it
+        monsterChild.textContent = parseInt(monsterChild.textContent, 10) / 2;
+      }
+      // if that was the last card, look at the score
+      // if score === 0 end game, else start another wave
+      if (document.getElementsByClassName("monster").length === 0) {
+        if (baseHealthCountElem === 0) {
+          isGameEnd = true;
+          endGame();
+        } else {
+          makeMonsterWave();
+        }
       }
     }
-  }
-  const res = parseInt(powerCountElem.textContent - power, 10);
-  if (res >= 0) {
-    powerCountElem.textContent = res;
-    cardsElem.removeChild(document.getElementById(selectedCardId));
   }
   if (cardsElem.children.length === 0) {
     getCards();
@@ -146,30 +167,21 @@ function dragDrop(ev) {
 }
 
 // cards logic
-// TODO: randomize cards
 const getCards = () => {
-  const cards = [
-    { color: "blue", power: 1 },
-    { color: "purple", power: 1 },
-    { color: "purple", power: 2 },
-    { color: "purple", power: 3 },
-    { color: "green", power: 1 },
-    { color: "red", power: 1 },
-  ];
+  drawCardSound.play();
+  const cards = new Array(6).fill(0).map(() => getColor());
 
-  cards.forEach(({ color, power }, index) => {
+  cards.forEach((color, index) => {
     const newNode = document.createElement("div");
     newNode.classList.add("drag");
     newNode.id = "box" + index;
     newNode.draggable = true;
     newNode.ondragstart = dragStart;
 
-    newNode.textContent = power;
     newNode.style.background = color;
     cardsElem.appendChild(newNode);
   });
 };
-getCards();
 for (let button of document.getElementsByClassName("close")) {
   button.addEventListener("click", () => {
     button.parentElement.classList.add("hide");
@@ -184,6 +196,9 @@ document.getElementById("restart").addEventListener("click", () => {
 });
 document.getElementById("start").addEventListener("click", (e) => {
   e.target.parentElement.classList.add("hide");
+  getCards();
   makeMonsterWave();
   timestampStart = Date.now();
+  backgroundMusic.play();
+  backgroundMusic.loop = true;
 });

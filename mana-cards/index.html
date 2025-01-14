@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Base defender</title>
+    <title>Government simulator</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
@@ -17,22 +17,28 @@
     <div class="start overlay">
       <button id="start">Start</button>
       <button id="instruction">Instruction</button>
+      <p class="credit">
+        Credit: Background music from
+        <a
+          href="https://www.zapsplat.com/music/cinematic-trailer-music-piano-dream-a-dreamy-haunting-piano-piece-with-a-mysterious-feel/"
+          >Gregor Quendel</a
+        >
+      </p>
     </div>
     <div class="info hide overlay">
       <h2>Instruction</h2>
 
-      <p>Defend your base from the bomb-laden invaders.</p>
-      <p>Match cards to the lane to <b>deflect bombs</b>.</p>
+      <p>You're a government. You pay bills with cards.</p>
       <p>
-        On <b>color match</b>: deflect bomb by full points on card. Else half of
-        points apply.
+        Match bills with cards of the right color for full-payment, else only
+        half of bill is paid.
       </p>
-      <p>You need power to use cards. Use <b>POWER UP</b> to increase power.</p>
+      <p>Unpaid bills decrease your popularity. When it hits 0 you die.</p>
       <p>Good luck!</p>
       <button class="close">Close</button>
     </div>
     <section id="html5-drag" class="container">
-      <h1>Base defender</h1>
+      <h1>Government simulator</h1>
       <div class="flex pipes">
         <article
           class="dropIt"
@@ -71,9 +77,10 @@
           ondragover="return dragOver(event)"
         ></article>
       </div>
-      <button id="power-up">Power up</button>
-      <div>Power: <span id="powerCount"></span></div>
-      <div>Health: <span id="baseHealth"></span></div>
+      <div>
+        Popularity:
+        <p id="baseHealth"></p>
+      </div>
 
       <article
         id="holder"

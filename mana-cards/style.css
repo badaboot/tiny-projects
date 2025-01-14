@@ -4,9 +4,20 @@ body {
   margin: 0;
   font-family: sans-serif;
   list-style-position: inside;
+  overflow: hidden;
+  background-color: #333;
+}
+.credit {
+  margin-top: 30%;
+}
+.overlay a {
+  color: white;
 }
 h1 {
+  margin: 4px 0;
+  font-size: 40px;
   text-align: center;
+  color: gold;
 }
 button:hover {
   cursor: pointer;
@@ -15,7 +26,13 @@ button:hover {
   margin-top: 10%;
   display: inline-block;
 }
-.credit,
+div:has(#baseHealth) {
+  color: gold;
+}
+#baseHealth {
+  margin: 0;
+  font-size: 60px;
+}
 .info,
 .start {
   color: white;
@@ -25,12 +42,15 @@ button:hover {
   width: 240px;
   font-size: 48px;
 }
-
+#popularity {
+  margin: 4px 0 0 0;
+  font-size: 60px;
+}
 #end {
   text-align: center;
   border-radius: 12px;
-  width: 320px;
-  height: 180px;
+  width: 420px;
+  height: 220px;
   margin: 0 auto;
   border: 20px solid goldenrod;
   padding-bottom: 20px;
@@ -81,14 +101,11 @@ button:hover {
   margin: 0 auto;
   padding-top: 5px;
   width: 200px;
-  border: 1px solid red;
+  border: 1px solid #333;
 }
 #holder {
   width: 200px;
   margin: 0 auto;
-}
-.dropIt.disallow {
-  border: 20px solid red;
 }
 .dropIt.active {
   border: 20px solid yellow;
