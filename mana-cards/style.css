@@ -5,7 +5,7 @@ body {
   font-family: sans-serif;
   list-style-position: inside;
   overflow: hidden;
-  background-color: #333;
+  background-color: #000;
 }
 .credit {
   margin-top: 30%;
@@ -101,14 +101,15 @@ div:has(#baseHealth) {
   margin: 0 auto;
   padding-top: 5px;
   width: 200px;
-  border: 1px solid #333;
+  border: 1px solid #000;
 }
 #holder {
   width: 200px;
   margin: 0 auto;
 }
 .dropIt.active {
-  border: 20px solid yellow;
+  border-right: 20px solid yellow;
+  border-left: 20px solid yellow;
 }
 .monster,
 #holder div {

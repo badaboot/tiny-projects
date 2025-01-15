@@ -1,11 +1,11 @@
-const MAX_HEALTH = 16;
+const MAX_HEALTH = 3;
 const baseHealthCountElem = document.getElementById("baseHealth");
 baseHealthCountElem.textContent = MAX_HEALTH;
 const pipeElems = document.getElementsByClassName("pipes")[0].children;
 const cardsElem = document.getElementById("holder");
 const COLORS = ["red", "green", "purple", "blue"];
 const GAME_KEY = "mana-cards-best";
-const backgroundMusic = new Audio("audio/piano.mp3");
+const backgroundMusic = new Audio("audio/celesta.mp3");
 const hitSound = new Audio("audio/chime.mp3");
 const drawCardSound = new Audio("audio/draw.mp3");
 
@@ -113,21 +113,25 @@ const getSelectedCard = () => {
   return "";
 };
 
-function dragEnter(ev) {
+document.addEventListener("dragenter", (ev) => {
   removeClassFromAllElems("active");
   if (ev.target.classList.contains("dropIt")) {
     ev.target.classList.add("active");
   }
   ev.stopPropagation();
   return false;
-}
+});
 
-function dragOver(ev) {
+document.addEventListener("dragover", (ev) => {
   ev.preventDefault();
-}
+});
 
-// function defined for when drop element on target
-function dragDrop(ev) {
+const removeMonsterCellAndClearTimer = (cell) => {
+  clearInterval(cell.dataset.intervalID);
+  cell.parentElement.removeChild(cell);
+};
+
+document.addEventListener("drop", (ev) => {
   if (ev.target.classList.contains("dropIt")) {
     ev.target.classList.remove("active");
     const monsterChild = ev.target.children.length
@@ -140,11 +144,12 @@ function dragDrop(ev) {
       cardsElem.removeChild(document.getElementById(selectedCardId));
       // destroy it
       if (monsterChild.style.background === color) {
-        clearInterval(monsterChild.dataset.intervalID);
-        ev.target.removeChild(monsterChild);
+        removeMonsterCellAndClearTimer(monsterChild);
       } else {
         // half it
-        monsterChild.textContent = parseInt(monsterChild.textContent, 10) / 2;
+        const res = Math.floor(parseInt(monsterChild.textContent, 10) / 2);
+        if (res === 0) removeMonsterCellAndClearTimer(monsterChild);
+        else monsterChild.textContent = res;
       }
       // if that was the last card, look at the score
       // if score === 0 end game, else start another wave
@@ -164,7 +169,7 @@ function dragDrop(ev) {
   selectedCardId = undefined;
   ev.stopPropagation();
   return false;
-}
+});
 
 // cards logic
 const getCards = () => {
