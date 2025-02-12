@@ -8,11 +8,21 @@
   </head>
   <body>
     <div class="container">
-      <h1>Bartending in Hell</h1>
-      <div id="guest_name"></div>
+      <div class="info hide overlay">
+        <h2>Instruction</h2>
+        <p>You work at a a bar in Hell. You need $10,000 to retire.</p>
+        <p>You can convert money to gold and vice-versa.</p>
+        <p>Your guest's payment is rarely good.</p>
+        <button class="close">Close</button>
+      </div>
+      <h1>Bar in Hell <button class="showInfo">ⓘ</button></h1>
+
+      <div>Guest: <span id="guest_name"></span></div>
       <div id="drink"></div>
-      <div id="points"></div>
+      <div>Earnings: $<span id="points"></span></div>
       <button id="makeDrink">Make drink</button>
+      <!-- convert money to gold, or gold to money -->
+      <button id="action">Actions</button>
     </div>
     <script src="script.js"></script>
   </body>
