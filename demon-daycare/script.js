@@ -1,58 +1,74 @@
-const getRandomInt = (max) => {
-  return Math.floor(Math.random() * max);
+// includes min, max
+const getRandomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 };
+
 const answerElem = document.getElementById("answer");
 const resElem = document.getElementById("result");
-const guessInput = document.querySelector('input[name="guess"]');
+let guessInput = document.querySelector('input[name="guess"]');
 let waitIntervalId = "";
 let guessIntervalId = "";
+let answer = 0;
+
 document.getElementById("stop").addEventListener("click", () => {
   clearInterval(waitIntervalId);
   clearInterval(guessIntervalId);
 });
-let isAnswering = true;
+// TODO: change this to MODE so it's one of ['ANSWER', 'WAIT']
+let MODE = "ANSWER";
 const getIntervalId = (secondsRemaining, callback) => {
   const intervalId = setInterval(function () {
-    numSeconds.textContent = isAnswering
-      ? secondsRemaining + " seconds to guess"
-      : secondsRemaining + " wait time";
+    numSeconds.textContent =
+      MODE === "ANSWER"
+        ? secondsRemaining + " seconds to guess"
+        : secondsRemaining + " seconds wait";
     secondsRemaining--;
 
     if (secondsRemaining < 0) {
       clearInterval(intervalId);
+      if (MODE === "ANSWER") {
+        answerIntervalId = "";
+      } else {
+        guessIntervalId = "";
+      }
       if (callback) callback();
     }
   }, 1000); // Update every 1000ms (1 second)
   return intervalId;
 };
-
-const startGame = () => {
-  isAnswering = true;
-  answerIntervalId = getIntervalId(10, () => {
-    answerElem.textContent = "Answer was " + answer;
-  });
-
-  // 0 to 4
-  let answer = getRandomInt(5);
-  guessInput.value = "";
+const reset = () => {
   answerElem.textContent = "";
   resElem.textContent = "";
-  guessInput.addEventListener("input", (e) => {
-    const guess = e.target.value;
-    console.log(guess, answer);
-    if (parseInt(guess, 10) === answer) {
-      resElem.textContent = "Right";
-      clearInterval(answerIntervalId);
-      // backoff for 5 seconds before start again
-      isAnswering = false;
-      waitIntervalId = getIntervalId(4, () => {
-        startGame();
-      });
-    } else {
-      resElem.textContent = "Wrong";
-    }
+  guessInput.value = "";
+  guessInput.disabled = false;
+  MODE = "ANSWER";
+};
+const startGame = () => {
+  reset();
+  answer = getRandomInt(0, 4);
+  answerIntervalId = getIntervalId(8, () => {
+    numSeconds.textContent = "";
+    answerElem.textContent = "Answer was " + answer;
   });
 };
+
+guessInput.addEventListener("input", (e) => {
+  const guess = e.target.value;
+  if (parseInt(guess, 10) === answer) {
+    resElem.textContent = "Right";
+    clearInterval(answerIntervalId);
+    answerIntervalId = "";
+    // backoff before start again
+    e.target.disabled = true;
+    MODE = "WAIT";
+    // wait between 2 to 4 seconds
+    waitIntervalId = getIntervalId(getRandomInt(2, 4), () => {
+      startGame();
+    });
+  } else {
+    resElem.textContent = "Wrong";
+  }
+});
 
 document.getElementById("start").addEventListener("click", () => {
   startGame();
