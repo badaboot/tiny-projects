@@ -91,26 +91,12 @@ h2 {
 .end .flex {
   justify-content: space-around;
 }
-.opponent.flex,
-.player.flex {
-  height: 120px;
-}
-.occupied::before {
-  content: "🐱";
-}
 .flex {
   display: flex;
 }
 .disable {
   pointer-events: none;
   background-color: lightgray;
-}
-.fade-in {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 2s;
 }
 /* face animation */
 .face-container {

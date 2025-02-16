@@ -11,6 +11,7 @@
       <div id="end">
         <p id="duration">Duration:</p>
         <p id="best">Your best:</p>
+        <!-- TODO: You're attempted X times -->
         <button class="start">Restart</button>
       </div>
     </div>
@@ -30,15 +31,15 @@
       <h1>Demon daycare <button class="showInfo">ⓘ</button></h1>
       <p>Select a toy to appease the demon.</p>
       <button class="start">Start</button>
-      <div class="game">
+      <div class="game hide">
         <div class="face-container">
+          <!-- TODO: on explosion swap this with a dead demon baby -->
           <span class="face">
             <span class="eye left"></span>
             <span class="eye right"></span>
             <span class="mouth"></span>
           </span>
         </div>
-        <!-- <button id="stop">Stop</button> -->
 
         <div id="numSeconds"></div>
         <div class="hidden">
@@ -55,5 +56,14 @@
       </div>
     </div>
     <script src="script.js"></script>
+
+    <audio
+      src="./audio/creepy-bass.mp3"
+      type="audio/mpeg"
+      autoplay
+      loop
+    ></audio>
+    <audio id="giggle" src="./audio/baby-giggle.mp3" type="audio/mpeg"></audio>
+    <audio id="explosion" src="./audio/explosion.mp3" type="audio/mpeg"></audio>
   </body>
 </html>

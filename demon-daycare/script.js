@@ -6,6 +6,7 @@ const millisToMinutesAndSeconds = (millis) => {
   const date = new Date(millis);
   return `${date.getMinutes()} minutes ${date.getSeconds()} seconds`;
 };
+const audio = document.getElementsByTagName("audio")[0];
 let timestampStart;
 const GAME_KEY = "duration-best";
 const holderElem = document.getElementById("holder");
@@ -44,12 +45,9 @@ const endGame = () => {
   document.getElementById("best").textContent +=
     " " + millisToMinutesAndSeconds(best);
   document.getElementById;
+  document.getElementsByTagName("audio")[0].pause();
+  document.getElementById("explosion").play();
 };
-// stopButton.addEventListener("click", () => {
-//   reset();
-//   endGame();
-//   endElem.classList.remove("hide");
-// });
 
 // either 'ANSWER' or 'WAIT
 let MODE = "ANSWER";
@@ -83,6 +81,7 @@ const reset = () => {
 };
 const startGame = () => {
   reset();
+  document.getElementsByTagName("audio")[0].play();
   faceElem.classList.add("angry");
   answer = getRandomInt(0, 4);
   answerIntervalId = getIntervalId(8, () => {
@@ -101,6 +100,8 @@ for (let i = 0; i < toys.length; i++) {
       clearInterval(answerIntervalId);
       answerIntervalId = "";
       // backoff before start again
+      document.getElementsByTagName("audio")[0].pause();
+      document.getElementById("giggle").play();
       toys[i].parentElement.classList.add("disable");
       faceElem.classList.remove("angry");
       MODE = "WAIT";
@@ -119,7 +120,7 @@ for (let startButton of startButtons) {
     timestampStart = Date.now();
     startGame();
 
-    // document.getElementsByClassName("game")[0].classList.remove("hide");
+    document.getElementsByClassName("game")[0].classList.remove("hide");
     endElem.classList.add("hide");
     startButton.classList.add("hide");
   });
