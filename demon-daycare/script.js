@@ -8,6 +8,7 @@ const millisToMinutesAndSeconds = (millis) => {
 };
 let timestampStart;
 const GAME_KEY = "duration-best";
+const holderElem = document.getElementById("holder");
 const answerElem = document.getElementById("answer");
 const faceElem = document.getElementsByClassName("face-container")[0];
 const endElem = document.getElementsByClassName("end")[0];
@@ -16,7 +17,6 @@ const infoElem = document.getElementsByClassName("info")[0];
 const stopButton = document.getElementById("stop");
 const startButtons = document.getElementsByClassName("start");
 const resElem = document.getElementById("result");
-let guessInput = document.querySelector('input[name="guess"]');
 let waitIntervalId = "";
 let answerIntervalId = "";
 let answer = 0;
@@ -74,13 +74,12 @@ const getIntervalId = (secondsRemaining, callback) => {
 const reset = () => {
   answerElem.textContent = "";
   resElem.textContent = "";
-  guessInput.value = "";
-  guessInput.disabled = false;
   MODE = "ANSWER";
   clearInterval(waitIntervalId);
   clearInterval(answerIntervalId);
   waitIntervalId = "";
   answerIntervalId = "";
+  holderElem.classList.remove("disable");
 };
 const startGame = () => {
   reset();
@@ -94,31 +93,33 @@ const startGame = () => {
   });
 };
 
-guessInput.addEventListener("input", (e) => {
-  const guess = e.target.value;
-  if (parseInt(guess, 10) === answer) {
-    resElem.textContent = "Right";
-    clearInterval(answerIntervalId);
-    answerIntervalId = "";
-    // backoff before start again
-    e.target.disabled = true;
-    faceElem.classList.remove("angry");
-    MODE = "WAIT";
-    // wait between 2 to 4 seconds
-    waitIntervalId = getIntervalId(getRandomInt(2, 4), () => {
-      startGame();
-    });
-  } else {
-    resElem.textContent = "Wrong";
-  }
-});
+const toys = holderElem.children;
+for (let i = 0; i < toys.length; i++) {
+  toys[i].addEventListener("click", () => {
+    if (i === answer) {
+      resElem.textContent = "Right";
+      clearInterval(answerIntervalId);
+      answerIntervalId = "";
+      // backoff before start again
+      toys[i].parentElement.classList.add("disable");
+      faceElem.classList.remove("angry");
+      MODE = "WAIT";
+      // wait between 2 to 4 seconds
+      waitIntervalId = getIntervalId(getRandomInt(2, 4), () => {
+        startGame();
+      });
+    } else {
+      resElem.textContent = "Wrong";
+    }
+  });
+}
 
 for (let startButton of startButtons) {
   startButton.addEventListener("click", () => {
     timestampStart = Date.now();
     startGame();
 
-    document.getElementsByClassName("game")[0].classList.remove("hide");
+    // document.getElementsByClassName("game")[0].classList.remove("hide");
     endElem.classList.add("hide");
     startButton.classList.add("hide");
   });
