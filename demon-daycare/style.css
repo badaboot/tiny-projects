@@ -1,8 +1,18 @@
+@font-face {
+  font-family: "Unutterable";
+  src: url("fonts/Unutterable-Regular.ttf");
+}
+
 body {
   padding: 0;
   margin: 0;
-  font-family: sans-serif;
+  font-family: serif;
   list-style-position: inside;
+  background-color: black;
+  color: red;
+  font-family: "Unutterable";
+  /* this font is a little too squished */
+  word-spacing: 2px;
 }
 p {
   margin: 0;
@@ -12,24 +22,19 @@ p {
 .container {
   margin: 0 auto;
   max-width: 500px;
-  background-color: white;
   padding: 20px;
   font-size: 40px;
 }
 h1 {
   margin: 0;
   text-align: center;
-  font-size: 52px;
+  font-size: 48px;
 }
 .credit li {
   margin: 4px 0;
 }
-.credit a {
-  color: white;
-}
 .credit,
 .info {
-  color: white;
   text-align: center;
 }
 .overlay {
@@ -42,15 +47,12 @@ h1 {
   height: 100%;
 }
 button {
+  font-family: "Unutterable";
   border-radius: 12px;
   font-size: 32px;
 }
-.restart {
-  margin: 20px 0 0 0;
-  width: 260px;
-}
 .start {
-  width: 160px;
+  width: 180px;
 }
 .start {
   position: absolute;
@@ -58,12 +60,6 @@ button {
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 200;
-}
-h3 {
-  width: 160px;
-  padding: 4px;
-  color: white;
-  margin: 10px 0;
 }
 .hide {
   display: none;
@@ -77,7 +73,6 @@ h2 {
   width: 400px;
   height: 280px;
   margin: 0 auto;
-  color: white;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -96,7 +91,7 @@ h2 {
 }
 .disable {
   pointer-events: none;
-  background-color: lightgray;
+  background-color: darkgray;
 }
 /* face animation */
 .face-container {
@@ -109,7 +104,7 @@ h2 {
   width: 8.25rem;
   height: 8.25rem;
   border-radius: 50%;
-  background: yellow;
+  background: white;
   box-shadow: inset 2px -4px 18px #04275a;
 }
 .face-container.angry {
@@ -172,8 +167,12 @@ h2 {
     transform: scale(1, 0);
   }
 }
+#holder div:hover {
+  cursor: pointer;
+}
 #holder div {
   text-align: center;
+  color: black;
   font-size: 20px;
   background: #fff;
   position: relative;

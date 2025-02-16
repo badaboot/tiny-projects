@@ -96,7 +96,6 @@ const toys = holderElem.children;
 for (let i = 0; i < toys.length; i++) {
   toys[i].addEventListener("click", () => {
     if (i === answer) {
-      resElem.textContent = "Right";
       clearInterval(answerIntervalId);
       answerIntervalId = "";
       // backoff before start again
@@ -109,8 +108,6 @@ for (let i = 0; i < toys.length; i++) {
       waitIntervalId = getIntervalId(getRandomInt(2, 4), () => {
         startGame();
       });
-    } else {
-      resElem.textContent = "Wrong";
     }
   });
 }
