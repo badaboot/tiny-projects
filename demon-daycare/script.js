@@ -9,6 +9,7 @@ const millisToMinutesAndSeconds = (millis) => {
 let timestampStart;
 const GAME_KEY = "duration-best";
 const answerElem = document.getElementById("answer");
+const faceElem = document.getElementsByClassName("face-container")[0];
 const endElem = document.getElementsByClassName("end")[0];
 const containerElem = document.getElementsByClassName("container")[0];
 const infoElem = document.getElementsByClassName("info")[0];
@@ -44,20 +45,18 @@ const endGame = () => {
     " " + millisToMinutesAndSeconds(best);
   document.getElementById;
 };
-stopButton.addEventListener("click", () => {
-  reset();
-  endGame();
-  endElem.classList.remove("hide");
-});
+// stopButton.addEventListener("click", () => {
+//   reset();
+//   endGame();
+//   endElem.classList.remove("hide");
+// });
 
 // either 'ANSWER' or 'WAIT
 let MODE = "ANSWER";
 const getIntervalId = (secondsRemaining, callback) => {
   const intervalId = setInterval(function () {
     numSeconds.textContent =
-      MODE === "ANSWER"
-        ? secondsRemaining + " seconds to guess"
-        : secondsRemaining + " seconds wait";
+      MODE === "ANSWER" ? secondsRemaining + " seconds left" : "";
     secondsRemaining--;
 
     if (secondsRemaining < 0) {
@@ -85,6 +84,7 @@ const reset = () => {
 };
 const startGame = () => {
   reset();
+  faceElem.classList.add("angry");
   answer = getRandomInt(0, 4);
   answerIntervalId = getIntervalId(8, () => {
     numSeconds.textContent = "";
@@ -102,6 +102,7 @@ guessInput.addEventListener("input", (e) => {
     answerIntervalId = "";
     // backoff before start again
     e.target.disabled = true;
+    faceElem.classList.remove("angry");
     MODE = "WAIT";
     // wait between 2 to 4 seconds
     waitIntervalId = getIntervalId(getRandomInt(2, 4), () => {
