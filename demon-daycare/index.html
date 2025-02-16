@@ -7,14 +7,38 @@
     <title>Demon daycare</title>
   </head>
   <body>
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
+    <div class="hide end overlay">
+      <div id="end">
+        <p id="duration">Duration:</p>
+        <p id="best">Your best:</p>
+        <button class="start">Restart</button>
+      </div>
+    </div>
+    <div class="container">
+      <div class="hide info overlay">
+        <h2>Instruction</h2>
 
-    <div id="numSeconds"></div>
-    <div class="hidden">
-      <input name="guess" />
-      <p id="result"></p>
-      <p id="answer"></p>
+        <p>You're babysitting baby demons.</p>
+        <p>They combust from emotional stress.</p>
+        <p>You need to guess what toy they desire.</p>
+        <p>Click on a toy to select it.</p>
+        <p>It can appease the demon temporarily.</p>
+
+        <p>Good luck!</p>
+        <button class="close">Close</button>
+      </div>
+      <h1>Demon daycare <button class="showInfo">ⓘ</button></h1>
+      <button class="start">Start</button>
+      <div class="game hide">
+        <button id="stop">Stop</button>
+
+        <div id="numSeconds"></div>
+        <div class="hidden">
+          <input name="guess" />
+          <p id="result"></p>
+          <p id="answer"></p>
+        </div>
+      </div>
     </div>
     <script src="script.js"></script>
   </body>

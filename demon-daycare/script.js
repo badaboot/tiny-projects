@@ -2,19 +2,55 @@
 const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
-
+const millisToMinutesAndSeconds = (millis) => {
+  const date = new Date(millis);
+  return `${date.getMinutes()} minutes ${date.getSeconds()} seconds`;
+};
+let timestampStart;
+const GAME_KEY = "duration-best";
 const answerElem = document.getElementById("answer");
+const endElem = document.getElementsByClassName("end")[0];
+const containerElem = document.getElementsByClassName("container")[0];
+const infoElem = document.getElementsByClassName("info")[0];
+const stopButton = document.getElementById("stop");
+const startButtons = document.getElementsByClassName("start");
 const resElem = document.getElementById("result");
 let guessInput = document.querySelector('input[name="guess"]');
 let waitIntervalId = "";
-let guessIntervalId = "";
+let answerIntervalId = "";
 let answer = 0;
 
-document.getElementById("stop").addEventListener("click", () => {
-  clearInterval(waitIntervalId);
-  clearInterval(guessIntervalId);
+document.getElementsByClassName("showInfo")[0].addEventListener("click", () => {
+  infoElem.classList.remove("hide");
 });
-// TODO: change this to MODE so it's one of ['ANSWER', 'WAIT']
+for (let button of document.getElementsByClassName("close")) {
+  button.addEventListener("click", (e) => {
+    if (e.target.parentElement.classList.contains("info")) {
+      infoElem.classList.add("hide");
+    }
+    // else {
+    //   creditElem.classList.add("hide");
+    // }
+  });
+}
+
+const endGame = () => {
+  const diff = Date.now() - timestampStart;
+  const best = Math.max(localStorage.getItem(GAME_KEY), diff);
+  localStorage.setItem(GAME_KEY, best);
+  document.getElementById("duration").textContent +=
+    " " + millisToMinutesAndSeconds(diff);
+  document.getElementById("best").textContent +=
+    " " + millisToMinutesAndSeconds(best);
+  document.getElementById;
+};
+stopButton.addEventListener("click", () => {
+  reset();
+  endGame();
+  endElem.classList.remove("hide");
+});
+
+// either 'ANSWER' or 'WAIT
 let MODE = "ANSWER";
 const getIntervalId = (secondsRemaining, callback) => {
   const intervalId = setInterval(function () {
@@ -29,7 +65,7 @@ const getIntervalId = (secondsRemaining, callback) => {
       if (MODE === "ANSWER") {
         answerIntervalId = "";
       } else {
-        guessIntervalId = "";
+        answerIntervalId = "";
       }
       if (callback) callback();
     }
@@ -42,13 +78,19 @@ const reset = () => {
   guessInput.value = "";
   guessInput.disabled = false;
   MODE = "ANSWER";
+  clearInterval(waitIntervalId);
+  clearInterval(answerIntervalId);
+  waitIntervalId = "";
+  answerIntervalId = "";
 };
 const startGame = () => {
   reset();
   answer = getRandomInt(0, 4);
   answerIntervalId = getIntervalId(8, () => {
     numSeconds.textContent = "";
+    endElem.classList.remove("hide");
     answerElem.textContent = "Answer was " + answer;
+    endGame();
   });
 };
 
@@ -70,6 +112,13 @@ guessInput.addEventListener("input", (e) => {
   }
 });
 
-document.getElementById("start").addEventListener("click", () => {
-  startGame();
-});
+for (let startButton of startButtons) {
+  startButton.addEventListener("click", () => {
+    timestampStart = Date.now();
+    startGame();
+
+    document.getElementsByClassName("game")[0].classList.remove("hide");
+    endElem.classList.add("hide");
+    startButton.classList.add("hide");
+  });
+}
