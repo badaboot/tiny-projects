@@ -10,7 +10,6 @@ body {
   font-family: "Poppins", sans-serif;
   align-items: center;
   justify-content: center;
-  background-color: #ade5f9;
   min-height: 100vh;
 }
 .container {
@@ -35,9 +34,9 @@ ul {
 }
 
 .card {
+  background-color: lightcyan;
   padding: 2.5rem 2rem;
   border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.5);
   max-width: 500px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
   margin: 1rem;
