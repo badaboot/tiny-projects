@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>Itsy bitsy spider</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>ITSY BITSY SPIDER</h1>
+      <p>Can you climb to the top or will the rain wash you out?</p>
+      <button id="rollDice">Climb</button>
+      <div id="imageContainer">
+        <div id="spider"></div>
+        <img src="itsy-bitsy-spider.jpg" />
+      </div>
+      <div>
+        <button class="hide" id="replay">You won! Play again</button>
+      </div>
+
+      <details>
+        <summary>Credits</summary>
+        Game instructions + image from
+        <a href="https://tallywinkle.itch.io/itsy-bitsy-spider">Tally</a>
+        ,
+        <a
+          href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=6120"
+          >win</a
+        >
+        +
+        <a
+          href="https://pixabay.com/users/neha_chaudhari-46547004/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=288559"
+          >water</a
+        >
+        sfx by Pixabay.
+        <a
+          href="https://www.zapsplat.com/music/comfort-blanket-a-fun-light-hearted-carefree-happy-royalty-free-music-instrumental-featuring-a-chirpy-glockenspiel-melody-piano-strings-and-light-percussive-rhythm/"
+          >Background music</a
+        >
+        from zapsplat. Game dev by badaboot
+      </details>
+    </div>
+    <audio src="./audio/comfort.mp3" type="audio/mpeg" autoplay loop></audio>
+    <script src="script.js"></script>
+  </body>
+</html>
