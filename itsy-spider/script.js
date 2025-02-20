@@ -23,11 +23,15 @@ rollButton.addEventListener("click", () => {
   if (res >= height) {
     height += 1;
     imageElem.classList.remove("rain");
+    spiderElem.classList.add("happy");
+    spiderElem.classList.remove("sad");
     hitSound.play();
   } else {
     // rain washes you down
     height = Math.max(1, height - 2);
     imageElem.classList.add("rain");
+    spiderElem.classList.remove("happy");
+    spiderElem.classList.add("sad");
     missSound.play();
   }
   spiderElem.style.top = `${topPos[height - 1]}px`;

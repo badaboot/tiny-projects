@@ -14,6 +14,14 @@ body {
   text-align: center;
   border-radius: 12px;
 }
+.sad#spider {
+  background: url("img/sad.png");
+  background-size: 42px;
+}
+.happy#spider {
+  background: url("img/happy.png");
+  background-size: 43px;
+}
 p {
   margin: 8px 0;
   padding: 0;
@@ -28,7 +36,6 @@ details {
 }
 #spider {
   z-index: 10;
-  background-color: red;
   width: 36px;
   height: 36px;
   border-radius: 12px;
