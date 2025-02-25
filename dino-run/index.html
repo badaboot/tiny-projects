@@ -14,54 +14,93 @@
         <button id="restart">Play again</button>
       </div>
       <div id="gameStatus">
-        <fieldset>
-          <legend>Pick your dino</legend>
-          <div>
-            <input type="radio" id="huey" name="drone" value="huey" checked />
-            <label for="huey">T-Wrecks</label>
-          </div>
-
-          <div>
-            <input type="radio" id="dewey" name="drone" value="dewey" />
-            <label for="dewey">Tankylosaurus</label>
-          </div>
-
-          <div>
-            <input type="radio" id="louie" name="drone" value="louie" />
-            <label for="louie">Velocityraptor</label>
-          </div>
-        </fieldset>
-        <h1>Race to the finish line.</h1>
+        <h1>Race 🦖 to the finish line.</h1>
         <h3>Current turn:</h3>
-        <p>Player 1: You</p>
-        <p>Player 2: Your opponent</p>
-        <button id="roll">Roll dice</button>
-        <p id="result"></p>
+        <p>Player 1: You 🦖</p>
+        <p>Player 2: Your opponent 🦕</p>
+        <div class="hide" id="battle">
+          <p>The dino with lowest combined points returns to Start</p>
+          <button id="doBattle">Roll for battle!</button>
+          <div class="hide" id="battleDetails">
+            <p id="rexScore">T-rex:</p>
+            <p id="sauroScore">Sauropod:</p>
+            <p id="battleResult"></p>
+            <button id="continue">Continue</button>
+          </div>
+        </div>
+        <div id="normal">
+          <button id="roll">Roll die</button>
+          <div id="dice" data-side="1">
+            <div class="sides side-1">
+              <span class="dot dot-1"></span>
+            </div>
+            <div class="sides side-2">
+              <span class="dot dot-1"></span>
+              <span class="dot dot-2"></span>
+            </div>
+            <div class="sides side-3">
+              <span class="dot dot-1"></span>
+              <span class="dot dot-2"></span>
+              <span class="dot dot-3"></span>
+            </div>
+            <div class="sides side-4">
+              <span class="dot dot-1"></span>
+              <span class="dot dot-2"></span>
+              <span class="dot dot-3"></span>
+              <span class="dot dot-4"></span>
+            </div>
+            <div class="sides side-5">
+              <span class="dot dot-1"></span>
+              <span class="dot dot-2"></span>
+              <span class="dot dot-3"></span>
+              <span class="dot dot-4"></span>
+              <span class="dot dot-5"></span>
+            </div>
+            <div class="sides side-6">
+              <span class="dot dot-1"></span>
+              <span class="dot dot-2"></span>
+              <span class="dot dot-3"></span>
+              <span class="dot dot-4"></span>
+              <span class="dot dot-5"></span>
+              <span class="dot dot-6"></span>
+            </div>
+          </div>
+          <p id="result"></p>
+        </div>
       </div>
       <div class="flexbox left-col">
-        <div class="flex-item">1</div>
-        <div class="flex-item">2</div>
-        <div class="flex-item">3</div>
-        <div class="flex-item">4</div>
-        <div class="flex-item">5</div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
       </div>
       <div class="flex-bar">
-        <div class="flex-item">6</div>
-        <div class="flex-item">7</div>
-        <div class="flex-item">8</div>
-        <div class="flex-item">9</div>
-        <div class="flex-item">10</div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
       </div>
 
       <div class="flexbox right-col">
-        <div class="flex-item">11</div>
-        <div class="flex-item">12</div>
-        <div class="flex-item">13</div>
-        <div class="flex-item">14</div>
-        <div class="flex-item">15</div>
-        <div class="flex-item">16</div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+      </div>
+      <div class="flex-top">
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
+        <div class="flex-item"></div>
       </div>
     </div>
+    </div>
+    <audio src="./audio/run.mp3" type="audio/mpeg" autoplay loop></audio>
+
     <script src="script.js"></script>
   </body>
 </html>

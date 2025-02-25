@@ -1,28 +1,34 @@
 const characters = [
   {
     name: "T-Wrecks",
-    speed: 1,
-    attack: 1,
     image: "🦖",
   },
-  //   {
-  //     name: "Tankylosaurus",
-  //     speed: 0,
-  //     attack: 2,
-  //   },
-  //                     {
-  //     name: "Velocityraptor",
-  // speed: 2,
-  //   attack: 0
-  // }
+  {
+    name: "Sauropod",
+    image: "🦕",
+  },
 ];
-// TODO: implement more enemies
-const MAX_LENGTH = 16;
+const getRandomInt = (max) => {
+  return Math.floor(Math.random() * max);
+};
+// 1 to 6
+const getRollResult = () => getRandomInt(6) + 1;
+let result;
+
+const MAX_LENGTH = 20;
 const arr = new Array(MAX_LENGTH).fill("");
 const BACK_TO_START_POS = 12;
 arr[BACK_TO_START_POS] = "Tar pit. Back to start!";
 arr[0] = "Start";
-arr[15] = "Finish";
+arr[MAX_LENGTH - 1] = "Finish";
+
+const audio = document.getElementsByTagName("audio")[0];
+const ohNoSound = new Audio("audio/oh-no.mp3");
+const stompSound = new Audio("audio/stomp.mp3");
+const yaySound = new Audio("audio/yay.mp3");
+const lossSound = new Audio("audio/loss-trombone.mp3");
+const crunchSound = new Audio("audio/crunch.mp3");
+const roarSound = new Audio("audio/roar.mp3");
 
 let isOver = false;
 let isYourTurn = true;
@@ -31,42 +37,117 @@ const loopElements = document.getElementsByClassName("flex-item");
 const gameStatusElem = document.getElementById("gameStatus");
 const endElem = document.getElementById("end");
 
-rollElem.addEventListener("click", () => {
-  const numPos = getRandomInt(6) + 1; // from 1 to 6
-  document.getElementById("result").textContent = numPos;
-  //   const currentCharacter = isYourTurn ? characters[0] : characters[1];
-  const currentCharacter = characters[0];
-  const childToRemove = document.getElementById(currentCharacter.name);
-  childToRemove.parentElement.removeChild(childToRemove);
+const showOneHideOther = (showId, hideId) => {
+  document.getElementById(hideId).classList.add("hide");
+  document.getElementById(showId).classList.remove("hide");
+};
+document.getElementById("doBattle").addEventListener("click", () => {
+  showOneHideOther("battleDetails", "doBattle");
+  roarSound.play();
+  const roll1 = getRollResult();
+  const roll2 = getRollResult();
+  document.getElementById("rexScore").textContent += ` Die roll ${roll1}`;
+  document.getElementById("sauroScore").textContent += ` Die roll ${roll2}`;
+  const losingChar = roll1 > roll2 ? characters[1] : characters[0];
 
-  currentCharacter.position += numPos;
+  losingChar.position = 0;
+  document.getElementById(
+    "battleResult"
+  ).textContent = `${losingChar.name} lost`;
+  setTimeout(() => {
+    goToSquare(0, document.getElementById(losingChar.name));
+  }, 1000);
+});
+const doMove = () => {
+  rollDice();
+  setTimeout(() => {
+    const currentCharacter = isYourTurn ? characters[0] : characters[1];
+    currentCharacter.position += result;
+    goToSquare(
+      currentCharacter.position,
+      document.getElementById(currentCharacter.name)
+    );
+    if (
+      characters[0].position === characters[1].position &&
+      characters[1].position > 0
+    ) {
+      showOneHideOther("battle", "normal");
+      return;
+    }
 
-  if (currentCharacter.position >= MAX_LENGTH) {
-    endElem.classList.remove("hide");
-    document.getElementById("gameStatus").classList.add("hide");
-    endElem.children[0].textContent = `${currentCharacter.name} won`;
-    return;
+    if (currentCharacter.position >= MAX_LENGTH - 1) {
+      endElem.classList.remove("hide");
+      document.getElementById("gameStatus").classList.add("hide");
+      endElem.children[0].textContent = `${currentCharacter.name} won!`;
+      audio.pause();
+      if (currentCharacter.name === characters[0].name) {
+        yaySound.play();
+      } else {
+        lossSound.play();
+      }
+      return;
+    }
+    if (currentCharacter.position === BACK_TO_START_POS) {
+      // play sad sound
+      ohNoSound.play();
+
+      setTimeout(() => {
+        currentCharacter.position = 0;
+        goToSquare(0, document.getElementById(currentCharacter.name));
+        isYourTurn = !isYourTurn;
+        doTurn();
+      }, 2000);
+
+      return;
+    }
+    isYourTurn = !isYourTurn;
+    doTurn();
+  }, 1500);
+};
+
+const goToSquare = (position, node) => {
+  console.log(position, node);
+
+  //   console.trace();
+  if (node.id === characters[0].name) {
+    crunchSound.play();
+  } else {
+    stompSound.play();
   }
-  if (currentCharacter.position === BACK_TO_START_POS) {
-    currentCharacter.position = 0;
-  }
-  //   TODO: add animation here
-  loopElements[currentCharacter.position].appendChild(childToRemove);
+  node.parentElement.removeChild(node);
+  loopElements[Math.min(position, MAX_LENGTH - 1)].appendChild(node);
+};
+document.getElementById("continue").addEventListener("click", () => {
   isYourTurn = !isYourTurn;
   doTurn();
 });
 
 const doTurn = () => {
-  gameStatusElem.children[2].classList.remove("active");
-  gameStatusElem.children[1].classList.add("active");
-  rollElem.disabled = false;
+  showOneHideOther("normal", "battle");
+
+  if (isYourTurn) {
+    gameStatusElem.children[4].classList.remove("active");
+    gameStatusElem.children[3].classList.add("active");
+    rollElem.classList.remove("hide");
+  } else {
+    gameStatusElem.children[3].classList.remove("active");
+    gameStatusElem.children[4].classList.add("active");
+    rollElem.classList.add("hide");
+
+    setTimeout(() => {
+      doMove();
+    }, 2000);
+  }
 };
 doTurn();
-const getRandomInt = (max) => {
-  return Math.floor(Math.random() * max);
-};
+
 arr.forEach((str, index) => {
-  loopElements[index].textContent = str;
+  if (str) {
+    loopElements[index].textContent = str;
+    if (index === BACK_TO_START_POS) {
+      loopElements[index].style.background = "black";
+    }
+  }
 });
 characters.forEach((obj) => {
   obj.position = 0;
@@ -78,3 +159,22 @@ characters.forEach((obj) => {
 document.getElementById("restart").addEventListener("click", () => {
   window.location.reload();
 });
+
+const dice = document.getElementById("dice");
+const rollDice = () => {
+  result = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
+  dice.dataset.side = result;
+  dice.classList.toggle("reRoll");
+
+  //   setTimeout(function () {
+  //     outputDiv.classList.add("reveal");
+  //   }, 1500);
+};
+
+rollElem.onclick = function () {
+  if (audio.paused) {
+    audio.play();
+  }
+  console.log("roll button clicked");
+  doMove();
+};
