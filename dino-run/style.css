@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+.container {
+  width: 540px;
+  display: flex;
+  margin: 0 auto;
+}
+fieldset,
+.hide {
+  display: none;
+}
+
+#T-Wrecks {
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
+}
+#gameStatus,
+#end {
+  position: absolute;
+  left: 50%;
+  top: 200px;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.flexbox {
+  width: 200px;
+  height: 100%;
+}
+.left-col {
+  display: flex;
+  flex-direction: column;
+}
+.right-col {
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.flex-bar {
+  margin-left: -100px;
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+}
+.flex-item {
+  width: 100px;
+  height: 100px;
+  background: brown;
+  border: 1px solid white;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
