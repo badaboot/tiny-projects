@@ -16,10 +16,8 @@
       </div>
       <div id="gameStatus">
         <h1>DINO RACE</h1>
-        <h3>Current turn:</h3>
-        <p>You 🦖</p>
-        <p>Your opponent 🦕</p>
         <div class="hide" id="battle">
+          <h3>BATTLE!</h3>
           <p>The dino with lower points returns to Start</p>
           <button id="doBattle">Roll for battle!</button>
           <div class="hide" id="battleDetails">
@@ -30,6 +28,10 @@
           </div>
         </div>
         <div id="normal">
+          <h3>Current turn:</h3>
+        <p id="yourTurn">You 🦖</p>
+        <p id="opponentTurn">Your opponent 🦕</p>
+        
           <button id="roll">Roll die</button>
           <div id="dice" data-side="1">
             <div class="sides side-1">
@@ -98,7 +100,18 @@
         <div class="flex-item"></div>
         <div class="flex-item"></div>
       </div>
+      
     </div>
+    
+    <details>
+      <summary>Credits</summary>
+      <li>Game inspired by <a href='https://tedbob.itch.io/one-page-printplay-extravaganza'>Dinosaur Demolition Derby from Tedbob</a></li>
+    <li>Background music by <a href="https://pixabay.com/users/kamhunt-27612606/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=190419">Kammerin Hunt</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=190419">Pixabay</a></li>
+<li>Roar sound effect by <a href="https://pixabay.com/users/dffdv-42492812/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=193229">dffdv</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=193229">Pixabay</a></li>
+<li>Crunch sound effect Sound Effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=80936">freesound_community</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=80936">Pixabay</a></li>
+<li>Oh no sound effect by <a href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=106950">freesound_community</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=106950">Pixabay</a></li>
+<li>Stomp sound effect by <a href="https://pixabay.com/users/u_n1up2g5sdg-40232378/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=255897">u_n1up2g5sdg</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=255897">Pixabay</a></li>
+</details>
     </div>
     <audio src="./audio/run.mp3" type="audio/mpeg" autoplay loop></audio>
 

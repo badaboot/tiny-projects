@@ -48,13 +48,15 @@ const showOneHideOther = (showId, hideId) => {
 };
 document.getElementById("doBattle").addEventListener("click", () => {
   showOneHideOther("battleDetails", "doBattle");
-  roarSound.play();
-  const roll1 = getRollResult();
-  const roll2 = getRollResult();
-  document.getElementById("rexScore").textContent += ` Die roll ${roll1}`;
-  document.getElementById("sauroScore").textContent += ` Die roll ${roll2}`;
-  const losingChar = roll1 > roll2 ? characters[1] : characters[0];
 
+  roarSound.play();
+  //   const roll1 = getRollResult();
+  //   const roll2 = getRollResult();
+  //   document.getElementById("rexScore").textContent += ` Die roll ${roll1}`;
+  //   document.getElementById("sauroScore").textContent += ` Die roll ${roll2}`;
+  //   const losingChar = roll1 > roll2 ? characters[1] : characters[0];
+
+  losingChar = characters[0];
   losingChar.position = 0;
   document.getElementById(
     "battleResult"
@@ -66,6 +68,7 @@ document.getElementById("doBattle").addEventListener("click", () => {
 
 const doMove = () => {
   rollDice();
+  //   result = 1;
   setTimeout(() => {
     currentCharacter = isYourTurn ? characters[0] : characters[1];
     currentCharacter.position += result;
@@ -78,6 +81,7 @@ const doMove = () => {
       characters[1].position > 0
     ) {
       showOneHideOther("battle", "normal");
+      showOneHideOther("doBattle", "battleDetails");
       return;
     }
 
@@ -86,7 +90,6 @@ const doMove = () => {
       return;
     }
     if (BACK_TO_START_POS.includes(currentCharacter.position)) {
-      // play sad sound
       ohNoSound.play();
 
       setTimeout(() => {
@@ -146,18 +149,15 @@ document.getElementById("continue").addEventListener("click", () => {
 
 const doTurn = () => {
   showOneHideOther("normal", "battle");
-
   if (isYourTurn) {
-    gameStatusElem.children[3].classList.remove("active");
-    gameStatusElem.children[2].classList.add("active");
+    document.getElementById("opponentTurn").classList.remove("active");
+    document.getElementById("yourTurn").classList.add("active");
     rollElem.classList.remove("hide");
     rollElem.disabled = false;
   } else {
-    gameStatusElem.children[2].classList.remove("active");
-    gameStatusElem.children[3].classList.add("active");
+    document.getElementById("yourTurn").classList.remove("active");
+    document.getElementById("opponentTurn").classList.add("active");
     rollElem.classList.add("hide");
-    rollElem.disabled = true;
-
     setTimeout(() => {
       doMove();
     }, 2000);

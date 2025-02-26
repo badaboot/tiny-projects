@@ -40,12 +40,15 @@ h1 {
 }
 p,
 h1 {
-  margin: 4px;
+  margin: 2px;
 }
 #normal:not(.hide) {
-  margin-top: 20px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
+}
+#end {
+  height: 160px;
 }
 #gameStatus,
 #end {
@@ -97,7 +100,16 @@ h1 {
   font-size: 20px;
   text-align: center;
 }
-
+details:hover {
+  cursor: pointer;
+}
+details a {
+  color: orange;
+}
+details {
+  text-align: center;
+  margin-top: 20px;
+}
 button {
   padding: 15px 50px;
   color: #fff;
@@ -110,6 +122,7 @@ button {
   transition: 0.3s;
 }
 button:disabled {
+  cursor: not-allowed;
   background-color: slategray;
 }
 button:hover:not(:disabled),
@@ -128,7 +141,9 @@ button:active {
   transform-style: preserve-3d;
   transition: transform 1.5s ease-out;
 }
-
+#restart {
+  margin-top: 20px;
+}
 #dice:hover {
   cursor: pointer;
 }
@@ -151,7 +166,9 @@ button:active {
   background-color: black;
   transform: translate(-50%, -50%);
 }
-
+#roll {
+  margin-top: 8px;
+}
 .side-1 .dot-1 {
   top: 50%;
   left: 50%;
