@@ -14,11 +14,16 @@ const getRandomInt = (max) => {
 // 1 to 6
 const getRollResult = () => getRandomInt(6) + 1;
 let result;
+let currentCharacter;
+const YOUR_GAME_KEY = "dino-run-your-wins";
+const ENEMY_GAME_KEY = "dino-run-enemy-wins";
 
 const MAX_LENGTH = 20;
 const arr = new Array(MAX_LENGTH).fill("");
-const BACK_TO_START_POS = 12;
-arr[BACK_TO_START_POS] = "Tar pit. Back to start!";
+const BACK_TO_START_POS = [5, 12, 18];
+BACK_TO_START_POS.forEach((pos) => {
+  arr[pos] = "Tar pit: return to Start!";
+});
 arr[0] = "Start";
 arr[MAX_LENGTH - 1] = "Finish";
 
@@ -58,10 +63,11 @@ document.getElementById("doBattle").addEventListener("click", () => {
     goToSquare(0, document.getElementById(losingChar.name));
   }, 1000);
 });
+
 const doMove = () => {
   rollDice();
   setTimeout(() => {
-    const currentCharacter = isYourTurn ? characters[0] : characters[1];
+    currentCharacter = isYourTurn ? characters[0] : characters[1];
     currentCharacter.position += result;
     goToSquare(
       currentCharacter.position,
@@ -76,18 +82,10 @@ const doMove = () => {
     }
 
     if (currentCharacter.position >= MAX_LENGTH - 1) {
-      endElem.classList.remove("hide");
-      document.getElementById("gameStatus").classList.add("hide");
-      endElem.children[0].textContent = `${currentCharacter.name} won!`;
-      audio.pause();
-      if (currentCharacter.name === characters[0].name) {
-        yaySound.play();
-      } else {
-        lossSound.play();
-      }
+      endGame();
       return;
     }
-    if (currentCharacter.position === BACK_TO_START_POS) {
+    if (BACK_TO_START_POS.includes(currentCharacter.position)) {
       // play sad sound
       ohNoSound.play();
 
@@ -105,6 +103,29 @@ const doMove = () => {
   }, 1500);
 };
 
+const endGame = () => {
+  const didYouWin = currentCharacter.name === characters[0].name;
+  let yourWinCount = parseInt(localStorage.getItem(YOUR_GAME_KEY), 10) || 0;
+  let enemyWinCount = parseInt(localStorage.getItem(ENEMY_GAME_KEY), 10) || 0;
+  audio.pause();
+
+  if (didYouWin) {
+    yourWinCount += 1;
+    localStorage.setItem(YOUR_GAME_KEY, yourWinCount);
+    yaySound.play();
+  } else {
+    enemyWinCount += 1;
+    localStorage.setItem(ENEMY_GAME_KEY, enemyWinCount);
+    lossSound.play();
+  }
+  endElem.classList.remove("hide");
+  document.getElementById("gameStatus").classList.add("hide");
+  endElem.children[0].textContent = didYouWin
+    ? `You won!`
+    : `${currentCharacter.name} won!`;
+  endElem.children[1].textContent = `You won ${yourWinCount} and lost ${enemyWinCount} times.`;
+};
+
 const goToSquare = (position, node) => {
   console.log(position, node);
 
@@ -117,6 +138,7 @@ const goToSquare = (position, node) => {
   node.parentElement.removeChild(node);
   loopElements[Math.min(position, MAX_LENGTH - 1)].appendChild(node);
 };
+
 document.getElementById("continue").addEventListener("click", () => {
   isYourTurn = !isYourTurn;
   doTurn();
@@ -126,13 +148,15 @@ const doTurn = () => {
   showOneHideOther("normal", "battle");
 
   if (isYourTurn) {
-    gameStatusElem.children[4].classList.remove("active");
-    gameStatusElem.children[3].classList.add("active");
-    rollElem.classList.remove("hide");
-  } else {
     gameStatusElem.children[3].classList.remove("active");
-    gameStatusElem.children[4].classList.add("active");
+    gameStatusElem.children[2].classList.add("active");
+    rollElem.classList.remove("hide");
+    rollElem.disabled = false;
+  } else {
+    gameStatusElem.children[2].classList.remove("active");
+    gameStatusElem.children[3].classList.add("active");
     rollElem.classList.add("hide");
+    rollElem.disabled = true;
 
     setTimeout(() => {
       doMove();
@@ -144,7 +168,7 @@ doTurn();
 arr.forEach((str, index) => {
   if (str) {
     loopElements[index].textContent = str;
-    if (index === BACK_TO_START_POS) {
+    if (BACK_TO_START_POS.includes(index)) {
       loopElements[index].style.background = "black";
     }
   }
@@ -165,13 +189,10 @@ const rollDice = () => {
   result = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
   dice.dataset.side = result;
   dice.classList.toggle("reRoll");
-
-  //   setTimeout(function () {
-  //     outputDiv.classList.add("reveal");
-  //   }, 1500);
 };
 
 rollElem.onclick = function () {
+  rollElem.disabled = true;
   if (audio.paused) {
     audio.play();
   }

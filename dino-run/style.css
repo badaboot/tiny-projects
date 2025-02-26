@@ -5,14 +5,18 @@ body {
   color: white;
 }
 .container {
+  font-size: 20px;
   width: 610px;
   display: flex;
   margin: 0 auto;
 }
+button.hide {
+  visibility: hidden;
+}
 button:hover {
   cursor: pointer;
 }
-.hide {
+div.hide {
   display: none;
 }
 #result {
@@ -28,9 +32,25 @@ button:hover {
 #gameStatus {
   height: 340px;
 }
+h3 {
+  margin: 0;
+}
+h1 {
+  font-size: 44px;
+}
+p,
+h1 {
+  margin: 4px;
+}
+#normal:not(.hide) {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
 #gameStatus,
 #end {
   position: absolute;
+  width: 300px;
   background: lightgoldenrodyellow;
   color: black;
   padding: 20px;
@@ -77,7 +97,7 @@ button:hover {
   font-size: 20px;
   text-align: center;
 }
-/* dice */
+
 button {
   padding: 15px 50px;
   color: #fff;
@@ -89,19 +109,20 @@ button {
   outline: none;
   transition: 0.3s;
 }
-
-button:hover,
+button:disabled {
+  background-color: slategray;
+}
+button:hover:not(:disabled),
 button:active {
   outline: none;
   background: blue;
   cursor: pointer;
   transform: translateY(15px);
 }
-
+/* dice */
 #dice {
-  margin-top: 24px;
-  position: absolute;
-  left: 40%;
+  align-self: center;
+  margin-top: 20px;
   width: 90px;
   height: 90px;
   transform-style: preserve-3d;
@@ -276,14 +297,6 @@ button:active {
 }
 #dice[data-side="6"].reRoll {
   transform: rotateX(90deg) rotateY(0deg) rotateZ(0deg);
-}
-
-#diceResult.hide {
-  opacity: 0;
-}
-
-#diceResult.reveal {
-  animation: fadeUp 0.3s forwards;
 }
 
 @keyframes fadeUp {
