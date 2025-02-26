@@ -46,25 +46,6 @@ const showOneHideOther = (showId, hideId) => {
   document.getElementById(hideId).classList.add("hide");
   document.getElementById(showId).classList.remove("hide");
 };
-document.getElementById("doBattle").addEventListener("click", () => {
-  showOneHideOther("battleDetails", "doBattle");
-
-  roarSound.play();
-  //   const roll1 = getRollResult();
-  //   const roll2 = getRollResult();
-  //   document.getElementById("rexScore").textContent += ` Die roll ${roll1}`;
-  //   document.getElementById("sauroScore").textContent += ` Die roll ${roll2}`;
-  //   const losingChar = roll1 > roll2 ? characters[1] : characters[0];
-
-  losingChar = characters[0];
-  losingChar.position = 0;
-  document.getElementById(
-    "battleResult"
-  ).textContent = `${losingChar.name} lost`;
-  setTimeout(() => {
-    goToSquare(0, document.getElementById(losingChar.name));
-  }, 1000);
-});
 
 const doMove = () => {
   rollDice();
@@ -76,14 +57,6 @@ const doMove = () => {
       currentCharacter.position,
       document.getElementById(currentCharacter.name)
     );
-    if (
-      characters[0].position === characters[1].position &&
-      characters[1].position > 0
-    ) {
-      showOneHideOther("battle", "normal");
-      showOneHideOther("doBattle", "battleDetails");
-      return;
-    }
 
     if (currentCharacter.position >= MAX_LENGTH - 1) {
       endGame();
@@ -142,13 +115,7 @@ const goToSquare = (position, node) => {
   loopElements[Math.min(position, MAX_LENGTH - 1)].appendChild(node);
 };
 
-document.getElementById("continue").addEventListener("click", () => {
-  isYourTurn = !isYourTurn;
-  doTurn();
-});
-
 const doTurn = () => {
-  showOneHideOther("normal", "battle");
   if (isYourTurn) {
     document.getElementById("opponentTurn").classList.remove("active");
     document.getElementById("yourTurn").classList.add("active");
