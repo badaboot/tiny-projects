@@ -20,9 +20,13 @@ const ENEMY_GAME_KEY = "dino-run-enemy-wins";
 
 const MAX_LENGTH = 20;
 const arr = new Array(MAX_LENGTH).fill("");
+const GO_BACK_TWO = [3, 8, 15];
 const BACK_TO_START_POS = [5, 12, 18];
 BACK_TO_START_POS.forEach((pos) => {
   arr[pos] = "Tar pit: return to Start!";
+});
+GO_BACK_TWO.forEach((pos) => {
+  arr[pos] = "Go back 2 spaces";
 });
 arr[0] = "Start";
 arr[MAX_LENGTH - 1] = "Finish";
@@ -49,7 +53,6 @@ const showOneHideOther = (showId, hideId) => {
 
 const doMove = () => {
   rollDice();
-  //   result = 1;
   setTimeout(() => {
     currentCharacter = isYourTurn ? characters[0] : characters[1];
     currentCharacter.position += result;
@@ -60,6 +63,19 @@ const doMove = () => {
 
     if (currentCharacter.position >= MAX_LENGTH - 1) {
       endGame();
+      return;
+    }
+    if (GO_BACK_TWO.includes(currentCharacter.position)) {
+      ohNoSound.play();
+      setTimeout(() => {
+        currentCharacter.position -= 2;
+        goToSquare(
+          currentCharacter.position,
+          document.getElementById(currentCharacter.name)
+        );
+        isYourTurn = !isYourTurn;
+        doTurn();
+      }, 1500);
       return;
     }
     if (BACK_TO_START_POS.includes(currentCharacter.position)) {
@@ -97,15 +113,12 @@ const endGame = () => {
   endElem.classList.remove("hide");
   document.getElementById("gameStatus").classList.add("hide");
   endElem.children[0].textContent = didYouWin
-    ? `You won!`
-    : `${currentCharacter.name} won!`;
-  endElem.children[1].textContent = `You won ${yourWinCount} and lost ${enemyWinCount} times.`;
+    ? `${characters[0].image} won!`
+    : `${characters[1].image} won!`;
+  endElem.children[1].textContent = `${characters[0].image} won ${yourWinCount} and lost ${enemyWinCount} times.`;
 };
 
 const goToSquare = (position, node) => {
-  console.log(position, node);
-
-  //   console.trace();
   if (node.id === characters[0].name) {
     crunchSound.play();
   } else {
@@ -137,6 +150,8 @@ arr.forEach((str, index) => {
     loopElements[index].textContent = str;
     if (BACK_TO_START_POS.includes(index)) {
       loopElements[index].style.background = "black";
+    } else if (GO_BACK_TWO.includes(index)) {
+      loopElements[index].style.background = "darkmagenta";
     }
   }
 });
@@ -163,6 +178,5 @@ rollElem.onclick = function () {
   if (audio.paused) {
     audio.play();
   }
-  console.log("roll button clicked");
   doMove();
 };
