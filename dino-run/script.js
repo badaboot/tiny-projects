@@ -20,14 +20,6 @@ const ENEMY_GAME_KEY = "dino-run-enemy-wins";
 
 const MAX_LENGTH = 20;
 const arr = new Array(MAX_LENGTH).fill("");
-const GO_BACK_TWO = [3, 8, 15];
-const BACK_TO_START_POS = [5, 12, 18];
-BACK_TO_START_POS.forEach((pos) => {
-  arr[pos] = "Tar pit: return to Start!";
-});
-GO_BACK_TWO.forEach((pos) => {
-  arr[pos] = "Go back 2 spaces";
-});
 arr[0] = "Start";
 arr[MAX_LENGTH - 1] = "Finish";
 
@@ -45,6 +37,36 @@ const rollElem = document.getElementById("roll");
 const loopElements = document.getElementsByClassName("flex-item");
 const gameStatusElem = document.getElementById("gameStatus");
 const endElem = document.getElementById("end");
+
+const specialSquareDefinitionObject = {
+  GO_BACK_TWO: {
+    positions: [3, 8, 15],
+    background: "darkmagenta",
+    text: "Go back 2 spaces",
+  },
+  BACK_TO_START: {
+    positions: [5, 12, 18],
+    background: "black",
+    text: "Tar pit: return to Start!",
+  },
+};
+const { BACK_TO_START, GO_BACK_TWO } = specialSquareDefinitionObject;
+BACK_TO_START.positions.forEach((pos) => {
+  arr[pos] = BACK_TO_START.text;
+});
+GO_BACK_TWO.positions.forEach((pos) => {
+  arr[pos] = GO_BACK_TWO.text;
+});
+arr.forEach((str, index) => {
+  if (str) {
+    loopElements[index].textContent = str;
+    if (BACK_TO_START.positions.includes(index)) {
+      loopElements[index].style.background = BACK_TO_START.background;
+    } else if (GO_BACK_TWO.positions.includes(index)) {
+      loopElements[index].style.background = GO_BACK_TWO.background;
+    }
+  }
+});
 
 const showOneHideOther = (showId, hideId) => {
   document.getElementById(hideId).classList.add("hide");
@@ -65,7 +87,7 @@ const doMove = () => {
       endGame();
       return;
     }
-    if (GO_BACK_TWO.includes(currentCharacter.position)) {
+    if (GO_BACK_TWO.positions.includes(currentCharacter.position)) {
       ohNoSound.play();
       setTimeout(() => {
         currentCharacter.position -= 2;
@@ -78,7 +100,7 @@ const doMove = () => {
       }, 1500);
       return;
     }
-    if (BACK_TO_START_POS.includes(currentCharacter.position)) {
+    if (BACK_TO_START.positions.includes(currentCharacter.position)) {
       ohNoSound.play();
 
       setTimeout(() => {
@@ -145,16 +167,6 @@ const doTurn = () => {
 };
 doTurn();
 
-arr.forEach((str, index) => {
-  if (str) {
-    loopElements[index].textContent = str;
-    if (BACK_TO_START_POS.includes(index)) {
-      loopElements[index].style.background = "black";
-    } else if (GO_BACK_TWO.includes(index)) {
-      loopElements[index].style.background = "darkmagenta";
-    }
-  }
-});
 characters.forEach((obj) => {
   obj.position = 0;
   const newNode = document.createElement("div");
