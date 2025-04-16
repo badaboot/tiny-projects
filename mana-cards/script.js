@@ -1,4 +1,4 @@
-const MAX_HEALTH = 3;
+const MAX_HEALTH = 6;
 const baseHealthCountElem = document.getElementById("baseHealth");
 baseHealthCountElem.textContent = MAX_HEALTH;
 const pipeElems = document.getElementsByClassName("pipes")[0].children;
