@@ -25,7 +25,7 @@ numberInput.addEventListener("input", () => {
   const newLimit = numberInput.value;
   setup(newLimit);
 });
-
+const getElemIndex = (el) => [...el.parentElement.children].indexOf(el);
 const setup = (limit) => {
   LIMIT = parseInt(limit, 10);
   let arr = new Array(LIMIT * LIMIT).fill(0);
@@ -38,7 +38,7 @@ const setup = (limit) => {
   }
   shuffleArray(arr);
   let grid = new Array(LIMIT).fill(0).map((r) => new Array(LIMIT).fill(0));
-  console.log(arr, LIMIT, grid);
+  // reset container
   container.innerHTML = "";
   grid.forEach((r) => {
     const row = document.createElement("div");
@@ -61,6 +61,30 @@ const setup = (limit) => {
         const activeElems = document.getElementsByClassName("active");
         // if only one
         if (activeElems.length === 1) {
+          // check: are they horizontal or vertical neighbors?
+          const activeIndex = getElemIndex(activeElems[0]);
+          const targetIndex = getElemIndex(event.target);
+          if (activeElems[0].parentElement === event.target.parentElement) {
+            // if they are the same row: check whether index of by 1
+            if (Math.abs(activeIndex - targetIndex > 1)) {
+              activeElems[0].classList.remove("active");
+              event.target.classList.add("active");
+              return false;
+            }
+          } else {
+            // if they are different row, check rowIndex differ by 1 AND whether index match
+            if (
+              activeIndex !== targetIndex ||
+              Math.abs(
+                getElemIndex(activeElems[0].parentElement) -
+                  getElemIndex(event.target.parentElement)
+              ) > 1
+            ) {
+              activeElems[0].classList.remove("active");
+              event.target.classList.add("active");
+              return false;
+            }
+          }
           // swap with cell
           const fromCell = {
             textContent: activeElems[0].textContent,
