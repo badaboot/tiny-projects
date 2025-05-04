@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Baby Selection Game</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .baby-container {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        display: inline-block;
+        width: 200px;
+        text-align: left;
+      }
+
+      .baby-container:hover {
+        background-color: #f5f5f5;
+      }
+
+      #result {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 10px;
+        display: none;
+        font-size: 20px;
+        text-align: center;
+      }
+
+      #chooseButton {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+
+      #chooseButton:hover {
+        background-color: #45a049;
+      }
+
+      #resetButton {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #f39c12;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+
+      #resetButton:hover {
+        background-color: #e67e22;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Find the Right Baby!</h1>
+
+    <div id="babies">
+      <div class="baby-container" data-baby="1">
+        <h2>Baby 1</h2>
+        <p>Clue: Cries at night</p>
+      </div>
+      <div class="baby-container" data-baby="2">
+        <h2>Baby 2</h2>
+        <p>Clue: Cries during the day</p>
+      </div>
+      <div class="baby-container" data-baby="3">
+        <h2>Baby 3</h2>
+        <p>Clue: Always sleeps</p>
+      </div>
+    </div>
+
+    <div id="result"></div>
+    <button id="chooseButton">Choose!</button>
+    <button id="resetButton">Reset Game</button>
+
+    <script>
+      let correctBaby;
+      let isGameActive = true;
+
+      function initializeGame() {
+        isGameActive = true;
+        document.getElementById("chooseButton").disabled = false;
+        document.getElementById("resetButton").disabled = true;
+        document.getElementById("result").style.display = "none";
+        correctBaby = Math.floor(Math.random() * 3) + 1;
+      }
+
+      function showResult(isCorrect) {
+        const resultDiv = document.getElementById("result");
+        isGameActive = false;
+        document.getElementById("chooseButton").disabled = true;
+        document.getElementById("resetButton").disabled = false;
+
+        if (isCorrect) {
+          resultDiv.innerHTML = "🟢 <strong>Correct! Well done! 🎉</strong>";
+        } else {
+          resultDiv.innerHTML = "🔴 <strong>Wrong! Try again. 😕</strong>";
+        }
+
+        resultDiv.style.display = "block";
+        resultDiv.style.backgroundColor = isCorrect ? "#c7eea6" : "#ffd8da";
+        resultDiv.style.color = isCorrect ? "#2e661f" : "#952d2d";
+
+        // Reset the game after 3 seconds
+        setTimeout(initializeGame, 3000);
+      }
+
+      function checkBaby(babyNumber) {
+        if (!isGameActive) return;
+
+        if (babyNumber === correctBaby) {
+          showResult(true);
+        } else {
+          showResult(false);
+        }
+      }
+
+      // Event listeners for baby containers
+      document.querySelectorAll(".baby-container").forEach((baby) => {
+        baby.addEventListener("click", () => {
+          const babyNumber = parseInt(baby.getAttribute("data-baby"));
+          checkBaby(babyNumber);
+        });
+      });
+
+      // Event listener for reset button
+      document.getElementById("resetButton").addEventListener("click", () => {
+        initializeGame();
+        document.getElementById("resetButton").disabled = true;
+      });
+
+      // Start the game
+      initializeGame();
+    </script>
+  </body>
+</html>
