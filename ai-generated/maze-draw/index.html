@@ -1,0 +1,484 @@
+<!-- TODO: simplify to only small -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maze Escape Game</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 20px;
+      }
+      .game-container {
+        margin-top: 20px;
+      }
+      canvas {
+        background-color: #fff;
+        border: 2px solid #333;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .controls {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      button {
+        padding: 8px 15px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .info {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #e7f3fe;
+        border-left: 5px solid #2196f3;
+        max-width: 600px;
+      }
+      .status {
+        font-weight: bold;
+        margin-top: 10px;
+        font-size: 18px;
+        color: #333;
+      }
+      .difficulty {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .difficulty select {
+        padding: 5px;
+        font-size: 16px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Maze Escape Game</h1>
+
+    <div class="difficulty">
+      <label for="difficulty">Maze Size:</label>
+      <select id="difficulty">
+        <option value="small">Small</option>
+        <option value="medium" selected>Medium</option>
+        <option value="large">Large</option>
+      </select>
+    </div>
+
+    <div class="game-container">
+      <canvas id="gameCanvas" width="600" height="600"></canvas>
+    </div>
+
+    <div class="controls">
+      <button id="newMazeBtn">New Maze</button>
+      <button id="resetPathBtn">Reset Path</button>
+    </div>
+
+    <div class="status" id="statusMessage">
+      Draw a path from the green entrance to the red exit!
+    </div>
+
+    <div class="info">
+      <p><strong>How to play:</strong></p>
+      <ul>
+        <li>Click and drag your mouse to draw a path through the maze</li>
+        <li>Start at the green entrance and find your way to the red exit</li>
+        <li>Don't cross any walls!</li>
+        <li>Generate a new maze with the "New Maze" button</li>
+        <li>Clear your current path with the "Reset Path" button</li>
+      </ul>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const newMazeBtn = document.getElementById("newMazeBtn");
+        const resetPathBtn = document.getElementById("resetPathBtn");
+        const difficultySelect = document.getElementById("difficulty");
+        const statusMessage = document.getElementById("statusMessage");
+
+        // Game variables
+        let maze = [];
+        let cellSize = 30;
+        let cols, rows;
+        let start, end;
+        let path = [];
+        let isDrawing = false;
+        let gameWon = false;
+        let pathCrossesWall = false;
+
+        // Cell object constructor
+        function Cell(x, y) {
+          this.x = x;
+          this.y = y;
+          this.walls = { top: true, right: true, bottom: true, left: true };
+          this.visited = false;
+        }
+
+        // Initialize the game
+        function init() {
+          // Set maze dimensions based on difficulty
+          const difficulty = difficultySelect.value;
+          switch (difficulty) {
+            case "small":
+              cellSize = 40;
+              break;
+            case "medium":
+              cellSize = 30;
+              break;
+            case "large":
+              cellSize = 20;
+              break;
+          }
+
+          cols = Math.floor(canvas.width / cellSize);
+          rows = Math.floor(canvas.height / cellSize);
+
+          generateMaze();
+          resetPath();
+
+          statusMessage.textContent =
+            "Draw a path from the green entrance to the red exit!";
+          statusMessage.style.color = "#333";
+          gameWon = false;
+        }
+
+        // Generate a new maze using the Depth-First Search algorithm
+        function generateMaze() {
+          // Initialize the grid
+          maze = new Array(cols);
+          for (let i = 0; i < cols; i++) {
+            maze[i] = new Array(rows);
+            for (let j = 0; j < rows; j++) {
+              maze[i][j] = new Cell(i, j);
+            }
+          }
+
+          // Run the maze generation algorithm
+          const stack = [];
+          let current = maze[0][0];
+          current.visited = true;
+
+          while (true) {
+            let next = getUnvisitedNeighbor(current);
+
+            if (next) {
+              next.visited = true;
+              stack.push(current);
+              removeWalls(current, next);
+              current = next;
+            } else if (stack.length > 0) {
+              current = stack.pop();
+            } else {
+              break;
+            }
+          }
+
+          // Set entrance and exit
+          start = { x: 0, y: 0 };
+          end = { x: cols - 1, y: rows - 1 };
+
+          drawMaze();
+        }
+
+        // Get an unvisited neighbor cell
+        function getUnvisitedNeighbor(cell) {
+          const neighbors = [];
+
+          const { x, y } = cell;
+
+          // Check each neighbor
+          if (y > 0 && !maze[x][y - 1].visited) neighbors.push(maze[x][y - 1]); // Top
+          if (x < cols - 1 && !maze[x + 1][y].visited)
+            neighbors.push(maze[x + 1][y]); // Right
+          if (y < rows - 1 && !maze[x][y + 1].visited)
+            neighbors.push(maze[x][y + 1]); // Bottom
+          if (x > 0 && !maze[x - 1][y].visited) neighbors.push(maze[x - 1][y]); // Left
+
+          // Return a random neighbor if any exist
+          if (neighbors.length > 0) {
+            const randomIndex = Math.floor(Math.random() * neighbors.length);
+            return neighbors[randomIndex];
+          } else {
+            return null;
+          }
+        }
+
+        // Remove walls between adjacent cells
+        function removeWalls(current, next) {
+          const dx = next.x - current.x;
+          const dy = next.y - current.y;
+
+          if (dx === 1) {
+            // Right neighbor
+            current.walls.right = false;
+            next.walls.left = false;
+          } else if (dx === -1) {
+            // Left neighbor
+            current.walls.left = false;
+            next.walls.right = false;
+          }
+
+          if (dy === 1) {
+            // Bottom neighbor
+            current.walls.bottom = false;
+            next.walls.top = false;
+          } else if (dy === -1) {
+            // Top neighbor
+            current.walls.top = false;
+            next.walls.bottom = false;
+          }
+        }
+
+        // Draw the maze
+        function drawMaze() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Draw the grid cells and walls
+          for (let i = 0; i < cols; i++) {
+            for (let j = 0; j < rows; j++) {
+              const cell = maze[i][j];
+              const x = i * cellSize;
+              const y = j * cellSize;
+
+              // Draw walls
+              ctx.strokeStyle = "#000";
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+
+              if (cell.walls.top) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + cellSize, y);
+              }
+              if (cell.walls.right) {
+                ctx.moveTo(x + cellSize, y);
+                ctx.lineTo(x + cellSize, y + cellSize);
+              }
+              if (cell.walls.bottom) {
+                ctx.moveTo(x, y + cellSize);
+                ctx.lineTo(x + cellSize, y + cellSize);
+              }
+              if (cell.walls.left) {
+                ctx.moveTo(x, y);
+                ctx.lineTo(x, y + cellSize);
+              }
+
+              ctx.stroke();
+            }
+          }
+
+          // Draw start point (green)
+          ctx.fillStyle = "#4CAF50";
+          ctx.beginPath();
+          ctx.arc(
+            start.x * cellSize + cellSize / 2,
+            start.y * cellSize + cellSize / 2,
+            cellSize / 3,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+
+          // Draw end point (red)
+          ctx.fillStyle = "#F44336";
+          ctx.beginPath();
+          ctx.arc(
+            end.x * cellSize + cellSize / 2,
+            end.y * cellSize + cellSize / 2,
+            cellSize / 3,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+
+          // Draw user path if any
+          drawPath();
+        }
+
+        // Draw the user's path
+        function drawPath() {
+          if (path.length < 2) return;
+
+          ctx.strokeStyle = pathCrossesWall ? "#FF0000" : "#2196F3";
+          ctx.lineWidth = cellSize / 4;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+
+          ctx.beginPath();
+          ctx.moveTo(path[0].x, path[0].y);
+
+          for (let i = 1; i < path.length; i++) {
+            ctx.lineTo(path[i].x, path[i].y);
+          }
+
+          ctx.stroke();
+        }
+
+        // Reset the user's path
+        function resetPath() {
+          path = [];
+          isDrawing = false;
+          pathCrossesWall = false;
+          gameWon = false;
+          statusMessage.textContent =
+            "Draw a path from the green entrance to the red exit!";
+          statusMessage.style.color = "#333";
+          drawMaze();
+        }
+
+        // Check if the path crosses any walls
+        function checkPathCollision(x1, y1, x2, y2) {
+          // Convert to cell coordinates
+          const cellX1 = Math.floor(x1 / cellSize);
+          const cellY1 = Math.floor(y1 / cellSize);
+          const cellX2 = Math.floor(x2 / cellSize);
+          const cellY2 = Math.floor(y2 / cellSize);
+
+          // If in the same cell, no collision
+          if (cellX1 === cellX2 && cellY1 === cellY2) {
+            return false;
+          }
+
+          // If moving diagonally across cells, check for wall collisions
+          if (
+            Math.abs(cellX1 - cellX2) === 1 &&
+            Math.abs(cellY1 - cellY2) === 1
+          ) {
+            return true; // Disallow diagonal movements between cells
+          }
+
+          // If moving horizontally
+          if (cellY1 === cellY2 && Math.abs(cellX1 - cellX2) === 1) {
+            if (cellX1 < cellX2) {
+              // Moving right
+              return maze[cellX1][cellY1].walls.right;
+            } else {
+              // Moving left
+              return maze[cellX1][cellY1].walls.left;
+            }
+          }
+
+          // If moving vertically
+          if (cellX1 === cellX2 && Math.abs(cellY1 - cellY2) === 1) {
+            if (cellY1 < cellY2) {
+              // Moving down
+              return maze[cellX1][cellY1].walls.bottom;
+            } else {
+              // Moving up
+              return maze[cellX1][cellY1].walls.top;
+            }
+          }
+
+          return true; // Default to collision for any other case
+        }
+
+        // Check if the player has won
+        function checkWin() {
+          if (path.length === 0) return false;
+
+          const lastPoint = path[path.length - 1];
+          const endPoint = {
+            x: end.x * cellSize + cellSize / 2,
+            y: end.y * cellSize + cellSize / 2,
+          };
+
+          const distance = Math.sqrt(
+            Math.pow(lastPoint.x - endPoint.x, 2) +
+              Math.pow(lastPoint.y - endPoint.y, 2)
+          );
+
+          if (distance < cellSize / 2) {
+            gameWon = true;
+            statusMessage.textContent =
+              "Congratulations! You've escaped the maze!";
+            statusMessage.style.color = "#4CAF50";
+            return true;
+          }
+
+          return false;
+        }
+
+        // Event listeners for mouse interactions
+        canvas.addEventListener("mousedown", function (e) {
+          if (gameWon) return;
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          // Check if starting near the entrance
+          const startPoint = {
+            x: start.x * cellSize + cellSize / 2,
+            y: start.y * cellSize + cellSize / 2,
+          };
+
+          const distance = Math.sqrt(
+            Math.pow(x - startPoint.x, 2) + Math.pow(y - startPoint.y, 2)
+          );
+
+          if (distance < cellSize) {
+            resetPath();
+            isDrawing = true;
+            path.push({ x: startPoint.x, y: startPoint.y });
+          }
+        });
+
+        canvas.addEventListener("mousemove", function (e) {
+          if (!isDrawing || gameWon) return;
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (path.length > 0) {
+            const lastPoint = path[path.length - 1];
+
+            // Check for wall collision
+            if (checkPathCollision(lastPoint.x, lastPoint.y, x, y)) {
+              pathCrossesWall = true;
+              statusMessage.textContent = "You hit a wall! Reset your path.";
+              statusMessage.style.color = "#F44336";
+            }
+          }
+
+          path.push({ x, y });
+          drawMaze();
+          checkWin();
+        });
+
+        canvas.addEventListener("mouseup", function () {
+          isDrawing = false;
+        });
+
+        canvas.addEventListener("mouseleave", function () {
+          isDrawing = false;
+        });
+
+        // Button event listeners
+        newMazeBtn.addEventListener("click", init);
+        resetPathBtn.addEventListener("click", resetPath);
+        difficultySelect.addEventListener("change", init);
+
+        // Initialize the game
+        init();
+      });
+    </script>
+  </body>
+</html>

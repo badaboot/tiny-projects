@@ -1,0 +1,168 @@
+<!-- TODO: 
+- decrease the speed
+- make the sound while press the key
+- have 4 keys: (A, S, D, F, G) be mapped to something else? or play tunes with 4 notes 
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Guitar Hero</title>
+    <style>
+      body {
+        background-color: #1a1a1a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        color: #fff;
+      }
+
+      #gameContainer {
+        position: relative;
+        width: 400px;
+        height: 600px;
+        background-color: #2a2a2a;
+        margin-top: 20px;
+        overflow: hidden;
+      }
+
+      .note {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background-color: #4caf50;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+        user-select: none;
+      }
+
+      #score {
+        font-size: 24px;
+        margin: 10px;
+      }
+
+      #startButton {
+        padding: 10px 20px;
+        font-size: 18px;
+        margin: 10px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Simple Guitar Hero</h1>
+    <div id="score">Score: 0</div>
+    <div id="gameContainer"></div>
+    <button id="startButton">Start Game</button>
+
+    <script>
+      const gameContainer = document.getElementById("gameContainer");
+      const scoreElement = document.getElementById("score");
+      const startButton = document.getElementById("startButton");
+
+      let score = 0;
+      let gameActive = false;
+      let noteSpeed = 5;
+      let notes = [];
+
+      class Note {
+        constructor(char) {
+          this.char = char;
+          this.element = document.createElement("div");
+          this.element.className = "note";
+          this.element.textContent = char;
+          this.x = Math.random() * (gameContainer.offsetWidth - 40);
+          this.y = 0;
+          this.element.style.left = this.x + "px";
+          gameContainer.appendChild(this.element);
+        }
+
+        update() {
+          this.y += noteSpeed;
+          this.element.style.top = this.y + "px";
+
+          if (this.y > gameContainer.offsetHeight) {
+            this.destroy();
+            if (gameActive) gameOver();
+          }
+        }
+
+        destroy() {
+          gameContainer.removeChild(this.element);
+          notes.splice(notes.indexOf(this), 1);
+        }
+      }
+
+      function createNote() {
+        const chars = ["A", "S", "D", "F", "G"];
+        const randomChar = chars[Math.floor(Math.random() * chars.length)];
+        notes.push(new Note(randomChar));
+      }
+
+      function updateGame() {
+        if (!gameActive) return;
+
+        notes.forEach((note) => note.update());
+
+        if (Math.random() < 0.1) {
+          createNote();
+        }
+
+        requestAnimationFrame(updateGame);
+      }
+
+      function handleKeyPress(event) {
+        if (!gameActive) return;
+
+        const key = event.key.toUpperCase();
+        const matchingNote = notes.find((note) => note.char === key);
+
+        if (matchingNote) {
+          score += 10;
+          scoreElement.textContent = `Score: ${score}`;
+          matchingNote.destroy();
+        }
+      }
+
+      function gameOver() {
+        gameActive = false;
+        startButton.textContent = "Start Game";
+        notes.forEach((note) => note.destroy());
+        alert(`Game Over! Score: ${score}`);
+      }
+
+      startButton.addEventListener("click", () => {
+        if (!gameActive) {
+          gameActive = true;
+          startButton.textContent = "Restart Game";
+          score = 0;
+          scoreElement.textContent = `Score: ${score}`;
+          updateGame();
+        } else {
+          gameOver();
+        }
+      });
+
+      document.addEventListener("keydown", handleKeyPress);
+      document.addEventListener("keydown", (e) => {
+        if (e.code === "Space") {
+          if (!gameActive) {
+            gameActive = true;
+            startButton.textContent = "Restart Game";
+            score = 0;
+            scoreElement.textContent = `Score: ${score}`;
+            updateGame();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
