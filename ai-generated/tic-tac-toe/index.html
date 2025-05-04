@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #555;
+            height: 30px;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+        }
+        
+        .cell:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
+        }
+        
+        .x {
+            color: #e74c3c;
+        }
+        
+        .o {
+            color: #3498db;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div class="status" id="status">Your turn (X)</div>
+    <div class="board" id="board">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+    <button id="reset-button">Reset Game</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const board = document.getElementById('board');
+            const cells = document.querySelectorAll('.cell');
+            const status = document.getElementById('status');
+            const resetButton = document.getElementById('reset-button');
+            
+            let currentPlayer = 'X';
+            let gameState = ['', '', '', '', '', '', '', '', ''];
+            let gameActive = true;
+            
+            const winningConditions = [
+                [0, 1, 2], // Top row
+                [3, 4, 5], // Middle row
+                [6, 7, 8], // Bottom row
+                [0, 3, 6], // Left column
+                [1, 4, 7], // Middle column
+                [2, 5, 8], // Right column
+                [0, 4, 8], // Diagonal top-left to bottom-right
+                [2, 4, 6]  // Diagonal top-right to bottom-left
+            ];
+            
+            function handleCellClick(e) {
+                const clickedCell = e.target;
+                const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+                
+                // Player's turn (X)
+                if (gameState[clickedCellIndex] !== '' || !gameActive || currentPlayer !== 'X') {
+                    return;
+                }
+                
+                // Process player's move
+                gameState[clickedCellIndex] = 'X';
+                clickedCell.textContent = 'X';
+                clickedCell.classList.add('x');
+                
+                // Check if game ended after player's move
+                if (!checkResult()) {
+                    // If game continues, make computer move after a short delay
+                    setTimeout(() => {
+                        computerMove();
+                    }, 500);
+                }
+            }
+            
+            // Computer makes a move using the minimax algorithm
+            function computerMove() {
+                if (!gameActive) return;
+                
+                // Find the best move using minimax
+                const bestMove = findBestMove();
+                
+                // Make the move
+                gameState[bestMove] = 'O';
+                const computerCell = document.querySelector(`.cell[data-index="${bestMove}"]`);
+                computerCell.textContent = 'O';
+                computerCell.classList.add('o');
+                
+                // Check if game ended after computer's move
+                checkResult();
+            }
+            
+            // Minimax algorithm implementation
+            function minimax(board, depth, isMaximizing) {
+                // Check for terminal states (win, loss, draw)
+                const result = checkWinner(board);
+                
+                // If X wins, return -10
+                if (result === 'X') return -10 + depth;
+                
+                // If O wins, return 10
+                if (result === 'O') return 10 - depth;
+                
+                // If draw, return 0
+                if (!board.includes('')) return 0;
+                
+                if (isMaximizing) {
+                    // Computer's turn (O) - trying to maximize score
+                    let bestScore = -Infinity;
+                    for (let i = 0; i < 9; i++) {
+                        if (board[i] === '') {
+                            board[i] = 'O';
+                            const score = minimax(board, depth + 1, false);
+                            board[i] = ''; // Undo move
+                            bestScore = Math.max(score, bestScore);
+                        }
+                    }
+                    return bestScore;
+                } else {
+                    // Player's turn (X) - trying to minimize score
+                    let bestScore = Infinity;
+                    for (let i = 0; i < 9; i++) {
+                        if (board[i] === '') {
+                            board[i] = 'X';
+                            const score = minimax(board, depth + 1, true);
+                            board[i] = ''; // Undo move
+                            bestScore = Math.min(score, bestScore);
+                        }
+                    }
+                    return bestScore;
+                }
+            }
+            
+            // Find the best move for the computer
+            function findBestMove() {
+                let bestScore = -Infinity;
+                let bestMove = null;
+                
+                // Try each empty cell and find the one with the best score
+                for (let i = 0; i < 9; i++) {
+                    if (gameState[i] === '') {
+                        // Make the move
+                        gameState[i] = 'O';
+                        // Evaluate this move
+                        const score = minimax(gameState, 0, false);
+                        // Undo the move
+                        gameState[i] = '';
+                        
+                        // Update best score
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestMove = i;
+                        }
+                    }
+                }
+                
+                return bestMove;
+            }
+            
+            // Check if there's a winner in the provided board state
+            function checkWinner(board) {
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const [a, b, c] = winningConditions[i];
+                    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                        return board[a]; // Return X or O
+                    }
+                }
+                
+                // No winner
+                return null;
+            }
+            
+            function checkResult() {
+                let roundWon = false;
+                let winningLine = null;
+                
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const [a, b, c] = winningConditions[i];
+                    const posA = gameState[a];
+                    const posB = gameState[b];
+                    const posC = gameState[c];
+                    
+                    if (posA === '' || posB === '' || posC === '') {
+                        continue;
+                    }
+                    
+                    if (posA === posB && posB === posC) {
+                        roundWon = true;
+                        winningLine = winningConditions[i];
+                        break;
+                    }
+                }
+                
+                if (roundWon) {
+                    const winner = currentPlayer === 'X' ? 'You win!' : 'Computer wins!';
+                    status.textContent = winner;
+                    gameActive = false;
+                    highlightWinningCells(winningLine);
+                    return true; // Game ended
+                }
+                
+                const roundDraw = !gameState.includes('');
+                if (roundDraw) {
+                    status.textContent = "It's a draw!";
+                    gameActive = false;
+                    return true; // Game ended
+                }
+                
+                // Switch turns
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                status.textContent = currentPlayer === 'X' ? 'Your turn (X)' : 'Computer is thinking...';
+                return false; // Game continues
+            }
+            
+            function highlightWinningCells(winningLine) {
+                winningLine.forEach(index => {
+                    cells[index].style.backgroundColor = "#d5f5e3";
+                    cells[index].style.transform = "scale(1.1)";
+                });
+            }
+            
+            function resetGame() {
+                currentPlayer = 'X';
+                gameState = ['', '', '', '', '', '', '', '', ''];
+                gameActive = true;
+                status.textContent = 'Your turn (X)';
+                
+                cells.forEach(cell => {
+                    cell.textContent = '';
+                    cell.classList.remove('x', 'o');
+                    cell.style.backgroundColor = 'white';
+                    cell.style.transform = 'scale(1)';
+                });
+            }
+            
+            // Event listeners
+            cells.forEach(cell => {
+                cell.addEventListener('click', handleCellClick);
+            });
+            
+            resetButton.addEventListener('click', resetGame);
+        });
+    </script>
+</body>
+</html>

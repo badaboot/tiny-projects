@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Remember the Notes</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+      }
+
+      .game-container {
+        margin: 20px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #startBtn {
+        width: 200px;
+        font-size: 18px;
+      }
+
+      #display {
+        font-size: 24px;
+        margin: 20px;
+        text-align: center;
+      }
+
+      .note-btn {
+        font-size: 24px;
+        width: 80px;
+        height: 80px;
+      }
+
+      .correct {
+        background-color: #4caf50 !important;
+      }
+
+      .incorrect {
+        background-color: #f44336 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-container">
+      <h1>Remember the Notes</h1>
+      <div>- - - -</div>
+      <div id="display">
+        Sequence:
+        <span id="currentNote"></span>
+      </div>
+      <div>
+        <button class="note-btn" data-note="A">A</button>
+        <button class="note-btn" data-note="B">B</button>
+      </div>
+      <div>
+        <button id="startBtn">Start Game</button>
+      </div>
+    </div>
+
+    <script>
+      const sequence = ["A", "B"];
+      let currentPlayerSequence = [];
+      let currentSequence = [];
+      let currentStep = 0;
+      let isPlaying = false;
+      let hasWon = false;
+
+      function generateSequence() {
+        const newSequence = [];
+        for (let i = 0; i < 4; i++) {
+          newSequence.push(sequence[Math.floor(Math.random() * 2)]);
+        }
+        return newSequence;
+      }
+
+      function playNote(note, isPlayer = false) {
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.type = "sine";
+
+        const duration = 1000;
+        const startTime = audioContext.currentTime;
+        const endTime = startTime + duration / 1000;
+
+        if (note === "A") {
+          oscillator.frequency.setValueAtTime(440, startTime);
+        } else if (note === "B") {
+          oscillator.frequency.setValueAtTime(660, startTime);
+        }
+
+        gainNode.gain.setValueAtTime(0.1, startTime);
+        gainNode.gain.linearRampToValueAtTime(0, endTime);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.start(startTime);
+
+        if (!isPlayer) {
+          const button = document.querySelector(`button[data-note="${note}"]`);
+          button.classList.add("correct");
+          setTimeout(() => {
+            button.classList.remove("correct");
+          }, 500);
+        }
+      }
+
+      function playSequence(sequence) {
+        currentPlayerSequence = [];
+        currentStep = 0;
+        hasWon = false;
+
+        sequence.forEach((note, index) => {
+          setTimeout(() => {
+            playNote(note);
+          }, index * 1000);
+        });
+
+        setTimeout(() => {
+          document.getElementById("display").textContent = "Your turn!";
+        }, sequence.length * 1000);
+      }
+
+      function startGame() {
+        currentPlayerSequence = [];
+        currentStep = 0;
+        hasWon = false;
+        currentSequence = generateSequence();
+        document.getElementById("display").textContent = "Sequence: ";
+        playSequence(currentSequence);
+        isPlaying = true;
+      }
+
+      function checkSequence(note) {
+        if (!isPlaying || hasWon) return;
+
+        currentPlayerSequence.push(note);
+
+        if (note === currentSequence[currentStep]) {
+          currentStep++;
+          if (currentStep === 4) {
+            hasWon = true;
+            document.getElementById("display").textContent = "You won! 🎉";
+            document.getElementById("startBtn").textContent = "Play Again";
+          }
+        } else {
+          document.getElementById(
+            "display"
+          ).textContent = `Game Over! Correct sequence: ${currentSequence.join(
+            " "
+          )}`;
+          document.getElementById("startBtn").textContent = "Try Again";
+          isPlaying = false;
+        }
+
+        if (currentStep < 4 && note !== currentSequence[currentStep]) {
+          const button = document.querySelector(`button[data-note="${note}"]`);
+          button.classList.add("incorrect");
+          setTimeout(() => {
+            button.classList.remove("incorrect");
+          }, 500);
+        }
+      }
+
+      document.querySelectorAll(".note-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const note = button.dataset.note;
+          playNote(note, true);
+          checkSequence(note);
+        });
+      });
+
+      document.getElementById("startBtn").addEventListener("click", startGame);
+    </script>
+  </body>
+</html>
