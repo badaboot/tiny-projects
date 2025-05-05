@@ -1,0 +1,21 @@
+<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap@3/dist/Draggable.min.js"></script>
+<link rel="stylesheet" type="text/css" href="baseDrag.css" />
+<h1>Draggable: Drop on target only</h1>
+<p>
+  The boxes below can only be dragged and dropped on Drop Area. If boxes are
+  dropped and do not overlap the dropArea entirely they will return to starting
+  position. When boxes are eligible to be dropped in Drop Area their border will
+  be highlighted.
+</p>
+<div class="boxes">
+  <div id="container">
+    <div id="box1" class="box">box1</div>
+    <div id="box2" class="box">box2</div>
+    <div id="box3" class="box">box3</div>
+  </div>
+
+  <div class="dropArea"></div>
+  <div class="dropArea"></div>
+  <script src="baseDrag.js"></script>
+</div>
