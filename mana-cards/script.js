@@ -91,85 +91,86 @@ const makeMonsterWave = () => {
   }
 };
 
-let selectedCardId;
-function dragStart(ev) {
-  ev.dataTransfer.effectAllowed = "move";
-  ev.dataTransfer.setData("Text", ev.target.getAttribute("id"));
-  ev.dataTransfer.setDragImage(ev.target, 50, 50);
-  selectedCardId = ev.target.getAttribute("id");
-  return true;
-}
-
 const removeClassFromAllElems = (className) => {
   for (let elem of document.getElementsByClassName(className)) {
     elem.classList.remove(className);
   }
 };
-const getSelectedCard = () => {
-  if (selectedCardId !== undefined) {
-    const card = document.getElementById(selectedCardId);
-    return card.style.background;
-  }
-  return "";
-};
-
-document.addEventListener("dragenter", (ev) => {
-  removeClassFromAllElems("active");
-  if (ev.target.classList.contains("dropIt")) {
-    ev.target.classList.add("active");
-  }
-  ev.stopPropagation();
-  return false;
-});
-
-document.addEventListener("dragover", (ev) => {
-  ev.preventDefault();
-});
 
 const removeMonsterCellAndClearTimer = (cell) => {
   clearInterval(cell.dataset.intervalID);
-  cell.parentElement.removeChild(cell);
+  cell.remove();
 };
 
-document.addEventListener("drop", (ev) => {
-  if (ev.target.classList.contains("dropIt")) {
-    ev.target.classList.remove("active");
-    const monsterChild = ev.target.children.length
-      ? ev.target.children[0]
-      : undefined;
+const overlapThreshold = "80%";
 
-    if (monsterChild) {
-      hitSound.play();
-      const color = getSelectedCard();
-      cardsElem.removeChild(document.getElementById(selectedCardId));
-      // destroy it
-      if (monsterChild.style.background === color) {
-        removeMonsterCellAndClearTimer(monsterChild);
-      } else {
-        // half it
-        const res = Math.floor(parseInt(monsterChild.textContent, 10) / 2);
-        if (res === 0) removeMonsterCellAndClearTimer(monsterChild);
-        else monsterChild.textContent = res;
-      }
-      // if that was the last card, look at the score
-      // if score === 0 end game, else start another wave
-      if (document.getElementsByClassName("monster").length === 0) {
-        if (baseHealthCountElem === 0) {
-          isGameEnd = true;
-          endGame();
-        } else {
-          makeMonsterWave();
+const initDroppable = (element) => {
+  let insideZone = false;
+  let selectedDropZone;
+  Draggable.create(element, {
+    onDrag: function () {
+      insideZone = false;
+
+      for (let dropZone of document.getElementsByClassName("dropIt")) {
+        if (this.hitTest(dropZone, overlapThreshold)) {
+          insideZone = true;
+          selectedDropZone = dropZone;
+          break;
         }
       }
-    }
-  }
-  if (cardsElem.children.length === 0) {
-    getCards();
-  }
-  selectedCardId = undefined;
-  ev.stopPropagation();
-  return false;
-});
+
+      if (insideZone) {
+        selectedCardId = element.id;
+        element.classList.add("active");
+      } else {
+        element.classList.remove("active");
+      }
+    },
+    onDragEnd: function () {
+      if (insideZone) {
+        TweenLite.to(this.target, 0.2, {
+          x: 0,
+          y: 0,
+        });
+      } else {
+        selectedDropZone.classList.remove("active");
+        const monsterChild = selectedDropZone.children.length
+          ? selectedDropZone.children[0]
+          : undefined;
+
+        if (monsterChild) {
+          hitSound.play();
+          const color = element.style.background;
+          cardsElem.removeChild(document.getElementById(selectedCardId));
+          // destroy it
+          if (monsterChild.style.background === color) {
+            removeMonsterCellAndClearTimer(monsterChild);
+          } else {
+            // half it
+            const res = Math.floor(parseInt(monsterChild.textContent, 10) / 2);
+            if (res === 0) removeMonsterCellAndClearTimer(monsterChild);
+            else monsterChild.textContent = res;
+          }
+          // if that was the last card, look at the score
+          // if score === 0 end game, else start another wave
+          if (document.getElementsByClassName("monster").length === 0) {
+            if (baseHealthCountElem === 0) {
+              isGameEnd = true;
+              endGame();
+            } else {
+              makeMonsterWave();
+            }
+          }
+        }
+      }
+      if (cardsElem.children.length === 0) {
+        getCards();
+      }
+      selectedCardId = undefined;
+      selectedDropZone = undefined;
+    },
+  });
+};
 
 // cards logic
 const getCards = () => {
@@ -178,13 +179,10 @@ const getCards = () => {
 
   cards.forEach((color, index) => {
     const newNode = document.createElement("div");
-    newNode.classList.add("drag");
     newNode.id = "box" + index;
-    newNode.draggable = true;
-    newNode.ondragstart = dragStart;
-
     newNode.style.background = color;
     cardsElem.appendChild(newNode);
+    initDroppable(newNode);
   });
 };
 for (let button of document.getElementsByClassName("close")) {

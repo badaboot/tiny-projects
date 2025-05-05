@@ -9,9 +9,9 @@ for (let droppable of droppables) {
 }
 
 function initDroppable(element) {
-  var insideZone = false;
+  let insideZone = false;
 
-  var highlightAnimation = TweenLite.to(element, 0.3, {
+  const highlightAnimation = TweenLite.to(element, 0.3, {
     backgroundColor: "green",
     paused: true,
   });
@@ -20,7 +20,7 @@ function initDroppable(element) {
     onDrag: function () {
       insideZone = false;
 
-      for (var i = 0; i < dropZones.length; i++) {
+      for (let i = 0; i < dropZones.length; i++) {
         if (this.hitTest(dropZones[i], overlapThreshold)) {
           insideZone = true;
           break;
@@ -39,6 +39,8 @@ function initDroppable(element) {
           x: 0,
           y: 0,
         });
+      } else {
+        console.log("ok");
       }
     },
   });
