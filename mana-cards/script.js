@@ -121,19 +121,22 @@ const initDroppable = (element) => {
 
       if (insideZone) {
         selectedCardId = element.id;
+        selectedDropZone.classList.add("active");
         element.classList.add("active");
       } else {
         element.classList.remove("active");
       }
     },
     onDragEnd: function () {
-      if (insideZone) {
+      if (!insideZone) {
         TweenLite.to(this.target, 0.2, {
           x: 0,
           y: 0,
         });
       } else {
-        selectedDropZone.classList.remove("active");
+        for (let col of selectedDropZone.parentElement.children) {
+          col.classList.remove("active");
+        }
         const monsterChild = selectedDropZone.children.length
           ? selectedDropZone.children[0]
           : undefined;
@@ -162,12 +165,11 @@ const initDroppable = (element) => {
             }
           }
         }
+        if (cardsElem.children.length === 0) {
+          getCards();
+        }
+        selectedCardId = undefined;
       }
-      if (cardsElem.children.length === 0) {
-        getCards();
-      }
-      selectedCardId = undefined;
-      selectedDropZone = undefined;
     },
   });
 };
