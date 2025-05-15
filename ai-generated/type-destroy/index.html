@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raven Typing Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="score-display">Score: 0</div>
+        <div id="raven-image">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30,20 C35,15 45,15 50,20 C55,15 65,15 70,20 C80,30 85,50 65,70 C60,75 55,76 50,70 C45,76 40,75 35,70 C15,50 20,30 30,20 Z" 
+                    fill="#333" stroke="white" stroke-width="2"/>
+                <circle cx="40" cy="30" r="3" fill="white"/>
+                <circle cx="60" cy="30" r="3" fill="white"/>
+                <path d="M45,45 C48,50 52,50 55,45" stroke="white" stroke-width="2" fill="transparent"/>
+            </svg>
+        </div>
+        <div id="game-ui">
+            <input type="text" id="input-field" autocomplete="off" placeholder="Type to destroy the words...">
+        </div>
+        <div id="game-over">
+            <div>GAME OVER</div>
+            <div id="final-score">Score: 0</div>
+            <div id="play-again">
+                Play again? <span id="yes-btn">Yes</span>/<span id="no-btn">No</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

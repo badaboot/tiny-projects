@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oblivion Conversation Game</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+  <p>Hover over the quadrant to see the person's reaction.</p>
+    <p>Click on every quadrant to increase the number in the center.</p>
+  <div class="container">
+    
+    <div class="wheel" id="wheel">
+      <!-- TODO: this goes down by one when start game -->
+    <div id="count">50</div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <!-- Segments will be inserted here dynamically -->
+    </div>
+    <div class="face" id="face">🙂</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

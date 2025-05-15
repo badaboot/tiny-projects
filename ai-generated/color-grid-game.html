@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Grid Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+        
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            transition: transform 0.2s ease;
+        }
+        
+        .player {
+            width: 40px;
+            height: 40px;
+            background-color: black;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        #controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        #scoreboard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        
+        #message {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            height: 30px;
+        }
+        
+        #instructions {
+            margin-top: 30px;
+            max-width: 500px;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Color Grid Game</h1>
+        
+        <div id="grid"></div>
+        
+        <div id="controls">
+            <div id="scoreboard">Score: <span id="score">0</span>/9</div>
+            <button id="start-btn">Start Game</button>
+        </div>
+        
+        <div id="message"></div>
+        
+        <div id="instructions">
+            <h3>How to Play:</h3>
+            <p>Use WASD or Arrow Keys to move your player to the cell with the same color as the background. 
+            Each time you match the correct color, you score a point. Reach 9 points to win!</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Game elements
+            const grid = document.getElementById('grid');
+            const startBtn = document.getElementById('start-btn');
+            const scoreDisplay = document.getElementById('score');
+            const messageDisplay = document.getElementById('message');
+            
+            // Game state
+            let playerPosition = { row: 1, col: 1 };
+            let score = 0;
+            let gameStarted = false;
+            let targetColor = '';
+            let cells = [];
+            
+            // 9 unique colors
+            const colors = [
+                '#FF5733', // Red-Orange
+                '#33FF57', // Green
+                '#3357FF', // Blue
+                '#F3FF33', // Yellow
+                '#FF33F3', // Pink
+                '#33FFF3', // Cyan
+                '#FF9933', // Orange
+                '#9933FF', // Purple
+                '#33FFAA'  // Turquoise
+            ];
+            
+            // Initialize the grid
+            function createGrid() {
+                grid.innerHTML = '';
+                cells = [];
+                
+                // Create 3x3 grid of cells with unique colors
+                for (let row = 0; row < 3; row++) {
+                    cells[row] = [];
+                    for (let col = 0; col < 3; col++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        cell.dataset.row = row;
+                        cell.dataset.col = col;
+                        
+                        // Assign unique color to each cell
+                        const colorIndex = row * 3 + col;
+                        cell.style.backgroundColor = colors[colorIndex];
+                        
+                        cells[row][col] = cell;
+                        grid.appendChild(cell);
+                    }
+                }
+                
+                // Place player at the center
+                updatePlayerPosition();
+            }
+            
+            // Update player's position on the grid
+            function updatePlayerPosition() {
+                // Remove player from all cells
+                document.querySelectorAll('.player').forEach(player => player.remove());
+                
+                // Add player to current position
+                const playerElement = document.createElement('div');
+                playerElement.className = 'player';
+                cells[playerPosition.row][playerPosition.col].appendChild(playerElement);
+            }
+            
+            // Set a new target color
+            function setNewTargetColor() {
+                // Get current player's cell color
+                const currentCellColor = cells[playerPosition.row][playerPosition.col].style.backgroundColor;
+                
+                // Filter out the current cell's color
+                const availableColors = colors.filter(color => {
+                    return color.toLowerCase() !== currentCellColor.toLowerCase() && 
+                           color.toLowerCase() !== rgb2hex(currentCellColor).toLowerCase();
+                });
+                
+                // Select random color from available colors
+                const randomIndex = Math.floor(Math.random() * availableColors.length);
+                targetColor = availableColors[randomIndex];
+                
+                // Set background color
+                document.body.style.backgroundColor = targetColor;
+            }
+            
+            // Convert RGB to HEX (for color comparison)
+            function rgb2hex(rgb) {
+                if (rgb.startsWith('#')) return rgb;
+                
+                rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+                if (!rgb) return "#000000";
+                
+                function hex(x) {
+                    return ("0" + parseInt(x).toString(16)).slice(-2);
+                }
+                return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+            }
+            
+            // Check if player is on the target color cell
+            function checkMatch() {
+                const currentCellColor = cells[playerPosition.row][playerPosition.col].style.backgroundColor;
+                const hexCurrentColor = rgb2hex(currentCellColor).toLowerCase();
+                const hexTargetColor = targetColor.toLowerCase();
+                
+                if (hexCurrentColor === hexTargetColor) {
+                    score++;
+                    scoreDisplay.textContent = score;
+                    
+                    if (score >= 9) {
+                        gameWon();
+                    } else {
+                        messageDisplay.textContent = "Match! Keep going!";
+                        setNewTargetColor();
+                    }
+                }
+            }
+            
+            // Handle game win
+            function gameWon() {
+                gameStarted = false;
+                messageDisplay.textContent = "You Win! Congratulations!";
+                startBtn.textContent = "Play Again";
+                document.body.style.backgroundColor = "#FFF";
+            }
+            
+            // Start the game
+            function startGame() {
+                score = 0;
+                scoreDisplay.textContent = score;
+                playerPosition = { row: 1, col: 1 };
+                updatePlayerPosition();
+                gameStarted = true;
+                
+                setNewTargetColor();
+                startBtn.textContent = "Restart";
+                messageDisplay.textContent = "Find the matching color!";
+            }
+            
+            // Handle keyboard input
+            function handleKeyDown(e) {
+                if (!gameStarted) return;
+                
+                let moved = false;
+                const key = e.key.toLowerCase();
+                
+                // Store the previous position
+                const prevPosition = {...playerPosition};
+                
+                // Update position based on key press
+                if ((key === 'w' || key === 'arrowup') && playerPosition.row > 0) {
+                    playerPosition.row--;
+                    moved = true;
+                } else if ((key === 's' || key === 'arrowdown') && playerPosition.row < 2) {
+                    playerPosition.row++;
+                    moved = true;
+                } else if ((key === 'a' || key === 'arrowleft') && playerPosition.col > 0) {
+                    playerPosition.col--;
+                    moved = true;
+                } else if ((key === 'd' || key === 'arrowright') && playerPosition.col < 2) {
+                    playerPosition.col++;
+                    moved = true;
+                }
+                
+                // If player moved, update the display and check for match
+                if (moved) {
+                    updatePlayerPosition();
+                    checkMatch();
+                }
+            }
+            
+            // Set up event listeners
+            startBtn.addEventListener('click', startGame);
+            document.addEventListener('keydown', handleKeyDown);
+            
+            // Initialize game
+            createGrid();
+        });
+    </script>
+</body>
+</html>

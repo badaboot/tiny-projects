@@ -1,0 +1,128 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    color: white;
+    font-family: 'Courier New', monospace;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.word-block {
+    position: absolute;
+    background-color: #333;
+    border: 2px solid #555;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    min-width: 100px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s;
+}
+
+.word-block.active {
+    background-color: #553355;
+    border-color: #7a5c7a;
+    box-shadow: 0 0 15px rgba(123, 104, 238, 0.7);
+}
+
+.word-block.matching {
+    background-color: #355535;
+    border-color: #5c7a5c;
+}
+
+#game-ui {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 600px;
+}
+
+#input-field {
+    width: 100%;
+    padding: 15px;
+    font-size: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border: 2px solid #444;
+    border-radius: 5px;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+#input-field:focus {
+    outline: none;
+    border-color: #7a5c7a;
+    box-shadow: 0 0 10px rgba(123, 104, 238, 0.5);
+}
+
+#score-display {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#raven-image {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    width: 60px;
+    height: 60px;
+    opacity: 0.8;
+}
+
+#game-over {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    font-weight: bold;
+    display: none;
+}
+
+#play-again {
+    margin-top: 30px;
+    font-size: 24px;
+}
+
+#play-again span {
+    margin: 0 20px;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+#yes-btn {
+    background-color: #553355;
+    color: white;
+}
+
+#no-btn {
+    background-color: #333;
+    color: #aaa;
+}
+
+#yes-btn:hover,
+#no-btn:hover {
+    transform: scale(1.05);
+}

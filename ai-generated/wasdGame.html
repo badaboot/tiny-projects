@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Movement Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            border: 2px solid #333;
+            overflow: hidden;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            width: 100%;
+            height: 100%;
+        }
+        
+        .cell {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        
+        .green {
+            background-color: #000000;
+        }
+        
+        .gray {
+            background-color: #FFFFFF;
+        }
+        
+        .player {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: blue;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        
+        .item {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+            z-index: 5;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .close-btn {
+            margin-top: 20px;
+            padding: 8px 16px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="grid" id="grid"></div>
+        <div class="player" id="player"></div>
+        <div class="instructions">
+            <p>Move: WASD keys or Arrow keys</p>
+            <p>Interact: E key</p>
+        </div>
+    </div>
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 id="itemTitle">Item Name</h2>
+            <p id="itemDescription">Item description goes here.</p>
+            <button class="close-btn" id="closeModal">Close</button>
+        </div>
+    </div>
+    
+    <script>
+        // Game configuration
+        const GRID_SIZE = 10;
+        const CELL_SIZE = 60;
+        const ITEMS = [
+            { name: "Sunflower Pot", description: "Sunny and comforting", color: "#FFC107" },
+            { name: "Devil Horns", description: "Sexy and flirty", color: "#F44336" },
+            { name: "Notebook", description: "For writing secrets", color: "#2196F3" },
+            { name: "Phone", description: "For killing time", color: "#673AB7" }
+        ];
+        
+        // DOM elements
+        const gridElement = document.getElementById("grid");
+        const playerElement = document.getElementById("player");
+        const modalElement = document.getElementById("modal");
+        const itemTitleElement = document.getElementById("itemTitle");
+        const itemDescElement = document.getElementById("itemDescription");
+        const closeModalBtn = document.getElementById("closeModal");
+        
+        // Game state
+        let playerPosition = { x: 0, y: 0 };
+        let grid = [];
+        let items = [];
+        let activeItem = null;
+        
+        // Generate the grid
+        function generateGrid() {
+            grid = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill("green"));
+            
+            // Create a path pattern (gray cells)
+            for (let i = 2; i < GRID_SIZE - 2; i++) {
+                grid[i][2] = "gray";
+                grid[i][GRID_SIZE - 3] = "gray";
+                grid[2][i] = "gray";
+                grid[GRID_SIZE - 3][i] = "gray";
+            }
+            
+            // Add some additional paths
+            for (let i = 3; i < GRID_SIZE - 3; i++) {
+                grid[i][5] = "gray";
+                grid[5][i] = "gray";
+            }
+            
+            // Render the grid
+            gridElement.innerHTML = "";
+            for (let y = 0; y < GRID_SIZE; y++) {
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    const cell = document.createElement("div");
+                    cell.className = `cell ${grid[y][x]}`;
+                    gridElement.appendChild(cell);
+                }
+            }
+        }
+        
+        // Place items on the grid
+        function placeItems() {
+            items = [];
+            // Updated positions to ensure items are on gray paths
+            const positions = [
+                { x: 2, y: 2 },  // Top-left intersection
+                { x: 7, y: 2 },  // Top-right intersection
+                { x: 2, y: 7 },  // Bottom-left intersection
+                { x: 7, y: 7 }   // Bottom-right intersection
+            ];
+            
+            ITEMS.forEach((item, index) => {
+                const pos = positions[index];
+                const itemElement = document.createElement("div");
+                itemElement.className = "item";
+                itemElement.style.backgroundColor = item.color;
+                itemElement.style.left = pos.x * CELL_SIZE + (CELL_SIZE - 30) / 2 + "px";
+                itemElement.style.top = pos.y * CELL_SIZE + (CELL_SIZE - 30) / 2 + "px";
+                itemElement.textContent = item.name[0];
+                
+                document.querySelector(".game-container").appendChild(itemElement);
+                
+                items.push({
+                    ...item,
+                    position: { x: pos.x, y: pos.y },
+                    element: itemElement
+                });
+            });
+        }
+        
+        // Update player position
+        function updatePlayerPosition() {
+            playerElement.style.left = playerPosition.x * CELL_SIZE + (CELL_SIZE - 40) / 2 + "px";
+            playerElement.style.top = playerPosition.y * CELL_SIZE + (CELL_SIZE - 40) / 2 + "px";
+        }
+        
+        // Check if player can move to the target position
+        function canMove(targetX, targetY) {
+            // Check if the position is within grid boundaries
+            if (targetX < 0 || targetX >= GRID_SIZE || targetY < 0 || targetY >= GRID_SIZE) {
+                return false;
+            }
+            
+            // Check if the position is a gray path (player can only move on gray)
+            return grid[targetY][targetX] === "gray";
+        }
+        
+        // Check for item at position
+        function getItemAtPosition(x, y) {
+            return items.find(item => item.position.x === x && item.position.y === y);
+        }
+        
+        // Show modal with item details
+        function showItemModal(item) {
+            itemTitleElement.textContent = item.name;
+            itemDescElement.textContent = item.description;
+            modalElement.style.display = "flex";
+            activeItem = item;
+        }
+        
+        // Handle keyboard controls
+        function handleKeydown(e) {
+            let targetX = playerPosition.x;
+            let targetY = playerPosition.y;
+            
+            switch (e.key.toLowerCase()) {
+                // WASD controls
+                case "w":
+                    targetY--;
+                    break;
+                case "a":
+                    targetX--;
+                    break;
+                case "s":
+                    targetY++;
+                    break;
+                case "d":
+                    targetX++;
+                    break;
+                    
+                // Arrow key controls
+                case "arrowup":
+                    targetY--;
+                    break;
+                case "arrowleft":
+                    targetX--;
+                    break;
+                case "arrowdown":
+                    targetY++;
+                    break;
+                case "arrowright":
+                    targetX++;
+                    break;
+                    
+                case "e":
+                    const item = getItemAtPosition(playerPosition.x, playerPosition.y);
+                    if (item) {
+                        showItemModal(item);
+                    }
+                    return;
+            }
+            
+            if (canMove(targetX, targetY)) {
+                playerPosition.x = targetX;
+                playerPosition.y = targetY;
+                updatePlayerPosition();
+            }
+        }
+        
+        // Initialize the game
+        function initGame() {
+            generateGrid();
+            placeItems();
+            
+            // Set initial player position on a gray path
+            // Find the first gray cell to place the player
+            let startPosition = { x: 0, y: 0 };
+            for (let y = 0; y < GRID_SIZE; y++) {
+                for (let x = 0; x < GRID_SIZE; x++) {
+                    if (grid[y][x] === "gray") {
+                        startPosition = { x, y };
+                        break;
+                    }
+                }
+                if (startPosition.x !== 0 || startPosition.y !== 0) break;
+            }
+            
+            playerPosition = startPosition;
+            updatePlayerPosition();
+            
+            // Event listeners
+            window.addEventListener("keydown", handleKeydown);
+            closeModalBtn.addEventListener("click", () => {
+                modalElement.style.display = "none";
+                activeItem = null;
+            });
+            
+            // Close modal when clicking outside
+            modalElement.addEventListener("click", (e) => {
+                if (e.target === modalElement) {
+                    modalElement.style.display = "none";
+                    activeItem = null;
+                }
+            });
+        }
+        
+        // Start the game
+        initGame();
+    </script>
+</body>
+</html>

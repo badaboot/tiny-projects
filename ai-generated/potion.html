@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Three Lane Plant Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f0f0f0;
+        text-align: center;
+        padding: 20px;
+      }
+      .lane {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        min-height: 140px;
+        border: 2px dashed #ccc;
+        padding: 10px;
+      }
+      .card,
+      .potion {
+        width: 80px;
+        height: 120px;
+        margin: 0 10px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        cursor: grab;
+        flex-direction: column;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Three Lane Plant Game</h1>
+    <div>
+      <button onclick="endDay()">End Day</button>
+    </div>
+    <h2>Lane 1 (Ages +3)</h2>
+    <div id="lane1" class="lane"></div>
+    <h2>Lane 2 (Ages +1)</h2>
+    <div id="lane2" class="lane"></div>
+    <h2>Lane 3 (Potions)</h2>
+    <div id="lane3" class="lane"></div>
+
+    <script>
+      const colors = ["red", "green", "purple", "blue"];
+
+      function getRandomColor() {
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      function createCard() {
+        return {
+          id: crypto.randomUUID(),
+          color: getRandomColor(),
+          number: Math.floor(Math.random() * 4) + 1,
+          lane: null,
+        };
+      }
+
+      function createPotion() {
+        return {
+          color: getRandomColor(),
+          total: 0,
+        };
+      }
+
+      const lane1 = [];
+      const lane2 = [];
+      const lane3 = [];
+
+      // Fill lanes with initial cards and potions
+      for (let i = 0; i < 3; i++) {
+        lane1.push(createCard());
+        lane2.push(createCard());
+        lane3.push(createPotion());
+      }
+
+      function render() {
+        const lane1Div = document.getElementById("lane1");
+        const lane2Div = document.getElementById("lane2");
+        const lane3Div = document.getElementById("lane3");
+
+        lane1Div.innerHTML = "";
+        lane2Div.innerHTML = "";
+        lane3Div.innerHTML = "";
+
+        lane1.forEach((card) => {
+          const div = document.createElement("div");
+          div.className = "card";
+          div.style.background = card.color;
+          div.textContent = card.number;
+          div.setAttribute("data-id", card.id);
+          div.setAttribute("data-color", card.color);
+          card.lane = 1;
+          lane1Div.appendChild(div);
+          makeDraggable(div);
+        });
+
+        lane2.forEach((card) => {
+          const div = document.createElement("div");
+          div.className = "card";
+          div.style.background = card.color;
+          div.textContent = card.number;
+          div.setAttribute("data-id", card.id);
+          div.setAttribute("data-color", card.color);
+          card.lane = 2;
+          lane2Div.appendChild(div);
+          makeDraggable(div);
+        });
+
+        lane3.forEach((potion) => {
+          const div = document.createElement("div");
+          div.className = "potion";
+          div.style.background = potion.color;
+          div.setAttribute("data-color", potion.color);
+          div.textContent = potion.total;
+          lane3Div.appendChild(div);
+        });
+      }
+
+      function makeDraggable(element) {
+        Draggable.create(element, {
+          bounds: document.body,
+          onRelease: function () {
+            const cardColor = this.target.getAttribute("data-color");
+            const cardId = this.target.getAttribute("data-id");
+            const cardNumber = parseInt(this.target.textContent);
+
+            let matched = false;
+            lane3.forEach((potion, index) => {
+              const potionDiv =
+                document.querySelectorAll("#lane3 .potion")[index];
+              const potionColor = potionDiv.getAttribute("data-color");
+              const potionRect = potionDiv.getBoundingClientRect();
+              const cardRect = this.target.getBoundingClientRect();
+
+              if (
+                cardRect.left < potionRect.right &&
+                cardRect.right > potionRect.left &&
+                cardRect.top < potionRect.bottom &&
+                cardRect.bottom > potionRect.top &&
+                cardColor === potionColor
+              ) {
+                matched = true;
+                potion.total += cardNumber;
+                removeCardById(cardId);
+                this.target.remove();
+                render();
+              }
+            });
+
+            if (!matched) {
+              gsap.to(this.target, { x: 0, y: 0, duration: 0.5 });
+            }
+          },
+        });
+      }
+
+      function removeCardById(id) {
+        let index = lane1.findIndex((c) => c.id === id);
+        if (index > -1) {
+          const card = lane1[index];
+          if (card.number >= 9) {
+            gsap.to(card, {
+              scale: 0,
+              rotation: 360,
+              duration: 1,
+              onComplete: function () {
+                lane1.splice(index, 1);
+                render();
+              },
+            });
+          } else {
+            lane1.splice(index, 1);
+          }
+          return;
+        }
+        index = lane2.findIndex((c) => c.id === id);
+        if (index > -1) {
+          const card = lane2[index];
+          if (card.number >= 9) {
+            gsap.to(card, {
+              scale: 0,
+              rotation: 360,
+              duration: 1,
+              onComplete: function () {
+                lane2.splice(index, 1);
+                render();
+              },
+            });
+          } else {
+            lane2.splice(index, 1);
+          }
+        }
+      }
+
+      function endDay() {
+        // Increase numbers of plant cards in lanes 1 and 2
+        for (let card of lane1) {
+          card.number += 3;
+        }
+        for (let card of lane2) {
+          card.number += 1;
+        }
+
+        // Remove expired cards (number >= 9)
+        for (let i = lane1.length - 1; i >= 0; i--) {
+          if (lane1[i].number >= 9) lane1.splice(i, 1);
+        }
+        for (let i = lane2.length - 1; i >= 0; i--) {
+          if (lane2[i].number >= 9) lane2.splice(i, 1);
+        }
+
+        // Fill any empty slots in lanes 1 and 2 with new cards
+        while (lane1.length < 3) {
+          lane1.push(createCard());
+        }
+        while (lane2.length < 3) {
+          lane2.push(createCard());
+        }
+
+        render();
+      }
+
+      render();
+    </script>
+  </body>
+</html>

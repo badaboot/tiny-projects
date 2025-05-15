@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Mixing Game</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>Color Mixing Game</h1>
+        
+        <div class="instruction-area">
+            <h3>How to Play:</h3>
+            <p>Adjust the Red, Green, and Blue sliders to create the target color. RGB color mixing is <strong>additive</strong> - combined colors are brighter.</p>
+            <p>Complete all three rounds to master RGB color theory!</p>
+            <p><strong>Note:</strong> Sliders move in steps of 10%.</p>
+        </div>
+        
+        <datalist claass="tickmarks">
+            <option value="0"></option>
+            <option value="10"></option>
+            <option value="20"></option>
+            <option value="30"></option>
+            <option value="40"></option>
+            <option value="50"></option>
+            <option value="60"></option>
+            <option value="70"></option>
+            <option value="80"></option>
+            <option value="90"></option>
+            <option value="100"></option>
+        </datalist>
+        
+        <div class="game-info">
+            <div class="round-indicator">Round: <span id="round-number">1</span> - <span id="round-name">Primary Colors</span></div>
+        </div>
+        
+        <div class="game-area">
+            <div>
+                <div class="color-area">
+                    <p class="center">Your Mix</p>
+                    <div id="user-color" class="color-display"></div>
+                </div>
+                <div class="color-area">
+                    <p class="center">Target Color: <span id="target-color-name">Red</span></p>
+                    <div id="target-color" class="color-display color-target"></div>
+                </div>
+            </div>
+            
+            <div class="color-controls">
+                <div class="color-slider-container">
+                    <div class="slider-label">Red: <span id="red-value">0</span>%</div>
+                    <input type="range" min="0" max="100" value="0" step="10" list="tickmarks" class="color-slider" id="red-slider">
+                </div>
+                <div class="color-slider-container">
+                    <div class="slider-label">Green: <span id="green-value">0</span>%</div>
+                    <input type="range" min="0" max="100" value="0" step="10" list="tickmarks" class="color-slider" id="green-slider">
+                </div>
+                <div class="color-slider-container">
+                    <div class="slider-label">Blue: <span id="blue-value">0</span>%</div>
+                    <input type="range" min="0" max="100" value="0" step="10" list="tickmarks" class="color-slider" id="blue-slider">
+                </div>
+            </div>
+            
+            <div class="message" id="message"></div>
+            
+            <button id="check-button">Check My Mix</button>
+        </div>
+        
+        <div class="score-display">
+            Score: <span id="score">0</span> / <span id="total-challenges">9</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

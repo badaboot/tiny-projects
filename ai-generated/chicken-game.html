@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicken Egg Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #87CEEB;
+            font-family: Arial, sans-serif;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #game-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #87CEEB 0%, #e0f7fa 100%);
+        }
+        
+        #score {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+        
+        #chicken-row {
+            position: absolute;
+            top: 100px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            z-index: 5;
+        }
+        
+        .chicken {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50% 50% 50% 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .chicken-body {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .chicken-face {
+            position: absolute;
+            bottom: 25px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .chicken-eye {
+            width: 12px;
+            height: 12px;
+            background-color: black;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .chicken-eye.big {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .chicken-beak {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 10px;
+            background-color: orange;
+            clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+        }
+        
+        .chicken-comb {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 15px;
+            background-color: red;
+            clip-path: polygon(0% 100%, 33% 50%, 66% 100%, 100% 50%, 80% 0%, 50% 50%, 20% 0%);
+        }
+        
+        .chicken-string {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 50px;
+            background-color: #8B4513;
+        }
+        
+        .egg {
+            position: absolute;
+            width: 25px;
+            height: 35px;
+            background-color: #FFFFF0;
+            border-radius: 50% 50% 50% 50%;
+            z-index: 2;
+        }
+        
+        #basket {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 40px;
+            background-color: #8B4513;
+            border-radius: 0 0 50px 50px;
+            z-index: 1;
+            transition: left 0.1s ease-out;
+        }
+        
+        #basket::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background-color: #A0522D;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #8B4513;
+        }
+        
+        .grass {
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            height: 20px;
+            background-color: #4CAF50;
+        }
+        
+
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="game-background"></div>
+        <div id="score">Score: 0</div>
+        
+        <div id="chicken-row">
+            <div class="chicken" data-position="0">
+                <div class="chicken-string"></div>
+                <div class="chicken-body">
+                    <div class="chicken-comb"></div>
+                    <div class="chicken-face">
+                        <div class="chicken-eye"></div>
+                        <div class="chicken-eye"></div>
+                    </div>
+                    <div class="chicken-beak"></div>
+                </div>
+            </div>
+            
+            <div class="chicken" data-position="1">
+                <div class="chicken-string"></div>
+                <div class="chicken-body">
+                    <div class="chicken-comb"></div>
+                    <div class="chicken-face">
+                        <div class="chicken-eye"></div>
+                        <div class="chicken-eye"></div>
+                    </div>
+                    <div class="chicken-beak"></div>
+                </div>
+            </div>
+            
+            <div class="chicken" data-position="2">
+                <div class="chicken-string"></div>
+                <div class="chicken-body">
+                    <div class="chicken-comb"></div>
+                    <div class="chicken-face">
+                        <div class="chicken-eye"></div>
+                        <div class="chicken-eye"></div>
+                    </div>
+                    <div class="chicken-beak"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="basket"></div>
+        <div class="grass"></div>
+        <div class="ground"></div>
+    </div>
+    
+    <script>
+        // Game variables
+        let score = 0;
+        let basketPosition = window.innerWidth / 2;
+        let basketSpeed = 10;
+        let basketWidth = 100;
+        let eggSpeed = 3;
+        let eggs = [];
+        let chickens = [];
+        let gameContainer = document.getElementById('game-container');
+        let scoreElement = document.getElementById('score');
+        let basket = document.getElementById('basket');
+        let gameActive = true;
+        let cluckSound;
+        let missSound;
+        let catchSound;
+        let keys = {
+            left: false,
+            right: false
+        };
+
+        // Initialize game
+        function init() {
+            // Set up chickens array
+            chickens = Array.from(document.querySelectorAll('.chicken'));
+            
+            // Set up audio
+            setupAudio();
+            
+            // Start game loop
+            gameLoop();
+            
+            // Start laying eggs randomly
+            setInterval(layEggRandomly, 2000);
+            
+            // Setup keyboard controls
+            setupControls();
+        }
+        
+        // Setup audio elements
+        function setupAudio() {
+            // Cluck sound
+            cluckSound = new Audio();
+            cluckSound.src = 'data:audio/wav;base64,UklGRigBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQBAABpXFRQTEZCPz07PEBBQkFBPz06ODc3OTs9OzY0MzI0NTc5PDw5NjM0NDQ1NTU1NTY6P0NFR0dEQj88Oz1BQ0VGR0ZFRUVFQ0E/PDo3NjU1NTc5PDw7Ojg1MzM0NTg7PD5AP0A/Pj49PD5BQ0VFQ0A9Ozo7PD1AQUFDQD07Ojk4OTo8PT49PDw6OTk4OTo8PT9BQUFDQ0JBPz07OTc2Njc5PD9CQ0RDQj88Ojg2NjY4OTw/QUJCQkA+PDo3NjM0NTg7PkBBQkE+PDk2NTQ0Njk9QENEREVEQj88OTc1NTY5PD9CRT8=';
+            
+            // Miss sound
+            missSound = new Audio();
+            missSound.src = 'data:audio/wav;base64,UklGRigBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQBAABsY15ZVE9KRkNBPz09PkBBQkJBPz07OTg4OTo8PT07OTY0MzM0NTc5Ozs5NjQzMzQ1NTU1Njc8QUVHR0RCQD48PDxAQ0VGRUVDQUBBQD89Ozk3NTQzNDY5Ozw7Ojg2NDM0NTY5PD5AQEA/Pj09PD1AQUNFQ0E+PDo6Ozw9P0FCQkE+PDo5OTk5Oz0+Pz49PDo5OTg5Oz0/QUJDQkNDQUE/Pjs4NjY2Nzk8P0JEQ0NCQD48Ojg2NjY4Oz0/QkJCQj8+Ozk3NjU1Nzk8PkFCQkE/PTk3NTQ0Njg8P0NEREVEQkA+PDk2NTY4Oz5BQz8=';
+            
+            // Catch sound
+            catchSound = new Audio();
+            catchSound.src = 'data:audio/wav;base64,UklGRigBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQBAABmXVhUUU1JRkNBPz4+PkBBQkJCQD48Ozo5OTo7PT49PDo3NTU2Njc5Ozw8Ojg2NDM0NDU2NTY4O0FFR0dFQ0E+PT0+QENFR0dGRUNCQT8+PDo4NjU1NTY4Oz08Ozo4NjU0NDY4Ozw+QEBAQUFAPz49PUFDRUVDQT89Ozs7PD0/QUJCQT89Ozk5OTo8PkA/Pz49PDo5OTk7PD5AQUJDQ0NCQUA+PDo3NjY3ODo9QENCQ0JBPz06ODc2NjY5PD9CQ0NDQT89Ozk3NjY3ODo9QEFCQkE/PTu4NjU1NTc6PUBDREVFQkFAPTs5NjY3OTw/Qj8=';
+        }
+        
+
+        
+        // Setup game controls
+        function setupControls() {
+            // Keyboard controls
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    keys.left = true;
+                } else if (e.key === 'ArrowRight') {
+                    keys.right = true;
+                }
+            });
+            
+            window.addEventListener('keyup', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    keys.left = false;
+                } else if (e.key === 'ArrowRight') {
+                    keys.right = false;
+                }
+            });
+            
+            // Mobile touch controls
+            let touchStartX = 0;
+            let currentTouchX = 0;
+            let isTouching = false;
+            
+            gameContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+                currentTouchX = touchStartX;
+                isTouching = true;
+                e.preventDefault();
+            });
+            
+            gameContainer.addEventListener('touchmove', function(e) {
+                currentTouchX = e.touches[0].clientX;
+                e.preventDefault();
+            });
+            
+            gameContainer.addEventListener('touchend', function(e) {
+                isTouching = false;
+                e.preventDefault();
+            });
+            
+            // Smooth basket movement function
+            function updateBasketPosition() {
+                // Keyboard movement
+                if (keys.left && basketPosition > basketWidth/2) {
+                    basketPosition -= basketSpeed;
+                }
+                
+                if (keys.right && basketPosition < window.innerWidth - basketWidth/2) {
+                    basketPosition += basketSpeed;
+                }
+                
+                // Touch movement
+                if (isTouching) {
+                    const diff = currentTouchX - touchStartX;
+                    basketPosition = Math.max(basketWidth/2, Math.min(window.innerWidth - basketWidth/2, window.innerWidth/2 + diff));
+                }
+                
+                // Apply smooth movement with CSS transitions
+                basket.style.transition = 'left 0.1s ease-out';
+                basket.style.left = basketPosition + 'px';
+                
+                requestAnimationFrame(updateBasketPosition);
+            }
+            
+            // Start the smooth movement loop
+            updateBasketPosition();
+        }
+        
+        // Choose a random chicken to lay an egg
+        function layEggRandomly() {
+            if (!gameActive) return;
+            
+            const chickenIndex = Math.floor(Math.random() * 3);
+            const chicken = chickens[chickenIndex];
+            
+            // Make chicken "alert" before laying (eyes get bigger)
+            const eyes = chicken.querySelectorAll('.chicken-eye');
+            eyes.forEach(eye => eye.classList.add('big'));
+            
+            // Play cluck sound
+            cluckSound.currentTime = 0;
+            cluckSound.play();
+            
+            // Wait a moment, then lay the egg
+            setTimeout(() => {
+                layEgg(chicken);
+                eyes.forEach(eye => eye.classList.remove('big'));
+            }, 800);
+        }
+        
+        // Create an egg from a specific chicken
+        function layEgg(chicken) {
+            const chickenRect = chicken.getBoundingClientRect();
+            const egg = document.createElement('div');
+            egg.className = 'egg';
+            egg.style.left = (chickenRect.left + chickenRect.width/2 - 12.5) + 'px';
+            egg.style.top = (chickenRect.top + chickenRect.height) + 'px';
+            
+            gameContainer.appendChild(egg);
+            eggs.push({
+                element: egg,
+                x: parseFloat(egg.style.left),
+                y: parseFloat(egg.style.top)
+            });
+        }
+        
+        // Main game loop
+        function gameLoop() {
+            // Move eggs
+            for (let i = eggs.length - 1; i >= 0; i--) {
+                const egg = eggs[i];
+                egg.y += eggSpeed;
+                egg.element.style.top = egg.y + 'px';
+                
+                // Check if egg hits bottom
+                if (egg.y > window.innerHeight - 70) {
+                    // Check if egg is caught by basket
+                    const eggX = egg.x + 12.5; // Center of egg
+                    const isCaught = 
+                        eggX > basketPosition - basketWidth/2 && 
+                        eggX < basketPosition + basketWidth/2;
+                    
+                    if (isCaught) {
+                        // Caught egg
+                        score++;
+                        catchSound.currentTime = 0;
+                        catchSound.play();
+                    } else {
+                        // Missed egg
+                        score = Math.max(0, score - 1);
+                        missSound.currentTime = 0;
+                        missSound.play();
+                    }
+                    
+                    // Update score display
+                    scoreElement.textContent = 'Score: ' + score;
+                    
+                    // Remove egg
+                    gameContainer.removeChild(egg.element);
+                    eggs.splice(i, 1);
+                }
+            }
+            
+            // Adjust difficulty based on score
+            eggSpeed = 3 + Math.min(5, Math.floor(score / 10));
+            
+            // Continue game loop
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Initialize game when window loads
+        window.onload = init;
+    </script>
+</body>
+</html>

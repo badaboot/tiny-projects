@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Typing Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        .word-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            min-height: 3.5rem;
+            letter-spacing: 1px;
+        }
+        .typing-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        input[type="text"] {
+            padding: 1rem;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #3498db;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+        }
+        .stat-box {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            min-width: 100px;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .feedback {
+            min-height: 24px;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        .correct {
+            color: #27ae60;
+        }
+        .incorrect {
+            color: #e74c3c;
+        }
+        .time-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .time-bar {
+            height: 100%;
+            background-color: #3498db;
+            border-radius: 5px;
+            transition: width 0.1s linear;
+        }
+        .time-warning {
+            background-color: #e74c3c;
+        }
+        .timeout-message {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .completed {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .word-progress {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .letter {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1.2rem;
+        }
+        .incorrect-letter {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Word Typing Game - Multiple Rounds</h1>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">Accuracy</div>
+                <div class="stat-value" id="accuracy">100%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Time</div>
+                <div class="stat-value" id="time">0s</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Round</div>
+                <div class="stat-value" id="round">1/5</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Attempts</div>
+                <div class="stat-value" id="attempts">0</div>
+            </div>
+        </div>
+        
+        <div class="word-display" id="wordDisplay">edamame</div>
+        
+        <div class="word-progress" id="wordProgress"></div>
+        
+        <div class="typing-area">
+            <input type="text" id="wordInput" placeholder="Type the word here..." autocomplete="off">
+            <div class="feedback" id="feedback"></div>
+        </div>
+        
+        <button id="resetBtn">Reset</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Game elements
+            const wordDisplay = document.getElementById('wordDisplay');
+            const wordInput = document.getElementById('wordInput');
+            const feedback = document.getElementById('feedback');
+            const resetBtn = document.getElementById('resetBtn');
+            const accuracyDisplay = document.getElementById('accuracy');
+            const timeDisplay = document.getElementById('time');
+            const attemptsDisplay = document.getElementById('attempts');
+            const roundDisplay = document.getElementById('round');
+            const wordProgress = document.getElementById('wordProgress');
+
+            // Game variables
+            const words = ['edamame', 'sword', 'samurai', 'ghost', 'death'];
+            let currentWordIndex = 0;
+            let startTime = null;
+            let timer = null;
+            let attempts = 0;
+            let correctAttempts = 0;
+            let roundAttempts = 0;
+            
+            // Initialize the game
+            function initGame() {
+                const currentWord = words[currentWordIndex];
+                wordDisplay.textContent = currentWord;
+                wordInput.value = '';
+                feedback.textContent = '';
+                feedback.className = 'feedback';
+                roundDisplay.textContent = `${currentWordIndex + 1}/${words.length}`;
+                roundAttempts = 0;
+                
+                // Create letter boxes for the word
+                wordProgress.innerHTML = '';
+                for (let i = 0; i < currentWord.length; i++) {
+                    const letterBox = document.createElement('div');
+                    letterBox.className = 'letter';
+                    letterBox.textContent = currentWord[i];
+                    wordProgress.appendChild(letterBox);
+                }
+                
+                // Reset the game state if needed
+                if (startTime === null) {
+                    startTime = new Date();
+                    startTimer();
+                }
+                
+                // Focus the input field
+                wordInput.focus();
+            }
+            
+            // Start the timer
+            function startTimer() {
+                timer = setInterval(() => {
+                    const currentTime = new Date();
+                    const elapsed = Math.floor((currentTime - startTime) / 1000);
+                    timeDisplay.textContent = `${elapsed}s`;
+                }, 1000);
+            }
+            
+            // Update the letter progress display
+            function updateLetterProgress() {
+                const currentWord = words[currentWordIndex];
+                const userInput = wordInput.value;
+                const letterBoxes = wordProgress.querySelectorAll('.letter');
+                
+                for (let i = 0; i < currentWord.length; i++) {
+                    letterBoxes[i].className = 'letter';
+                    
+                    if (i < userInput.length) {
+                        if (userInput[i] === currentWord[i]) {
+                            letterBoxes[i].classList.add('correct-letter');
+                        } else {
+                            letterBoxes[i].classList.add('incorrect-letter');
+                        }
+                    }
+                }
+            }
+            
+            // Check if the input matches the current word
+            function checkWord() {
+                const currentWord = words[currentWordIndex];
+                const userInput = wordInput.value.trim().toLowerCase();
+                
+                roundAttempts++;
+                
+                if (userInput === currentWord) {
+                    feedback.textContent = `Correct! Moving to next word...`;
+                    feedback.className = 'feedback correct';
+                    correctAttempts++;
+                    
+                    // Move to the next word or show completion message
+                    if (currentWordIndex < words.length - 1) {
+                        currentWordIndex++;
+                        setTimeout(() => {
+                            wordInput.value = '';
+                            initGame();
+                        }, 1500);
+                    } else {
+                        clearInterval(timer);
+                        const elapsed = Math.floor((new Date() - startTime) / 1000);
+                        wordDisplay.textContent = 'All Rounds Completed!';
+                        wordDisplay.className = 'word-display completed';
+                        feedback.textContent = `Game finished in ${elapsed} seconds!`;
+                        wordInput.disabled = true;
+                    }
+                } else {
+                    feedback.textContent = 'Try again!';
+                    feedback.className = 'feedback incorrect';
+                }
+                
+                attempts++;
+                updateStats();
+            }
+            
+            // Update the game statistics
+            function updateStats() {
+                const accuracy = attempts > 0 ? Math.round((correctAttempts / attempts) * 100) : 100;
+                accuracyDisplay.textContent = `${accuracy}%`;
+                attemptsDisplay.textContent = attempts;
+            }
+            
+            // Reset the game
+            function resetGame() {
+                clearInterval(timer);
+                currentWordIndex = 0;
+                startTime = new Date();
+                attempts = 0;
+                correctAttempts = 0;
+                roundAttempts = 0;
+                wordDisplay.className = 'word-display';
+                wordInput.disabled = false;
+                updateStats();
+                startTimer();
+                initGame();
+            }
+            
+            // Event listeners
+            wordInput.addEventListener('input', updateLetterProgress);
+            
+            wordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkWord();
+                }
+            });
+            
+            resetBtn.addEventListener('click', resetGame);
+            
+            // Initialize the game
+            initGame();
+        });
+    </script>
+</body>
+</html>
