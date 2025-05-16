@@ -2,6 +2,14 @@
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
 const BLOCK_SIZE = 30;
+const colorMap = {
+    "#FF0000": 'Red',
+    "#00FF00": 'Green',
+    "#0000FF": 'Blue',
+    "#FFFF00": 'Yellow',
+    "#FF00FF": 'Magenta',
+    "#00FFFF": 'Cyan',
+}
 const COLORS = [
     "#FF0000", // Red
     "#00FF00", // Green
@@ -183,7 +191,7 @@ function drop() {
 
     render();
 }
-
+// TODO: refactor currentPiece to only be one piece
 function placePiece() {
     currentPiece.forEach((block) => {
         if (
