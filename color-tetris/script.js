@@ -109,11 +109,9 @@ function generatePiece() {
         y: 1,
         color: colorIndex2,
     });
+    // TODO: refactor to only return blocks
+    return blocks
 
-    return {
-        blocks,
-        rotation: 0,
-    };
 }
 
 // Game logic
@@ -122,7 +120,7 @@ function moveDown() {
 
     // Make a copy of the current piece, move it down
     const movedPiece = JSON.parse(JSON.stringify(currentPiece));
-    movedPiece.blocks.forEach((block) => block.y++);
+    movedPiece.forEach((block) => block.y++);
 
     // Check if it collides
     if (checkCollision(movedPiece)) {
@@ -144,7 +142,7 @@ function moveLeft() {
     if (gameOver) return;
 
     const movedPiece = JSON.parse(JSON.stringify(currentPiece));
-    movedPiece.blocks.forEach((block) => block.x--);
+    movedPiece.forEach((block) => block.x--);
 
     if (!checkCollision(movedPiece)) {
         currentPiece = movedPiece;
@@ -156,34 +154,11 @@ function moveRight() {
     if (gameOver) return;
 
     const movedPiece = JSON.parse(JSON.stringify(currentPiece));
-    movedPiece.blocks.forEach((block) => block.x++);
+    movedPiece.forEach((block) => block.x++);
 
     if (!checkCollision(movedPiece)) {
         currentPiece = movedPiece;
         render();
-    }
-}
-
-function rotate() {
-    if (gameOver) return;
-
-    // Rotate the two blocks
-    const rotatedPiece = JSON.parse(JSON.stringify(currentPiece));
-    const center = rotatedPiece.blocks[0];
-
-    // Only rotate the second block around the first
-    if (rotatedPiece.blocks.length > 1) {
-        const block = rotatedPiece.blocks[1];
-        const dx = block.x - center.x;
-        const dy = block.y - center.y;
-
-        block.x = center.x - dy;
-        block.y = center.y + dx;
-
-        if (!checkCollision(rotatedPiece)) {
-            currentPiece = rotatedPiece;
-            render();
-        }
     }
 }
 
@@ -194,7 +169,7 @@ function drop() {
 
     while (!dropped) {
         const movedPiece = JSON.parse(JSON.stringify(currentPiece));
-        movedPiece.blocks.forEach((block) => block.y++);
+        movedPiece.forEach((block) => block.y++);
 
         if (checkCollision(movedPiece)) {
             placePiece();
@@ -210,7 +185,7 @@ function drop() {
 }
 
 function placePiece() {
-    currentPiece.blocks.forEach((block) => {
+    currentPiece.forEach((block) => {
         if (
             block.y >= 0 &&
             block.y < BOARD_HEIGHT &&
@@ -266,20 +241,11 @@ function checkMatches() {
 
             // Apply rules if we found connected blocks
             if (connectedBlocks.length > 1) {
-                // If even number of blocks with this color
-                if (connectedBlocks.length % 2 === 0) {
-                    // Remove all blocks of this color
-                    connectedBlocks.forEach((block) => {
-                        board[block.y][block.x] = 0;
-                        blocksRemoved++;
-                    });
-                } else {
-                    // If odd number of blocks, remove all but one
-                    for (let i = 0; i < connectedBlocks.length - 1; i++) {
-                        board[connectedBlocks[i].y][connectedBlocks[i].x] = 0;
-                        blocksRemoved++;
-                    }
-                }
+                // Remove all blocks of this color
+                connectedBlocks.forEach((block) => {
+                    board[block.y][block.x] = 0;
+                    blocksRemoved++;
+                });
             }
         }
     }
@@ -349,7 +315,7 @@ function collapseEmptySpaces() {
 
 // Helper functions
 function checkCollision(piece) {
-    return piece.blocks.some((block) => {
+    return piece.some((block) => {
         // Check boundaries
         if (
             block.x < 0 ||
@@ -393,7 +359,7 @@ function render() {
 
     // Draw the current piece
     if (currentPiece) {
-        currentPiece.blocks.forEach((block) => {
+        currentPiece.forEach((block) => {
             if (block.y >= 0) {
                 drawBlock(ctx, block.x, block.y, COLORS[block.color]);
             }
@@ -447,12 +413,6 @@ document.addEventListener("keydown", (e) => {
             break;
         case "ArrowRight":
             moveRight();
-            break;
-        case "ArrowDown":
-            moveDown();
-            break;
-        case "ArrowUp":
-            rotate();
             break;
         case " ":
             e.preventDefault();
