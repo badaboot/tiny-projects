@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mary Had a Little Lamb - Memory Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Mary Had a Little Lamb - Memory Game</h1>
+    <div class="progress-display">
+      Play the next note in the sequence:
+      <span id="next-note" class="highlight">E</span>
+    </div>
+    <div class="score-display">
+      Score: <span id="score-value" class="score-value">0</span>
+    </div>
+
+    <div class="game-container">
+      <div class="piano">
+        <div class="piano-key" data-note="E">E</div>
+        <div class="piano-key" data-note="D">D</div>
+        <div class="piano-key" data-note="C">C</div>
+        <div class="piano-key" data-note="G">G</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="demo-btn">Show Demo</button>
+    </div>
+
+    <div class="instruction">
+      <p>
+        Play "Mary Had a Little Lamb" by clicking on the piano keys in the
+        correct sequence.
+      </p>
+      <p>Get points for correct notes and lose points for mistakes!</p>
+      <p>Click "Show Demo" to see and hear the song.</p>
+    </div>
+
+    <div id="game-message" class="game-message"></div>
+
+    <div id="end-game-modal" class="modal">
+      <div class="modal-content">
+        <h2>Game Complete!</h2>
+        <p>You've completed "Mary Had a Little Lamb"</p>
+        <p>Final Score: <span id="final-score">0</span></p>
+        <button id="play-again-btn">Play Again</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

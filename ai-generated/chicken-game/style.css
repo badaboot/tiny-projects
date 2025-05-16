@@ -1,0 +1,164 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #87CEEB;
+    font-family: Arial, sans-serif;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#game-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #87CEEB 0%, #e0f7fa 100%);
+}
+
+#score {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+#chicken-row {
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    z-index: 5;
+}
+
+.chicken {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    border-radius: 50% 50% 50% 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.chicken-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.chicken-face {
+    position: absolute;
+    bottom: 25px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.chicken-eye {
+    width: 12px;
+    height: 12px;
+    background-color: black;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.chicken-eye.big {
+    width: 18px;
+    height: 18px;
+}
+
+.chicken-beak {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 10px;
+    background-color: orange;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+}
+
+.chicken-comb {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 15px;
+    background-color: red;
+    clip-path: polygon(0% 100%, 33% 50%, 66% 100%, 100% 50%, 80% 0%, 50% 50%, 20% 0%);
+}
+
+.chicken-string {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 50px;
+    background-color: #8B4513;
+}
+
+.egg {
+    position: absolute;
+    width: 25px;
+    height: 35px;
+    background-color: #FFFFF0;
+    border-radius: 50% 50% 50% 50%;
+    z-index: 2;
+}
+
+#basket {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 40px;
+    background-color: #8B4513;
+    border-radius: 0 0 50px 50px;
+    transition: left 0.1s ease-out;
+    z-index: 10;
+}
+
+#basket::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background-color: #A0522D;
+    border-radius: 10px 10px 0 0;
+}
+
+.ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #8B4513;
+}
+
+.hide {
+    display: none;
+}
+
+.grass {
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+    height: 20px;
+    background-color: #4CAF50;
+}
