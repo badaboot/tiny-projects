@@ -1,15 +1,7 @@
 // Game Constants
-const BOARD_WIDTH = 10;
-const BOARD_HEIGHT = 20;
+const BOARD_WIDTH = 8;
+const BOARD_HEIGHT = 12;
 const BLOCK_SIZE = 30;
-const colorMap = {
-    "#FF0000": 'Red',
-    "#00FF00": 'Green',
-    "#0000FF": 'Blue',
-    "#FFFF00": 'Yellow',
-    "#FF00FF": 'Magenta',
-    "#00FFFF": 'Cyan',
-}
 const COLORS = [
     "#FF0000", // Red
     "#00FF00", // Green
@@ -27,6 +19,7 @@ let score = 0;
 let level = 1;
 let lines = 0;
 let gameOver = false;
+let isPaused = false;
 let dropInterval;
 let currentPiece = null;
 let nextPiece = null;
@@ -35,17 +28,16 @@ let nextPiece = null;
 const canvas = document.getElementById("game-board");
 const ctx = canvas.getContext("2d");
 const scoreElement = document.getElementById("score");
-const levelElement = document.getElementById("level");
 const gameOverElement = document.getElementById("game-over");
 const finalScoreElement = document.getElementById("final-score");
-const bestScoreElement = document.getElementById("best-score");
 const restartButton = document.getElementById("restart-button");
-const startButton = document.getElementById("start-button");
-const gameContainerElement = document.querySelector(".game-container");
+
+function formatNumberWithCommas(number) {
+    return number.toLocaleString('en-US');
+}
 
 // Initialize the game
 function init() {
-    gameContainerElement.classList.remove("half-opacity");
     board = Array(BOARD_HEIGHT)
         .fill()
         .map(() => Array(BOARD_WIDTH).fill(0));
@@ -53,10 +45,10 @@ function init() {
     level = 1;
     lines = 0;
     gameOver = false;
+    isPaused = false;
 
     // Update UI
     scoreElement.textContent = score;
-    levelElement.textContent = level;
     gameOverElement.style.display = "none";
 
     // Create first pieces
@@ -85,24 +77,21 @@ function createNewPiece() {
     if (isCollision()) {
         gameOver = true;
         clearInterval(dropInterval);
-        gameContainerElement.classList.add("half-opacity");
         gameOverElement.style.display = "block";
-        const bestScore = Math.max(score, parseInt(localStorage.getItem("bestScore") || 0))
-        localStorage.setItem("bestScore", bestScore);
         finalScoreElement.textContent = formatNumberWithCommas(score);
-        bestScoreElement.textContent = formatNumberWithCommas(bestScore)
     }
 }
-const getRandomColorIndex = () => Math.floor(Math.random() * COLORS.length);
+const getColorIndex = () => Math.floor(Math.random() * COLORS.length);
 function generatePiece() {
     // Generate a piece with two 1x1 blocks stacked vertically
     const blocks = [];
 
     // Generate random colors for both blocks
-    const colorIndex1 = getRandomColorIndex();
-    let colorIndex2 = getRandomColorIndex()
-    while (colorIndex1 === colorIndex2) {
-        colorIndex2 = getRandomColorIndex();
+    const colorIndex1 = getColorIndex();
+
+    let colorIndex2 = getColorIndex()
+    while (colorIndex2 === colorIndex1) {
+        colorIndex2 = getColorIndex();
     }
 
     // Place the blocks in the center, stacked vertically
@@ -117,18 +106,20 @@ function generatePiece() {
         y: 1,
         color: colorIndex2,
     });
-    // TODO: refactor to only return blocks
-    return blocks
 
+    return {
+        blocks,
+        rotation: 0,
+    };
 }
 
 // Game logic
 function moveDown() {
-    if (gameOver) return;
+    if (gameOver || isPaused) return;
 
     // Make a copy of the current piece, move it down
     const movedPiece = JSON.parse(JSON.stringify(currentPiece));
-    movedPiece.forEach((block) => block.y++);
+    movedPiece.blocks.forEach((block) => block.y++);
 
     // Check if it collides
     if (checkCollision(movedPiece)) {
@@ -147,10 +138,10 @@ function moveDown() {
 }
 
 function moveLeft() {
-    if (gameOver) return;
+    if (gameOver || isPaused) return;
 
     const movedPiece = JSON.parse(JSON.stringify(currentPiece));
-    movedPiece.forEach((block) => block.x--);
+    movedPiece.blocks.forEach((block) => block.x--);
 
     if (!checkCollision(movedPiece)) {
         currentPiece = movedPiece;
@@ -159,10 +150,10 @@ function moveLeft() {
 }
 
 function moveRight() {
-    if (gameOver) return;
+    if (gameOver || isPaused) return;
 
     const movedPiece = JSON.parse(JSON.stringify(currentPiece));
-    movedPiece.forEach((block) => block.x++);
+    movedPiece.blocks.forEach((block) => block.x++);
 
     if (!checkCollision(movedPiece)) {
         currentPiece = movedPiece;
@@ -170,14 +161,37 @@ function moveRight() {
     }
 }
 
+function rotate() {
+    if (gameOver || isPaused) return;
+
+    // Rotate the two blocks
+    const rotatedPiece = JSON.parse(JSON.stringify(currentPiece));
+    const center = rotatedPiece.blocks[0];
+
+    // Only rotate the second block around the first
+    if (rotatedPiece.blocks.length > 1) {
+        const block = rotatedPiece.blocks[1];
+        const dx = block.x - center.x;
+        const dy = block.y - center.y;
+
+        block.x = center.x - dy;
+        block.y = center.y + dx;
+
+        if (!checkCollision(rotatedPiece)) {
+            currentPiece = rotatedPiece;
+            render();
+        }
+    }
+}
+
 function drop() {
-    if (gameOver) return;
+    if (gameOver || isPaused) return;
 
     let dropped = false;
 
     while (!dropped) {
         const movedPiece = JSON.parse(JSON.stringify(currentPiece));
-        movedPiece.forEach((block) => block.y++);
+        movedPiece.blocks.forEach((block) => block.y++);
 
         if (checkCollision(movedPiece)) {
             placePiece();
@@ -191,9 +205,9 @@ function drop() {
 
     render();
 }
-// TODO: refactor currentPiece to only be one piece
+
 function placePiece() {
-    currentPiece.forEach((block) => {
+    currentPiece.blocks.forEach((block) => {
         if (
             block.y >= 0 &&
             block.y < BOARD_HEIGHT &&
@@ -249,11 +263,20 @@ function checkMatches() {
 
             // Apply rules if we found connected blocks
             if (connectedBlocks.length > 1) {
-                // Remove all blocks of this color
-                connectedBlocks.forEach((block) => {
-                    board[block.y][block.x] = 0;
-                    blocksRemoved++;
-                });
+                // If even number of blocks with this color
+                if (connectedBlocks.length % 2 === 0) {
+                    // Remove all blocks of this color
+                    connectedBlocks.forEach((block) => {
+                        board[block.y][block.x] = 0;
+                        blocksRemoved++;
+                    });
+                } else {
+                    // If odd number of blocks, remove all but one
+                    for (let i = 0; i < connectedBlocks.length - 1; i++) {
+                        board[connectedBlocks[i].y][connectedBlocks[i].x] = 0;
+                        blocksRemoved++;
+                    }
+                }
             }
         }
     }
@@ -261,14 +284,11 @@ function checkMatches() {
     // Update score
     if (blocksRemoved > 0) {
         score += blocksRemoved * level * 10;
-        scoreElement.textContent = formatNumberWithCommas(score);
+        scoreElement.textContent = score;
 
         // Check if we need to move blocks down
         collapseEmptySpaces();
     }
-}
-function formatNumberWithCommas(number) {
-    return number.toLocaleString('en-US');
 }
 
 function collapseEmptySpaces() {
@@ -309,10 +329,10 @@ function collapseEmptySpaces() {
         lines += linesCleared;
 
         // Level up every 10 lines
+        // TODO: consider removing this
         const newLevel = Math.floor(lines / 10) + 1;
         if (newLevel > level) {
             level = newLevel;
-            levelElement.textContent = level;
 
             // Update drop speed
             clearInterval(dropInterval);
@@ -323,7 +343,7 @@ function collapseEmptySpaces() {
 
 // Helper functions
 function checkCollision(piece) {
-    return piece.some((block) => {
+    return piece.blocks.some((block) => {
         // Check boundaries
         if (
             block.x < 0 ||
@@ -347,7 +367,7 @@ function isCollision() {
 }
 
 function getDropSpeed() {
-    return Math.max(100, 1000 - (level - 1) * 100);
+    return 500
 }
 
 // Rendering functions
@@ -367,7 +387,7 @@ function render() {
 
     // Draw the current piece
     if (currentPiece) {
-        currentPiece.forEach((block) => {
+        currentPiece.blocks.forEach((block) => {
             if (block.y >= 0) {
                 drawBlock(ctx, block.x, block.y, COLORS[block.color]);
             }
@@ -422,15 +442,24 @@ document.addEventListener("keydown", (e) => {
         case "ArrowRight":
             moveRight();
             break;
+        case "ArrowDown":
+            moveDown();
+            break;
+        case "ArrowUp":
+            rotate();
+            break;
         case " ":
             e.preventDefault();
             drop();
+            break;
+        case "p":
+        case "P":
+            isPaused = !isPaused;
             break;
     }
 });
 
 restartButton.addEventListener("click", init);
-startButton.addEventListener("click", () => {
-    init();
-    startButton.style.display = "none";
-});
+
+// Start the game
+init();

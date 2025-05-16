@@ -8,62 +8,28 @@
   </head>
   <body>
     <h1>Color Match Tetris</h1>
-    <button id="start-button">Start</button>
-    <div class="game-container half-opacity">
-      <canvas id="game-board" width="300" height="600"></canvas>
+    <div class="game-container">
+      <canvas id="game-board" width="240" height="360"></canvas>
       <div class="game-info">
-        <div class="info">
-          <p>
-            When a piece lands, adjacent blocks of the same color are removed.
-          </p>
-          <p>Remove as many blocks as possible to maximize score.</p>
-        </div>
         <div class="stats">
           <h2>Stats</h2>
           <p>Score: <span id="score">0</span></p>
-          <div>
-            <h3>Colors:</h3>
-            <div class="color-legend">
-              <div>
-                <span class="color-box" style="background-color: #ff0000"></span
-                >Red
-              </div>
-              <div>
-                <span class="color-box" style="background-color: #00ff00"></span
-                >Green
-              </div>
-              <div>
-                <span class="color-box" style="background-color: #0000ff"></span
-                >Blue
-              </div>
-              <div>
-                <span class="color-box" style="background-color: #ffff00"></span
-                >Yellow
-              </div>
-              <div>
-                <span class="color-box" style="background-color: #ff00ff"></span
-                >Magenta
-              </div>
-              <div>
-                <span class="color-box" style="background-color: #00ffff"></span
-                >Cyan
-              </div>
-            </div>
-          </div>
         </div>
         <div class="controls">
           <h2>Controls</h2>
           <ul>
             <li>← → : Move Left/Right</li>
+            <li>↓ : Move Down</li>
+            <li>↑ : Rotate</li>
             <li>Spacebar : Drop</li>
+            <li>P : Pause</li>
           </ul>
         </div>
       </div>
     </div>
     <div class="game-over" id="game-over">
       <h2>Game Over!</h2>
-      <p>Your score: <span id="final-score">0</span></p>
-      <p>Your best score: <span id="best-score">0</span></p>
+      <p>Your final score: <span id="final-score">0</span></p>
       <button id="restart-button">Play Again</button>
     </div>
 

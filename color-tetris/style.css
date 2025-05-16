@@ -26,23 +26,6 @@ body {
     background-color: #000;
 }
 
-#start-button {
-    position: absolute;
-    top: 50%;
-    font-size: 40px;
-    left: 50%;
-    z-index: 10;
-}
-
-button {
-    cursor: pointer;
-    padding: 10px 20px;
-}
-
-.half-opacity {
-    opacity: 0.5;
-}
-
 .stats {
     background-color: #222;
     padding: 10px;
@@ -56,10 +39,9 @@ button {
     border-radius: 5px;
 }
 
-h2,
-#restart-button {
+h2 {
     margin-top: 0;
-    font-size: 24px;
+    font-size: 18px;
 }
 
 ul {

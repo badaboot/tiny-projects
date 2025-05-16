@@ -4,88 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Color Match Tetris</title>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #111;
-        color: white;
-        font-family: Arial, sans-serif;
-      }
-      .game-container {
-        display: flex;
-        gap: 20px;
-      }
-      .game-info {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
-      #game-board {
-        border: 2px solid #444;
-        background-color: #000;
-      }
-      .stats {
-        background-color: #222;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 10px;
-      }
-      .controls {
-        background-color: #222;
-        padding: 10px;
-        border-radius: 5px;
-      }
-      h2 {
-        margin-top: 0;
-        font-size: 18px;
-      }
-      ul {
-        list-style-type: none;
-        padding-left: 0;
-      }
-      li {
-        margin-bottom: 8px;
-      }
-      .next-piece {
-        background-color: #222;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 10px;
-      }
-      #next-canvas {
-        background-color: #000;
-        border: 1px solid #444;
-      }
-      .game-over {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(0, 0, 0, 0.8);
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        display: none;
-      }
-      .color-legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        margin-top: 10px;
-      }
-      .color-box {
-        width: 15px;
-        height: 15px;
-        display: inline-block;
-        margin-right: 5px;
-        border: 1px solid #444;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <h1>Color Match Tetris</h1>
@@ -370,42 +289,6 @@
           }
         });
       }
-      const colorMap = {
-        "#FF0000": "Red",
-        "#00FF00": "Green",
-        "#0000FF": "Blue",
-        "#FFFF00": "Yellow",
-        "#FF00FF": "Magenta",
-        "#00FFFF": "Cyan",
-      };
-
-      function depthFirstSearch(row, col, visited, colorIndex) {
-        // Check boundaries and if the cell has been visited
-        if (
-          row < 0 ||
-          row >= BOARD_WIDTH ||
-          col < 0 ||
-          col >= BOARD_HEIGHT ||
-          visited[row][col] ||
-          board[col][row] !== colorIndex
-        ) {
-          return;
-        }
-
-        // Mark the current cell as visited
-        visited[row][col] = true;
-
-        // Process the current cell (e.g., print its value)
-        console.log(
-          `Visiting cell: (${row}, ${col}) Value: ${board[col][row]}`
-        );
-
-        // Recursively visit adjacent cells (up, down, left, right)
-        depthFirstSearch(row + 1, col, visited, colorIndex); // Down
-        depthFirstSearch(row - 1, col, visited, colorIndex); // Up
-        depthFirstSearch(row, col + 1, visited, colorIndex); // Right
-        depthFirstSearch(row, col - 1, visited, colorIndex); // Left
-      }
 
       function checkMatches() {
         // Find connected blocks of the same color
@@ -413,7 +296,7 @@
         let visited = Array(BOARD_HEIGHT)
           .fill()
           .map(() => Array(BOARD_WIDTH).fill(false));
-        console.log(colorMap[COLORS[currentPiece.blocks[1].color]]);
+
         for (let y = 0; y < BOARD_HEIGHT; y++) {
           for (let x = 0; x < BOARD_WIDTH; x++) {
             // Skip if already visited or empty
@@ -423,17 +306,48 @@
             const colorIndex = board[y][x];
             const connectedBlocks = [];
 
-            // Start DFS from the top-left cell (0, 0)
-            depthFirstSearch(0, 0, visited, currentPiece.blocks[1].color);
+            // DFS to find connected blocks
+            const dfs = (x, y, colorIndex) => {
+              // Check boundaries and if already visited
+              if (
+                x < 0 ||
+                x >= BOARD_WIDTH ||
+                y < 0 ||
+                y >= BOARD_HEIGHT ||
+                visited[y][x] ||
+                board[y][x] !== colorIndex
+              ) {
+                return;
+              }
+
+              visited[y][x] = true;
+              connectedBlocks.push({ x, y });
+
+              // Check adjacent blocks (horizontal and vertical only)
+              dfs(x + 1, y, colorIndex); // right
+              dfs(x - 1, y, colorIndex); // left
+              dfs(x, y + 1, colorIndex); // down
+              dfs(x, y - 1, colorIndex); // up
+            };
+
+            dfs(x, y, colorIndex);
 
             // Apply rules if we found connected blocks
             if (connectedBlocks.length > 1) {
               // If even number of blocks with this color
-              // Remove all blocks of this color
-              connectedBlocks.forEach((block) => {
-                board[block.y][block.x] = 0;
-                blocksRemoved++;
-              });
+              if (connectedBlocks.length % 2 === 0) {
+                // Remove all blocks of this color
+                connectedBlocks.forEach((block) => {
+                  board[block.y][block.x] = 0;
+                  blocksRemoved++;
+                });
+              } else {
+                // If odd number of blocks, remove all but one
+                for (let i = 0; i < connectedBlocks.length - 1; i++) {
+                  board[connectedBlocks[i].y][connectedBlocks[i].x] = 0;
+                  blocksRemoved++;
+                }
+              }
             }
           }
         }
@@ -525,7 +439,7 @@
       }
 
       function getDropSpeed() {
-        return 500; // Math.max(100, 1000 - (level - 1) * 100);
+        return Math.max(100, 1000 - (level - 1) * 100);
       }
 
       // Rendering functions

@@ -1,6 +1,6 @@
 // Game constants
-const BOARD_WIDTH = 10;
-const BOARD_HEIGHT = 20;
+const BOARD_WIDTH = 8;
+const BOARD_HEIGHT = 12;
 const CELL_SIZE = 30;
 const COLORS = [
     "#FF5252", // Red
@@ -27,9 +27,15 @@ const canvas = document.getElementById("game-board");
 const startButton = document.getElementById("start-button");
 const ctx = canvas.getContext("2d");
 const scoreDisplay = document.getElementById("score");
+const finalScoreElement = document.getElementById("final-score");
+const bestScoreElement = document.getElementById("best-score");
 const restartButton = document.getElementById("restart-button");
 const gameOverElem = document.getElementById("game-over");
 const gameContainerElement = document.querySelector(".game-container");
+
+function formatNumberWithCommas(number) {
+    return number.toLocaleString('en-US');
+}
 
 // Initialize game
 function initGame() {
@@ -231,7 +237,7 @@ function removeMatches() {
         // Update score based on matches
         const matchScore = totalMatchedCells.size * 10;
         score += matchScore;
-        scoreDisplay.textContent = score;
+        scoreDisplay.textContent = formatNumberWithCommas(score);
 
         // Apply gravity to make cells fall
         applyGravity();
@@ -239,6 +245,7 @@ function removeMatches() {
 }
 
 // Apply gravity to make cells fall after removals
+// TODO: not working as expected
 function applyGravity() {
     for (let x = 0; x < BOARD_WIDTH; x++) {
         // Start from bottom and move up
@@ -345,11 +352,12 @@ function drawGame() {
 function gameOver() {
     isGameOver = true;
     clearInterval(gameInterval);
+    gameContainerElement.classList.add("half-opacity");
     gameOverElem.style.display = "block";
-    gameOverElem.style.top = `${canvas.offsetTop + canvas.height / 2 - 50
-        }px`;
-    gameOverElem.style.left = `${canvas.offsetLeft + canvas.width / 2 - 150
-        }px`;
+    const bestScore = Math.max(score, parseInt(localStorage.getItem("bestScore") || 0))
+    localStorage.setItem("bestScore", bestScore);
+    finalScoreElement.textContent = formatNumberWithCommas(score);
+    bestScoreElement.textContent = formatNumberWithCommas(bestScore)
 }
 
 // Handle keyboard input
