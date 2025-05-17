@@ -2,7 +2,8 @@ const board = document.querySelector('.board');
 const clone = document.querySelector('.clone');
 const overlay = document.querySelector('.overlay');
 const reset = document.querySelector('.reset');
-const tileOptions = ['erupt', 'ptero', 'tri', 'ahahah', 'egg', 'dino'];
+// dino by default
+let tileOptions = ['erupt', 'ptero', 'tri', 'ahahah', 'egg', 'dino'];
 const matchSound = new Audio("audio/winSound.wav");
 const menuClickSound = new Audio("audio/menuClick.wav");
 const winSound = new Audio("audio/yay.mp3");
@@ -121,6 +122,9 @@ for (let buttonParent of document.querySelectorAll('.column')) {
     buttonElem.addEventListener('click', () => {
         menuClickSound.play();
         console.log(buttonElem.dataset.id);
+        if (buttonElem.dataset.id === 'eggs') {
+            tileOptions = ['blue', 'green', 'purple', 'red', 'white', 'yellow']
+        }
         board.classList.remove('half-opacity');
         document.querySelector(`.some-page-wrapper`).classList.add('hide');
         createBoard();

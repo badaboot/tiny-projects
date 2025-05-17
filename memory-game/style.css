@@ -234,7 +234,38 @@ h2 {
     outline: 0;
 }
 
+/* egg */
+[data-tile=blue] div:nth-child(3) {
+    background: #fff8e7 url(./images/eggs/blue.png) center center no-repeat;
+    background-size: 60px;
+}
 
+[data-tile=green] div:nth-child(3) {
+    background: #fff8e7 url(./images/eggs/green.png) center center no-repeat;
+    background-size: 60px;
+}
+
+[data-tile=purple] div:nth-child(3) {
+    background: #fff8e7 url(./images/eggs/purple.png) center center no-repeat;
+    background-size: 60px;
+}
+
+[data-tile=red] div:nth-child(3) {
+    background: #fff8e7 url(./images/eggs/red.png) center center no-repeat;
+    background-size: 60px;
+}
+
+[data-tile=white] div:nth-child(3) {
+    background: #111 url(./images/eggs/white.png) center center no-repeat;
+    background-size: 60px;
+}
+
+[data-tile=yellow] div:nth-child(3) {
+    background: #fff8e7 url(./images/eggs/yellow.png) center center no-repeat;
+    background-size: 60px;
+}
+
+/* dino */
 [data-tile=egg] div:nth-child(3) {
     background: #fff8e7 url(./images/dino/dino-egg.svg) center center no-repeat;
     background-size: 60px;
