@@ -7,11 +7,55 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <h1>Memory game</h1>
+    <!-- <div class="detail-container"> -->
+    <details>
+      <summary>How to play</summary>
+      <p>
+        Click on a block to flip it. If two blocks match they'll stay flipped,
+        else they'll' flip back.
+      </p>
+      <p>Try all 4 puzzles to find your favorite.</p>
+    </details>
+    <details>
+      <summary>Credits</summary>
+      <p>
+        Sound effects:
+        <a href="https://opengameart.org/content/toom-click">menu click</a>,
+        <a href="https://opengameart.org/content/cloud-click">tile click</a>,
+        <a href="https://opengameart.org/content/win-sound-1">win sound</a>.
+      </p>
+      <p>
+        Music:
+        <a href="https://opengameart.org/content/nautilus">fish/ocean</a>,
+        <a href="https://opengameart.org/content/wardrum-2-short">rpg</a>,
+        <a href="https://opengameart.org/content/rpg-to-arms-battle-music-1"
+          >dragon</a
+        >,
+        <a
+          href="https://opengameart.org/content/sea-travel-music-benvenuta-estate-mazurka-short-loop"
+          >flower</a
+        >.
+      </p>
+      <p>
+        Images:
+        <a href="https://opengameart.org/content/dragon-egg"
+          >Dragon egg images</a
+        >,
+        <a href="https://opengameart.org/content/resouces-pack-1">RPG images</a
+        >, <a href="https://opengameart.org/content/fish">fish images</a>,
+        <a href="https://opengameart.org/content/flowers">flower images</a>,
+        <a href="https://opengameart.org/content/wood-textures ">wood</a>,
+        <a href="https://opengameart.org/content/old-paper">paper</a>.
+      </p>
+    </details>
+
+    <!-- </div> -->
     <div class="some-page-wrapper">
-      <h2>Pick a puzzle</h2>
+      <h2>Pick a theme</h2>
       <div class="row">
         <div class="column">
-          <button data-id="dinosaur">Dinosaur</button>
+          <button data-id="fish">Fishes</button>
         </div>
         <div class="column">
           <button data-id="eggs">Dragon eggs</button>
@@ -19,15 +63,15 @@
       </div>
       <div class="row">
         <div class="column">
-          <button>Some Text in Row 2, Column One</button>
+          <button data-id="rpg">RPG icons</button>
         </div>
         <div class="column">
-          <button>Some Text in Row 2, Column Two</button>
+          <button data-id="flower">Flowers</button>
         </div>
       </div>
     </div>
 
-    <div class="board half-opacity"></div>
+    <div class="board"></div>
     <div class="clone">
       <div class="face"></div>
       <div class="face"></div>
@@ -36,23 +80,18 @@
       <div class="face"></div>
       <div class="face"></div>
     </div>
-    <div class="overlay hidden">
-      <div class="gameover">
-        <p>YOU WON!</p>
-        <button class="reset">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
-            <path
-              d="M485.8 113.9L349.3 250.5c-3.5 3.5-3.5 9.1 0 12.6l136.6 136.6c5.6 5.6 15.2 1.6 15.2-6.3V120.2c-.1-7.9-9.7-11.9-15.3-6.3z"
-              fill="#fff"
-            />
-            <path
-              d="M500 194.8V317c125.9 0 228 102.1 228 228S625.9 773 500 773v121.8c193.3 0 350-156.7 350-350s-156.7-350-350-350zM272 545c0-55.1 19.6-105.7 52.1-145.1 6.5-7.9 5.9-19.5-1.4-26.8l-58.3-58.3c-8.2-8.2-21.7-7.7-29.3 1-53 61.5-85.1 141.5-85.1 229 0 193.3 156.7 350 350 350V773c-125.9 0-228-102.1-228-228z"
-              fill="#fff"
-            />
-          </svg>
-        </button>
-      </div>
+    <div class="gameover hide">
+      <h3>YOU WON!</h3>
+      <p>Up next:</p>
+      <select name="puzzle" id="puzzle-select">
+        <option value="fish">Fishes</option>
+        <option value="eggs">Dragon egg</option>
+        <option value="rpg">RPG icons</option>
+        <option value="flower">Flowers</option>
+      </select>
+      <button class="play-again">Go!</button>
     </div>
+
     <script src="script.js"></script>
   </body>
 </html>
