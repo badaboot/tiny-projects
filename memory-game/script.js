@@ -3,21 +3,10 @@ const clone = document.querySelector('.clone');
 const overlay = document.querySelector('.overlay');
 const reset = document.querySelector('.reset');
 const tileOptions = ['erupt', 'ptero', 'tri', 'ahahah', 'egg', 'dino'];
-const winSound = new Audio("audio/dino/dino-win.mp3");
-const triSound = new Audio("audio/dino/audio-tri.mp3");
-const pteroSound = new Audio("audio/dino/audio-ptero.mp3");
-const eruptSound = new Audio("audio/dino/audio-erupt.mp3");
-const eggSound = new Audio("audio/dino/audio-egg.mp3");
-const dinoSound = new Audio("audio/dino/audio-dino.mp3");
-const ahahahSound = new Audio("audio/dino/audio-ahahah.mp3");
-const soundMap = {
-    erupt: eruptSound,
-    ptero: pteroSound,
-    tri: triSound,
-    ahahah: ahahahSound,
-    egg: eggSound,
-    dino: dinoSound
-}
+const matchSound = new Audio("audio/winSound.wav");
+const menuClickSound = new Audio("audio/menuClick.wav");
+const winSound = new Audio("audio/yay.mp3");
+const clickSound = new Audio("audio/woodClick.wav");
 
 const state = {
     selections: [],
@@ -73,6 +62,7 @@ function buildTile(option, id) {
 }
 
 function selectTile(selectedTile) {
+    clickSound.play()
     if (state.boardLocked || selectedTile.classList.contains('flipped')) return;
 
     state.boardLocked = true;
@@ -101,7 +91,7 @@ function selectTile(selectedTile) {
                     }, 600);
                 }
                 state.selections = [];
-                soundMap[selectedTile.dataset.tile].play();
+                matchSound.play();
             }, 600);
         } else {
             setTimeout(() => {
@@ -125,4 +115,15 @@ function shuffleArray(array) {
     return array;
 }
 
-createBoard();
+for (let buttonParent of document.querySelectorAll('.column')) {
+    console.log(buttonParent);
+    const buttonElem = buttonParent.querySelector('button');
+    buttonElem.addEventListener('click', () => {
+        menuClickSound.play();
+        console.log(buttonElem.dataset.id);
+        board.classList.remove('half-opacity');
+        document.querySelector(`.some-page-wrapper`).classList.add('hide');
+        createBoard();
+
+    });
+}
