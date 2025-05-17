@@ -3,6 +3,21 @@ const clone = document.querySelector('.clone');
 const overlay = document.querySelector('.overlay');
 const reset = document.querySelector('.reset');
 const tileOptions = ['erupt', 'ptero', 'tri', 'ahahah', 'egg', 'dino'];
+const winSound = new Audio("audio/dino/dino-win.mp3");
+const triSound = new Audio("audio/dino/audio-tri.mp3");
+const pteroSound = new Audio("audio/dino/audio-ptero.mp3");
+const eruptSound = new Audio("audio/dino/audio-erupt.mp3");
+const eggSound = new Audio("audio/dino/audio-egg.mp3");
+const dinoSound = new Audio("audio/dino/audio-dino.mp3");
+const ahahahSound = new Audio("audio/dino/audio-ahahah.mp3");
+const soundMap = {
+    erupt: eruptSound,
+    ptero: pteroSound,
+    tri: triSound,
+    ahahah: ahahahSound,
+    egg: eggSound,
+    dino: dinoSound
+}
 
 const state = {
     selections: [],
@@ -82,11 +97,11 @@ function selectTile(selectedTile) {
                 if (state.matches === tileOptions.length) {
                     window.setTimeout(() => {
                         overlay.classList.remove('hidden');
-                        document.querySelector('.audio-win').play();
+                        winSound.play();
                     }, 600);
                 }
                 state.selections = [];
-                document.querySelector(`.audio-${selectedTile.dataset.tile}`).play();
+                soundMap[selectedTile.dataset.tile].play();
             }, 600);
         } else {
             setTimeout(() => {
