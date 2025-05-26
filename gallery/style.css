@@ -1,0 +1,121 @@
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #f3f4f6;
+    /* Light gray background */
+    color: #374151;
+    /* Darker gray text */
+}
+
+.gallery-image {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.gallery-image:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    /* Frosted glass effect */
+}
+
+.modal-content {
+    position: relative;
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    /* Ensure image fits within bounds */
+}
+
+.close-button,
+.nav-arrow {
+    cursor: pointer;
+    position: absolute;
+    color: #fff;
+    font-size: 2.5rem;
+    /* Larger icon size */
+    font-weight: bold;
+    transition: 0.3s;
+    user-select: none;
+    padding: 1rem;
+    border-radius: 9999px;
+    /* Full rounded */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-button:hover,
+.nav-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.close-button {
+    top: 20px;
+    right: 35px;
+    font-size: 3rem;
+    /* Even larger for close */
+    line-height: 1;
+    /* Adjust line height for better centering */
+}
+
+.nav-arrow.left {
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.nav-arrow.right {
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Hide scrollbar for body when modal is open */
+body.no-scroll {
+    overflow: hidden;
+}
+
+.filter-button {
+    @apply px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200;
+    @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+}
+
+.filter-button.active {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.modal-caption {
+    color: #fff;
+    font-size: 1.25rem;
+    /* Larger font for caption */
+    text-align: center;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    max-width: 600px;
+    /* Limit caption width */
+}

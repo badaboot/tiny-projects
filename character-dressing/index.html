@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Character Customizer</title>
+    <!-- TODO: do I need this? -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-3xl font-bold text-gray-800 mb-4">
+        Customize Your Character!
+      </h1>
+      <div class="control-group" id="hairControlGroup">
+        <label for="hairSelect">Hair Style:</label>
+        <select id="hairSelect">
+          <option value="none">None</option>
+          <option value="short">Short Hair</option>
+          <option value="long">Long Hair</option>
+          <option value="spiky">Spiky Hair</option>
+        </select>
+      </div>
+
+      <div class="control-group" id="upperBodyControlGroup">
+        <label for="upperBodySelect">Upper Body:</label>
+        <select id="upperBodySelect">
+          <option value="none">None</option>
+          <option value="tshirt">T-Shirt</option>
+          <option value="hoodie">Hoodie</option>
+          <option value="shirt">Collared Shirt</option>
+        </select>
+      </div>
+
+      <div class="control-group" id="lowerBodyControlGroup">
+        <label for="lowerBodySelect">Lower Body:</label>
+        <select id="lowerBodySelect">
+          <option value="none">None</option>
+          <option value="pants">Pants</option>
+          <option value="shorts">Shorts</option>
+          <option value="skirt">Skirt</option>
+        </select>
+      </div>
+
+      <canvas id="characterCanvas"></canvas>
+
+      <div class="control-group" id="hatControlGroup">
+        <label for="hatSelect">Hat:</label>
+        <select id="hatSelect">
+          <option value="none">None</option>
+          <option value="beanie">Beanie</option>
+          <option value="baseballCap">Baseball Cap</option>
+          <option value="topHat">Top Hat</option>
+        </select>
+      </div>
+
+      <div class="control-group" id="jacketControlGroup">
+        <label for="jacketSelect">Jacket:</label>
+        <select id="jacketSelect">
+          <option value="none">None</option>
+          <option value="denim">Denim Jacket</option>
+          <option value="leather">Leather Jacket</option>
+          <option value="blazer">Blazer</option>
+        </select>
+      </div>
+
+      <div class="control-group" id="shoesControlGroup">
+        <label for="shoesSelect">Shoes:</label>
+        <select id="shoesSelect">
+          <option value="none">None</option>
+          <option value="sneakers">Sneakers</option>
+          <option value="boots">Boots</option>
+          <option value="sandals">Sandals</option>
+        </select>
+      </div>
+
+      <button id="resetButton" class="reset-button">Reset Character</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

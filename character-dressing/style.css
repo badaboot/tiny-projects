@@ -1,0 +1,206 @@
+/* Custom styles for the game */
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #f0f4f8;
+    /* Light blue-gray background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: grid;
+    /* Use CSS Grid for layout */
+    grid-template-columns: 1fr auto 1fr;
+    /* Left controls, Canvas, Right controls */
+    grid-template-rows: repeat(5,
+            auto);
+    /* Rows for controls and reset button */
+    gap: 20px;
+    /* Gap between grid items */
+    padding: 25px;
+    max-width: 1200px;
+    /* Increased max-width to accommodate side controls */
+    width: 100%;
+    align-items: start;
+    /* Align items to the start of their grid area */
+    justify-items: stretch;
+    /* Stretch items horizontally */
+}
+
+h1 {
+    grid-column: 1 / span 3;
+    /* Span across all columns for the title */
+    text-align: center;
+    margin-bottom: 0;
+    /* Adjust margin as grid handles spacing */
+}
+
+canvas {
+    grid-column: 2;
+    /* Place canvas in the middle column */
+    grid-row: 2 / span 3;
+    /* Span from row 2 to row 4 (for character height) */
+    border: 2px solid #cbd5e1;
+    /* Light gray border */
+    background-color: #e2e8f0;
+    /* Slightly darker background for canvas */
+    border-radius: 10px;
+    display: block;
+    width: 100%;
+    /* Make canvas responsive within its grid cell */
+    max-width: 500px;
+    /* Max width for character display */
+    height: auto;
+    /* Maintain aspect ratio */
+    justify-self: center;
+    /* Center the canvas horizontally in its grid cell */
+    align-self: center;
+    /* Center the canvas vertically in its grid cells */
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    width: 100%;
+    /* Ensure control groups fill their grid cell */
+}
+
+.control-group label {
+    font-weight: 600;
+    color: #475569;
+    /* Slate 600 */
+    margin-bottom: 4px;
+}
+
+.control-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 1rem;
+    color: #334155;
+    /* Slate 700 */
+    appearance: none;
+    /* Remove default arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.5em 1.5em;
+}
+
+.control-group select:focus {
+    outline: none;
+    border-color: #6366f1;
+    /* Indigo 500 */
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+.reset-button {
+    background-color: #ef4444;
+    /* Red 500 */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+    grid-column: 1 / span 3;
+    /* Span all columns */
+    grid-row: 5;
+    /* Place in the last row */
+    justify-self: center;
+    /* Center horizontally */
+    margin-top: 20px;
+    /* Add some top margin */
+}
+
+.reset-button:hover {
+    background-color: #dc2626;
+    /* Red 600 */
+}
+
+/* Grid positioning for controls */
+#hairControlGroup {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+}
+
+#hatControlGroup {
+    grid-column: 3;
+    grid-row: 2;
+    align-self: start;
+}
+
+#upperBodyControlGroup {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: center;
+}
+
+#jacketControlGroup {
+    grid-column: 3;
+    grid-row: 3;
+    align-self: center;
+}
+
+#lowerBodyControlGroup {
+    grid-column: 1;
+    grid-row: 4;
+    align-self: end;
+}
+
+#shoesControlGroup {
+    grid-column: 3;
+    grid-row: 4;
+    align-self: end;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        /* Stack all items in a single column */
+        grid-template-rows: auto;
+        /* Rows will auto-adjust */
+        padding: 15px;
+    }
+
+    h1 {
+        grid-column: 1;
+    }
+
+    canvas {
+        grid-column: 1;
+        grid-row: auto;
+        /* Reset row span for mobile */
+        max-width: 100%;
+        /* Allow canvas to take full width */
+    }
+
+    .control-group {
+        grid-column: 1;
+        /* All controls in the single column */
+        grid-row: auto;
+        /* Auto-place in rows */
+    }
+
+    .reset-button {
+        grid-column: 1;
+        grid-row: auto;
+    }
+}

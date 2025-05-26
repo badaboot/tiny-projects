@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body class="p-8">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-4xl font-bold text-center mb-12 text-gray-800">
+        Explore Our Gallery
+      </h1>
+
+      <div class="flex flex-wrap justify-center gap-3 mb-8" id="filter-buttons">
+        <button class="filter-button active" data-tag="all">All</button>
+      </div>
+
+      <div
+        id="gallery-grid"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+      ></div>
+    </div>
+
+    <div id="imageModal" class="modal">
+      <span class="close-button" onclick="closeModal()">&times;</span>
+
+      <a class="nav-arrow left" onclick="changeImage(-1)">&#10094;</a>
+
+      <img class="modal-content rounded-lg shadow-xl" id="modalImage" />
+
+      <div id="modalCaption" class="modal-caption"></div>
+
+      <a class="nav-arrow right" onclick="changeImage(1)">&#10095;</a>
+    </div>
+
+    <script>
+      // Array of image data with tags and captions
+      const images = [
+        {
+          src: "https://placehold.co/600x400/FF5733/FFFFFF?text=Nature+1",
+          alt: "Vibrant forest scene",
+          tags: ["nature", "landscape"],
+          caption: "A serene view of a vibrant forest.",
+        },
+        {
+          src: "https://placehold.co/600x400/33FF57/FFFFFF?text=Cityscape+2",
+          alt: "Modern city skyline at dusk",
+          tags: ["city", "architecture"],
+          caption: "The bustling city lights at twilight.",
+        },
+        {
+          src: "https://placehold.co/600x400/3357FF/FFFFFF?text=Abstract+3",
+          alt: "Colorful abstract art",
+          tags: ["abstract", "art"],
+          caption: "An intriguing piece of modern abstract art.",
+        },
+        {
+          src: "https://placehold.co/600x400/FF33A1/FFFFFF?text=Mountains+4",
+          alt: "Majestic mountain range with snow",
+          tags: ["nature", "mountains", "landscape"],
+          caption: "Snow-capped peaks reaching for the sky.",
+        },
+        {
+          src: "https://placehold.co/600x400/A133FF/FFFFFF?text=Ocean+5",
+          alt: "Serene ocean view with sunset",
+          tags: ["nature", "ocean", "landscape"],
+          caption: "A breathtaking sunset over the tranquil ocean.",
+        },
+        {
+          src: "https://placehold.co/600x400/FFC300/333333?text=Desert+6",
+          alt: "Vast desert landscape",
+          tags: ["nature", "desert", "landscape"],
+          caption: "The endless expanse of the golden desert.",
+        },
+        {
+          src: "https://placehold.co/600x400/00C3FF/FFFFFF?text=Animals+7",
+          alt: "Cute animal in nature",
+          tags: ["animals", "nature"],
+          caption: "A charming animal enjoying its natural habitat.",
+        },
+        {
+          src: "https://placehold.co/600x400/C3FF00/333333?text=Food+8",
+          alt: "Delicious food presentation",
+          tags: ["food"],
+          caption: "A beautifully plated culinary delight.",
+        },
+        {
+          src: "https://placehold.co/600x400/FF00C3/FFFFFF?text=Architecture+9",
+          alt: "Intricate architectural design",
+          tags: ["city", "architecture"],
+          caption: "The stunning details of contemporary architecture.",
+        },
+        {
+          src: "https://placehold.co/600x400/00FFC3/333333?text=Space+10",
+          alt: "Stunning view of outer space",
+          tags: ["space", "abstract"],
+          caption: "A mesmerizing glimpse into the cosmos.",
+        },
+        {
+          src: "https://placehold.co/600x400/C300FF/FFFFFF?text=Forest+11",
+          alt: "Dense forest with sun rays",
+          tags: ["nature", "forest", "landscape"],
+          caption: "Sunlight piercing through the canopy of a dense forest.",
+        },
+        {
+          src: "https://placehold.co/600x400/FF5733/FFFFFF?text=Sunset+12",
+          alt: "Beautiful sunset over the horizon",
+          tags: ["nature", "sunset", "landscape"],
+          caption: "The vibrant colors of a dramatic sunset.",
+        },
+      ];
+
+      let currentIndex = 0; // To keep track of the currently displayed image in the modal
+      let filteredImages = []; // Array to hold images after filtering
+      let activeTag = "all"; // Currently active filter tag
+
+      const galleryGrid = document.getElementById("gallery-grid");
+      const imageModal = document.getElementById("imageModal");
+      const modalImage = document.getElementById("modalImage");
+      const modalCaption = document.getElementById("modalCaption"); // New element for caption
+      const body = document.body;
+      const filterButtonsContainer = document.getElementById("filter-buttons");
+
+      // Function to extract unique tags from images
+      function getUniqueTags() {
+        const allTags = images.flatMap((image) => image.tags);
+        return ["all", ...new Set(allTags)]; // Add 'all' and ensure uniqueness
+      }
+
+      // Function to render filter buttons
+      function renderFilterButtons() {
+        // Clear existing buttons first (except 'All' if it's static)
+        filterButtonsContainer.innerHTML =
+          '<button class="filter-button active" data-tag="all">All</button>';
+
+        const uniqueTags = getUniqueTags();
+        uniqueTags.forEach((tag) => {
+          if (tag === "all") return; // 'All' button is already static
+          const button = document.createElement("button");
+          button.classList.add("filter-button");
+          button.textContent = tag.charAt(0).toUpperCase() + tag.slice(1); // Capitalize first letter
+          button.dataset.tag = tag;
+          button.addEventListener("click", () => {
+            setActiveFilter(tag);
+          });
+          filterButtonsContainer.appendChild(button);
+        });
+
+        // Re-attach event listener for the 'All' button
+        document
+          .querySelector('.filter-button[data-tag="all"]')
+          .addEventListener("click", () => {
+            setActiveFilter("all");
+          });
+      }
+
+      // Function to set the active filter and re-render the gallery
+      function setActiveFilter(tag) {
+        activeTag = tag;
+        // Update active state of buttons
+        document.querySelectorAll(".filter-button").forEach((button) => {
+          if (button.dataset.tag === activeTag) {
+            button.classList.add("active");
+          } else {
+            button.classList.remove("active");
+          }
+        });
+        renderGallery(); // Re-render gallery with new filter
+      }
+
+      // Function to render the gallery grid based on the active filter
+      function renderGallery() {
+        galleryGrid.innerHTML = ""; // Clear existing content
+
+        if (activeTag === "all") {
+          filteredImages = [...images]; // Show all images
+        } else {
+          filteredImages = images.filter((image) =>
+            image.tags.includes(activeTag)
+          );
+        }
+
+        if (filteredImages.length === 0) {
+          galleryGrid.innerHTML =
+            '<p class="text-center text-gray-600 col-span-full">No images found for this tag.</p>';
+          return;
+        }
+
+        filteredImages.forEach((image, index) => {
+          const imgContainer = document.createElement("div");
+          imgContainer.classList.add(
+            "relative",
+            "overflow-hidden",
+            "rounded-lg",
+            "shadow-md",
+            "gallery-image",
+            "transform",
+            "hover:scale-105",
+            "transition-transform",
+            "duration-300"
+          );
+
+          const img = document.createElement("img");
+          img.src = image.src;
+          img.alt = image.alt;
+          img.classList.add("w-full", "h-48", "object-cover", "rounded-lg"); // Fixed height for grid images
+
+          // Add an overlay for hover effect (optional, but good for UX)
+          const overlay = document.createElement("div");
+          overlay.classList.add(
+            "absolute",
+            "inset-0",
+            "bg-black",
+            "bg-opacity-25",
+            "opacity-0",
+            "hover:opacity-100",
+            "transition-opacity",
+            "duration-300",
+            "flex",
+            "items-center",
+            "justify-center",
+            "text-white",
+            "text-lg",
+            "font-semibold"
+          );
+          overlay.textContent = "View";
+
+          imgContainer.appendChild(img);
+          imgContainer.appendChild(overlay);
+
+          // Pass the index within the *filtered* array
+          imgContainer.addEventListener("click", () => openModal(index));
+          galleryGrid.appendChild(imgContainer);
+        });
+      }
+
+      // Function to open the modal
+      function openModal(index) {
+        currentIndex = index;
+        // Ensure modal image is from the filtered set
+        modalImage.src = filteredImages[currentIndex].src;
+        modalImage.alt = filteredImages[currentIndex].alt;
+        modalCaption.textContent = filteredImages[currentIndex].caption || ""; // Display caption
+        imageModal.style.display = "flex"; // Use flex to center content
+        body.classList.add("no-scroll"); // Prevent body scrolling
+      }
+
+      // Function to close the modal
+      function closeModal() {
+        imageModal.style.display = "none";
+        body.classList.remove("no-scroll"); // Re-enable body scrolling
+      }
+
+      // Function to change the image in the modal (next/previous)
+      function changeImage(direction) {
+        currentIndex += direction;
+        if (currentIndex < 0) {
+          currentIndex = filteredImages.length - 1; // Loop to the last image in filtered set
+        } else if (currentIndex >= filteredImages.length) {
+          currentIndex = 0; // Loop to the first image in filtered set
+        }
+        modalImage.src = filteredImages[currentIndex].src;
+        modalImage.alt = filteredImages[currentIndex].alt;
+        modalCaption.textContent = filteredImages[currentIndex].caption || ""; // Update caption
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (imageModal.style.display === "flex") {
+          // Only active if modal is open
+          if (e.key === "ArrowLeft") {
+            changeImage(-1);
+          } else if (e.key === "ArrowRight") {
+            changeImage(1);
+          } else if (e.key === "Escape") {
+            closeModal();
+          }
+        }
+      });
+
+      // Initial rendering of filter buttons and gallery
+      document.addEventListener("DOMContentLoaded", () => {
+        renderFilterButtons();
+        renderGallery(); // Initial render of all images
+      });
+    </script>
+  </body>
+</html>

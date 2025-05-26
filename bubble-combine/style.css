@@ -1,0 +1,92 @@
+body {
+    font-family: "Inter", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+    overflow: hidden;
+    /* Prevent body scroll */
+}
+
+.game-container {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 90vw;
+    /* Responsive width */
+    width: 400px;
+    /* Max width for desktop */
+    box-sizing: border-box;
+    /* Include padding in width */
+}
+
+canvas {
+    background-color: #e0f7fa;
+    border: 2px solid #00bcd4;
+    border-radius: 12px;
+    display: block;
+    touch-action: none;
+    /* Prevent default touch actions like scrolling */
+    width: 100%;
+    /* Make canvas responsive */
+    height: 500px;
+    /* Fixed height for game area */
+    box-sizing: border-box;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.game-over-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+    text-align: center;
+    border-radius: 12px;
+    z-index: 10;
+}
+
+.game-over-overlay button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: #00bcd4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-over-overlay button:hover {
+    background-color: #0097a7;
+    transform: translateY(-2px);
+}
+
+.game-over-overlay button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

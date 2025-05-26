@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble Merge Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <h1 class="text-2xl font-bold text-gray-800">Bubble Merge</h1>
+      <div class="game-info">
+        <span>Score: <span id="score">0</span></span>
+        <span>Bubbles: <span id="bubbleCount">0</span></span>
+      </div>
+      <canvas id="gameCanvas"></canvas>
+      <div id="gameOverOverlay" class="game-over-overlay hidden">
+        Game Over!
+        <button id="restartButton">Restart Game</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
