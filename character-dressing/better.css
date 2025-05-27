@@ -5,8 +5,28 @@ body {
     padding: 20px;
 }
 
+h1 {
+    text-align: center;
+    color: #333;
+
+}
+
+button:active {
+    transform: scale(0.98);
+    background-color: #0056b3;
+}
+
+.showButton {
+    background-color: darkolivegreen;
+}
+
+#resetButton,
+#hat {
+    margin: 8px auto;
+}
+
 .container {
-    max-width: 600px;
+    max-width: 660px;
     margin: auto;
     background: white;
     padding: 20px;
@@ -46,6 +66,8 @@ body {
 }
 
 button {
+    /* text-transform: uppercase; */
+    font-size: 20px;
     display: block;
     margin-top: 8px;
     padding: 10px 20px;
@@ -58,10 +80,6 @@ button {
 
 .reset-button:hover {
     background-color: #0056b3;
-}
-
-#hatOptions img {
-    height: 150px;
 }
 
 .option-group {
@@ -79,6 +97,8 @@ button {
 
 .option-group img {
     max-width: 200px;
+    height: 150px;
+
 }
 
 .option-group img:hover {

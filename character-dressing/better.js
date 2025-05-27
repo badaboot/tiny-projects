@@ -19,6 +19,12 @@ const parentOfGhost = document.getElementById('characterImage').parentElement
 const checkAncestorId = (element, id) => {
     return element && (element.id === id || checkAncestorId(element.parentElement, id));
 }
+document.getElementById('resetButton').addEventListener('click', function () {
+    selectedOptions.hat = null;
+    selectedOptions.top = null;
+    document.getElementById('chosenHat')?.remove();
+    document.getElementById('chosenTop')?.remove();
+});
 document.querySelectorAll('.option-group img').forEach(img => {
     img.addEventListener('click', function () {
         console.log(img.id, img.parentElement.parentElement);
