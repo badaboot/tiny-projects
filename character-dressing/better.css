@@ -20,8 +20,7 @@ button:active {
     background-color: darkolivegreen;
 }
 
-#resetButton,
-#hat {
+#resetButton {
     margin: 8px auto;
 }
 
@@ -43,6 +42,8 @@ button:active {
 .topShow {
     position: absolute;
     top: 80px;
+    height: 150px;
+
     /* since the piece is wider */
     left: -10px;
 }
@@ -66,7 +67,6 @@ button:active {
 }
 
 button {
-    /* text-transform: uppercase; */
     font-size: 20px;
     display: block;
     margin-top: 8px;
@@ -78,7 +78,12 @@ button {
     cursor: pointer;
 }
 
-.reset-button:hover {
+details:hover {
+    background-color: aliceblue;
+    cursor: pointer;
+}
+
+button:hover {
     background-color: #0056b3;
 }
 
