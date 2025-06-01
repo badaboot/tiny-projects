@@ -72,22 +72,6 @@ window.am5geodata_region_world_asiaLow = (function () {
                     type: "Polygon",
                     coordinates: [
                         [
-                            [113.4786, 22.1957],
-                            [113.4944, 22.2414],
-                            [113.5468, 22.2243],
-                            [113.4786, 22.1957],
-                        ],
-                    ],
-                },
-                properties: { name: "Macau", id: "MO", Continent: "Asia" },
-                id: "MO",
-            },
-            {
-                type: "Feature",
-                geometry: {
-                    type: "Polygon",
-                    coordinates: [
-                        [
                             [128.3744, 38.6233],
                             [128.6191, 38.1764],
                             [129.335, 37.2747],
