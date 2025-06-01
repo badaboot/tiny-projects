@@ -85,6 +85,7 @@ pointSeries.bullets.push(function() {
 // Get DOM elements
 const plane = document.querySelector('.plane');
 const message = document.querySelector('.message');
+const modal = document.querySelector('.modal');
 
 // Initial plane position (center of the map)
 let planePosition = {
@@ -140,8 +141,26 @@ console.log(cityPoint, planeCenter)
     }
 }
 
+// Show modal
+function showModal() {
+    modal.style.display = 'flex';
+}
+
+// Hide modal
+function hideModal() {
+    modal.style.display = 'none';
+}
+
 // Handle keyboard controls
 document.addEventListener('keydown', (e) => {
+    // If modal is visible, only handle space key
+    if (modal.style.display === 'flex') {
+        if (e.code === 'Space') {
+            hideModal();
+        }
+        return;
+    }
+
     const step = 10;
     let rotation = 0;
 
@@ -165,6 +184,11 @@ document.addEventListener('keydown', (e) => {
         case 'arrowright':
             planePosition.x += step;
             rotation = 0;
+            break;
+        case 'enter':
+            if (message.style.display === 'block') {
+                showModal();
+            }
             break;
     }
 
