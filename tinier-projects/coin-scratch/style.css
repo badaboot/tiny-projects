@@ -1,0 +1,96 @@
+/* Custom styles for the scratch-off effect and overall layout */
+body {
+    font-family: "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.lotto-ticket-container {
+    position: relative;
+    /* Ensure the container has a defined size */
+    width: 100%;
+    max-width: 360px;
+    /* Limit max width for desktop */
+    height: 200px;
+    /* Fixed height for the ticket */
+    background-color: #f8f8f8;
+    /* Light background for the ticket itself */
+}
+
+.lotto-ticket-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    /* Content layer below canvas */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+}
+
+details:hover {
+    cursor: pointer;
+}
+
+details {
+    position: absolute;
+    bottom: 0;
+}
+
+#resultText {
+    font-size: 2.25rem;
+    /* text-4xl */
+    font-weight: 700;
+    /* font-bold */
+    line-height: 1.2;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.scratch-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    /* Canvas layer on top */
+    cursor: url('coin.svg'), grab;
+    /* cursor: url('https://www.gstatic.com/devrel-devsite/prod/vce7dc8716edeb3714adfe4dd15b25490031be374149e3613a8b7fb0be9fc4a25/web/images/lockup.svg'), grab; */
+
+    touch-action: none;
+    /* Prevent default touch actions like scrolling */
+}
+
+.scratch-overlay.scratching {
+    cursor: url('coin.svg'), grabbing;
+    /* cursor: url('https://www.gstatic.com/devrel-devsite/prod/vce7dc8716edeb3714adfe4dd15b25490031be374149e3613a8b7fb0be9fc4a25/web/images/lockup.svg'), grab; */
+}
+
+/* cursor: url('coin.svg') */
+
+/* Specific styles for win/lose states */
+.win {
+    color: #16a34a;
+    /* green-700 */
+    background-color: #dcfce7;
+    /* green-100 */
+    border: 2px solid #22c55e;
+    /* green-500 */
+    border-radius: 0.5rem;
+    /* rounded-lg */
+    padding: 0.5rem 1rem;
+}
+
+.lose {
+    color: #dc2626;
+    /* red-700 */
+    background-color: #fee2e2;
+    /* red-100 */
+    border: 2px solid #ef4444;
+    /* red-500 */
+    border-radius: 0.5rem;
+    /* rounded-lg */
+    padding: 0.5rem 1rem;
+}

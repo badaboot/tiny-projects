@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scratch-Off Lotto Ticket</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body
+    class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 p-4"
+  >
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Scratch & Win!</h1>
+
+    <div
+      class="lotto-ticket-container rounded-2xl shadow-xl border-4 border-gray-300 overflow-hidden"
+    >
+      <div id="lottoContent" class="lotto-ticket-content">
+        <p id="resultText" class="transition-all duration-300"></p>
+      </div>
+      <canvas id="scratchCanvas" class="scratch-overlay rounded-2xl"></canvas>
+    </div>
+
+    <button
+      id="resetButton"
+      class="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-all duration-300"
+    >
+      Play Again
+    </button>
+    <details>
+      <summary>Credits</summary>
+      <p>
+        Scratch sound effect by
+        <a
+          href="https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=98528"
+          >freesound_community</a
+        >
+        from
+        <a
+          href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=98528"
+          >Pixabay</a
+        >
+      </p>
+    </details>
+    <script src="script.js"></script>
+  </body>
+</html>
