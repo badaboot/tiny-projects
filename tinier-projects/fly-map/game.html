@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Fly Map Game</title>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+          "Segoe UI Symbol";
+      }
+
+      #chartdiv {
+        width: 100%;
+        height: 100vh;
+        position: relative;
+      }
+      .plane {
+        width: 30px;
+        height: 30px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>');
+        background-size: contain;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        transition: transform 0.1s ease;
+      }
+      .message {
+        position: absolute;
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        display: none;
+        z-index: 1001;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 80%;
+        max-height: 80vh;
+        overflow-y: auto;
+        text-align: center;
+      }
+      .modal-image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+        border-radius: 5px;
+      }
+      .modal-text {
+        margin-bottom: 20px;
+        font-size: 18px;
+        line-height: 1.5;
+      }
+      .modal-instruction {
+        color: #666;
+        font-style: italic;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chartdiv"></div>
+    <div class="plane"></div>
+    <div class="message">Press Enter to land</div>
+    
+    <div class="modal">
+      <div class="modal-content">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800" alt="City View" class="modal-image">
+        <div class="modal-text">
+          Welcome to the city! This is a beautiful view of the urban landscape. Take a moment to enjoy the scenery before continuing your journey.
+        </div>
+        <div class="modal-instruction">PRESS SPACE TO LEAVE</div>
+      </div>
+    </div>
+    
+    <script src="game.js"></script>
+  </body>
+</html> 
