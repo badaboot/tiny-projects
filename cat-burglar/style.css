@@ -2,6 +2,8 @@ body {
     font-family: 'Inter', sans-serif;
     /* Using Inter font as per instructions */
     display: flex;
+    flex-direction: column;
+    /* Changed to column to stack elements including new description */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -10,6 +12,41 @@ body {
     overflow-x: hidden;
     /* Prevent horizontal scroll when menu is out */
     color: #333;
+
+    /* New background image properties */
+    background-image: url('https://cdn.pixabay.com/photo/2020/08/28/16/17/bust-5524961_1280.jpg');
+    background-size: cover;
+    /* Cover the entire viewport */
+    background-position: center;
+    /* Center the image */
+    background-repeat: no-repeat;
+    /* Do not repeat the image */
+    background-attachment: fixed;
+    /* Keep image fixed when scrolling */
+}
+
+/* Styling for the new background description */
+.background-description {
+    background-color: rgba(0, 0, 0, 0.6);
+    /* Semi-transparent black background */
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    /* Limit width for readability in the corner */
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: justify;
+    /* Justify text for a clean block */
+
+    /* Positioning for bottom-right */
+    position: fixed;
+    bottom: 80px;
+    /* Above the game buttons */
+    right: 20px;
+    z-index: 0;
+    /* Above general content, below modals */
 }
 
 .container {
@@ -17,7 +54,24 @@ body {
     padding: 20px;
     max-width: 90%;
     /* Fluid width for container */
-    margin: 0 auto;
+    margin: 20px auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Semi-transparent white background for content */
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+
+    /* Initially hidden, revealed by "Question" button */
+    display: none;
+    transition: opacity 0.5s ease;
+    /* Smooth transition for showing/hiding */
+    opacity: 0;
+}
+
+.container.visible {
+    display: block;
+    /* Or flex, depending on content within */
+    opacity: 1;
+    z-index: 20;
 }
 
 h1 {
@@ -55,26 +109,71 @@ h1 {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* reveal Button */
-.reveal-button {
-    margin-top: 40px;
-    padding: 15px 30px;
-    font-size: 1.5rem;
-    background-color: #ff4757;
-    /* Red color */
+/* Game Buttons Container (fixed at bottom-right) */
+.game-buttons {
+    position: fixed;
+    /* Fixed position */
+    bottom: 20px;
+    /* 20px from bottom */
+    right: 20px;
+    /* 20px from right */
+    display: flex;
+    flex-direction: row;
+    /* Buttons in a row */
+    gap: 15px;
+    /* Space between buttons */
+    z-index: 1002;
+    /* Above modals and description */
+    flex-wrap: wrap;
+    /* Allow buttons to wrap on small screens */
+    justify-content: flex-end;
+    /* Align buttons to the right */
+}
+
+/* Reveal, Clues, and Question Button Styles */
+.reveal-button,
+.clues-button,
+.question-button {
+    padding: 15px 25px;
+    /* Slightly adjusted padding for consistency */
+    font-size: 1.2rem;
+    /* Adjusted font size */
     color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+    /* Consistent shadow */
+    min-width: 120px;
+    /* Ensure minimum width for buttons */
 }
 
-.reveal-button:hover {
+.reveal-button,
+.clues-button {
+    background-color: #ff4757;
+    /* Red color for Reveal/Clues */
+}
+
+.reveal-button:hover,
+.clues-button:hover {
     background-color: #e63946;
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(255, 71, 87, 0.6);
 }
+
+.question-button {
+    background-color: #007bff;
+    /* Blue color for Question button */
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+}
+
+.question-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.6);
+}
+
 
 /* Side Menu Styles */
 .side-menu {
@@ -105,8 +204,8 @@ h1 {
 }
 
 .side-menu.open {
-    width: 300px;
-    /* Default width when open */
+    width: 500px;
+    /* Changed width to 500px */
     /* Responsive width for smaller screens */
     max-width: 80vw;
     /* Occupy 80% of viewport width on small screens */
@@ -175,17 +274,44 @@ h1 {
     /* Align text within paragraphs */
 }
 
-.side-menu .quote {
-    font-style: italic;
-    color: #a0a0a0;
-    font-size: 1rem;
+/* Styles for questions and answers in sidebar */
+.menu-questions {
     margin-top: 25px;
-    padding: 10px 25px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.3);
-    text-align: center;
+    padding: 0 25px;
+    text-align: left;
+    width: 100%;
+    /* Ensure it takes full width of menu content area */
+    box-sizing: border-box;
+    /* Include padding in width calculation */
 }
 
-/* Modal Styles */
+.menu-questions h3 {
+    font-size: 1.1rem;
+    color: #b3e0ff;
+    /* Lighter blue for questions */
+    margin-bottom: 5px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    padding-bottom: 5px;
+    margin-top: 20px;
+    /* Space between questions */
+}
+
+.menu-questions h3:first-of-type {
+    margin-top: 0;
+    /* No top margin for the first question */
+}
+
+.menu-questions p {
+    font-size: 1rem;
+    color: #d0d0d0;
+    /* Slightly darker white for answers */
+    margin-bottom: 15px;
+    padding: 0;
+    /* Override previous p padding */
+}
+
+
+/* General Modal Styles (for both Reveal and Clues) */
 .modal {
     display: none;
     /* Hidden by default */
@@ -223,7 +349,7 @@ h1 {
     width: 80%;
     /* Could be more responsive */
     max-width: 500px;
-    /* Max width for larger screens */
+    /* Adjusted max-width for consistent 2-column button layout */
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     position: relative;
@@ -263,6 +389,7 @@ h1 {
     text-decoration: none;
 }
 
+/* Reveal Modal Specific Styles */
 .modal-cat-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -273,12 +400,16 @@ h1 {
 }
 
 .reveal-cat-btn {
-    flex: 1 1 calc(50% - 15px);
-    /* Two buttons per row on larger screens */
-    max-width: 200px;
+    flex-basis: calc(50% - 15px);
+    /* Forces two columns, as 2 * 50% = 100% */
+    flex-grow: 1;
+    /* Allows buttons to grow */
+    flex-shrink: 0;
+    /* Prevents buttons from shrinking smaller than their flex-basis */
     padding: 15px 10px;
     font-size: 1.1rem;
-    background-color: #007bff;
+    background-color: #ff4757;
+    /* Changed to match reveal button */
     color: white;
     border: none;
     border-radius: 8px;
@@ -288,7 +419,8 @@ h1 {
 }
 
 .reveal-cat-btn:hover {
-    background-color: #0056b3;
+    background-color: #e63946;
+    /* Changed to match reveal button hover */
     transform: translateY(-2px);
 }
 
@@ -302,6 +434,8 @@ h1 {
 .reveal-result {
     margin-top: 20px;
     padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
     min-height: 100px;
     /* Ensure space even when empty */
     display: flex;
@@ -309,6 +443,7 @@ h1 {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    background-color: #e9ecef;
     color: #333;
     font-size: 1.1rem;
     font-weight: bold;
@@ -321,6 +456,38 @@ h1 {
     border: 2px solid #555;
     margin-top: 10px;
 }
+
+/* Clues Modal Specific Styles */
+.clues-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+.clues-table th,
+.clues-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+    /* Align text to the top for multi-line content */
+}
+
+.clues-table th {
+    background-color: #f2f2f2;
+    color: #555;
+    font-weight: bold;
+}
+
+.clues-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.clues-table tbody tr:hover {
+    background-color: #e0e0e0;
+}
+
 
 /* Responsive adjustments for overall layout */
 @media (max-width: 768px) {
@@ -335,6 +502,41 @@ h1 {
     .character-img {
         width: 130px;
         height: 130px;
+    }
+
+    .game-buttons {
+        flex-direction: column;
+        /* Stack buttons vertically on small screens */
+        gap: 15px;
+        right: 10px;
+        /* Adjust right margin for small screens */
+        bottom: 10px;
+        /* Adjust bottom margin for small screens */
+    }
+
+    .reveal-button,
+    .clues-button,
+    .question-button {
+        width: 100%;
+        /* Full width for stacked buttons */
+        min-width: unset;
+        /* Remove min-width when stacked */
+    }
+
+    .modal-content {
+        max-width: 90%;
+        /* Adjust modal width for smaller screens */
+    }
+
+    .background-description {
+        font-size: 1rem;
+        z-index: 0;
+        padding: 15px 20px;
+        bottom: 10px;
+        /* Move description lower on small screens to avoid button overlap */
+        right: 10px;
+        max-width: calc(100% - 20px);
+        /* Allow it to take more width */
     }
 }
 
@@ -373,9 +575,13 @@ h1 {
         padding: 0 15px;
     }
 
-    .side-menu .quote {
+    .menu-questions h3 {
+        font-size: 1rem;
+        margin-top: 15px;
+    }
+
+    .menu-questions p {
         font-size: 0.9rem;
-        padding: 10px 15px;
     }
 
     .side-menu .close-btn {
@@ -397,5 +603,17 @@ h1 {
     .modal-close-btn {
         font-size: 30px;
         right: 15px;
+    }
+
+    .clues-table th,
+    .clues-table td {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+
+    .background-description {
+        font-size: 0.8rem;
+        /* Smaller font on extra small screens */
+        padding: 8px 10px;
     }
 }

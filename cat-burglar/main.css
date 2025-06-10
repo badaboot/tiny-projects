@@ -68,6 +68,10 @@ h1 {
     color: #555;
 }
 
+h1 img {
+    width: 100px;
+}
+
 .placeholder-div:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -141,4 +145,27 @@ h1 {
         font-size: 1.5rem;
         padding: 12px 25px;
     }
+}
+
+/* Table */
+.div-table {
+    display: table;
+    width: auto;
+    border: 1px solid #666666;
+    border-spacing: 5px;
+    /* cellspacing:poor IE support for  this */
+}
+
+.div-table-row {
+    display: table-row;
+    width: auto;
+    clear: both;
+}
+
+.div-table-col {
+    float: left;
+    /* fix for  buggy browsers */
+    display: table-column;
+    width: 200px;
+    border: 1px solid lightgray;
 }

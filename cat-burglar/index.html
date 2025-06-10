@@ -3,16 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cat Burglar Game</title>
-    <!--
-        Internal CSS for styling the game.
-        It handles layout, responsive design, and the side menu's appearance.
-    -->
-    <link rel="stylesheet" href="style.css" />
+    <title>Cat Character Game</title>
+    <link href="style.css" rel="stylesheet" />
   </head>
   <body>
-    <div class="container">
-      <h1>Whodunit?</h1>
+    <!-- Background description -->
+    <div class="background-description">
+      The Metropolitan Museum of Art housed the world's most comprehensive
+      collection of ancient artifacts, housed in a fortress-like building. It
+      housed a Roman signet ring dating to 49 BCE, supposedly worn by Julius
+      Caesar himself. The gold band, no larger than a quarter, bore Caesar's
+      personal seal and represented one of the most significant archaeological
+      discoveries of the century.
+    </div>
+
+    <div class="container" id="mainContainer">
+      <h1>Click to question suspects</h1>
       <div class="character-selection">
         <!--
                 Character images. Each has a unique ID used by JavaScript
@@ -44,7 +50,12 @@
           class="character-img"
         />
       </div>
-      <!-- reveal button added to the main section -->
+    </div>
+
+    <!-- Game buttons section - now fixed at bottom-right -->
+    <div class="game-buttons">
+      <button id="questionButton" class="question-button">Question</button>
+      <button id="cluesButton" class="clues-button">Clues</button>
       <button id="revealButton" class="reveal-button">Reveal</button>
     </div>
 
@@ -64,16 +75,19 @@
         class="menu-character-image"
       />
       <p id="menuCharacterDetails"></p>
-      <p id="menuCharacterQuote" class="quote"></p>
+      <!-- Container for questions and answers -->
+      <div id="menuCharacterQuestions" class="menu-questions">
+        <!-- Questions and answers will be injected here by JavaScript -->
+      </div>
     </div>
 
     <!--
-        The reveal Modal element. It starts hidden and
-        opens when the "reveal" button is clicked.
+        The Reveal Modal element. It starts hidden and
+        opens when the "Reveal" button is clicked.
     -->
     <div id="revealModal" class="modal">
       <div class="modal-content">
-        <span class="modal-close-btn">&times;</span>
+        <span class="modal-close-btn reveal-modal-close">&times;</span>
         <h2>Who is the cat burglar?</h2>
         <div class="modal-cat-buttons">
           <!-- Buttons for each cat to be dynamically populated -->
@@ -84,6 +98,67 @@
         </div>
         <div id="revealResult" class="reveal-result">
           <!-- Result message and image will go here -->
+        </div>
+      </div>
+    </div>
+
+    <!--
+        The Clues Modal element. It starts hidden and
+        opens when the "Clues" button is clicked.
+    -->
+    <div id="cluesModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close-btn clues-modal-close">&times;</span>
+        <h2>Investigation Notes</h2>
+        <div id="cluesTableContainer">
+          <!-- Clues table will be dynamically populated here -->
+          <table class="clues-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Alibi</th>
+                <th>Security</th>
+                <th>Suspect</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Quaker</td>
+                <td>Was napping on the sunny windowsill.</td>
+                <td>
+                  The softest spot on the couch is very secure for napping.
+                </td>
+                <td>Low</td>
+              </tr>
+              <tr>
+                <td>Missy</td>
+                <td>Claimed to be grooming herself meticulously.</td>
+                <td>
+                  Adequate for keeping out riff-raff. My only concern is
+                  ensuring there are no drafts by the window.
+                </td>
+                <td>Medium</td>
+              </tr>
+              <tr>
+                <td>Set</td>
+                <td>Heard rustling in the pantry, but denies involvement.</td>
+                <td>
+                  It has its vulnerabilities. Especially if you know how to
+                  leverage a loose screen or a slightly ajar door.
+                </td>
+                <td>High</td>
+              </tr>
+              <tr>
+                <td>Gigi</td>
+                <td>Was last seen chasing a dust bunny under the sofa.</td>
+                <td>
+                  It's very solid! Except for that one creaky floorboard near
+                  the kitchen. It makes a funny sound.
+                </td>
+                <td>Low</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

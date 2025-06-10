@@ -1,56 +1,69 @@
+document.addEventListener('click', (e) => {
+    // if outside of the character modal, close the modal
+    console.log(e.target)
+    if (!doesAncestorContainId(e.target)) {
+        console.log('close the container')
+    }
+})
+const doesAncestorContainId = (elem, id) => {
+    if (!elem) return
+    if (elem.id && elem.id === id) return true
+    return doesAncestorContainId(elem.parentElement, id)
+}
 document.addEventListener('DOMContentLoaded', () => {
-    // Define character data including names, details, image paths, and quotes.
+    const scenarios = [
+        {
+            id: 1,
+            description: "The Metropolitan Museum of Art housed the world's most comprehensive collection of ancient artifacts, housed in a fortress-like building. Within a glass box sat a Roman signet ring dating to 49 BCE, supposedly worn by Julius Caesar himself. The gold band, no larger than a quarter, bore Caesar's personal seal and represented one of the most significant archaeological discoveries of the century.",
+            image: 'img/roman.jpg',
+        }
+    ]
+    // Define character data including names, details, image paths, and answers to specific questions.
     const characters = {
         quaker: {
             name: 'Quaker',
-            details: 'White cat with green eyes',
-            image: 'https://placehold.co/180x180/007bff/ffffff?text=Quaker', // Placeholder image URL
-            quotes: [
-                "Meow, and have a purr-fect day!",
-                "Every nap is a new adventure.",
-                "Sunbeams are my favorite art.",
-                "A gentle purr soothes the soul.",
-                "Life is better with a cozy blanket."
+            details: 'Veteran cat burglar known for elaborate heists',
+            image: 'img/white.png',
+            answers: [
+                { question: "Where were you last night?", answer: "Oh, I was just dreaming of chasing laser pointers, right here on my favorite blanket." },
+                { question: "What do you know about this place's security system?", answer: "Security? The only thing I know about is the softest spot on the couch, which is very secure for napping." },
+                { question: "Of the suspects, who do you think is guilty?", answer: "Guilty? Meow-be Missy, she always looks like she's plotting something. Or Set, he's a bit shifty." }
             ]
         },
         missy: {
             name: 'Missy',
-            details: 'Siamese cat with blue eyes',
-            image: 'https://placehold.co/180x180/ff6b6b/ffffff?text=Missy', // Placeholder image URL
-            quotes: [
-                "Elegant, always.",
-                "My voice is my charm.",
-                "Seek knowledge, and a warm lap.",
-                "The world is my catwalk.",
-                "A true queen always knows her worth."
+            details: 'Acrobatic specialist who loves challenging heists',
+            image: 'img/brown.png',
+            answers: [
+                { question: "Where were you last night?", answer: "Darling, I was maintaining my impeccable appearance. One must always be camera-ready, you know." },
+                { question: "What do you know about this place's security system?", answer: "The security system is adequate for keeping out riff-raff. My only concern is ensuring there are no drafts by the window." },
+                { question: "Of the suspects, who do you think is guilty?", answer: "Quaker is far too innocent. Gigi is too fluffy to be discreet. Set, however... he has that look in his eye sometimes." }
             ]
         },
         set: {
             name: 'Set',
-            details: 'Black cat with yellow eyes, short-fur',
-            image: 'https://placehold.co/180x180/28a745/ffffff?text=Set', // Placeholder image URL
-            quotes: [
-                "The night is my domain.",
-                "Shadows hold secrets.",
-                "Swift, silent, and always on the prowl.",
-                "My eyes see all.",
-                "Mystery is my middle name."
+            details: 'Silent infiltration expert',
+            image: 'img/gray.png',
+            answers: [
+                { question: "Where were you last night?", answer: "I was... observing. From the shadows. Very important observations." },
+                { question: "What do you know about this place's security system?", answer: "It has its vulnerabilities. Especially if you know how to leverage a loose screen or a slightly ajar door." },
+                { question: "Of the suspects, who do you think is guilty?", answer: "It certainly wasn't me. Perhaps Gigi. She looks innocent, but that's what makes her dangerous." }
             ]
         },
         gigi: {
             name: 'Gigi',
-            details: 'Orange cat with long fur',
-            image: 'https://placehold.co/180x180/fd7e14/ffffff?text=Gigi', // Placeholder image URL
-            quotes: [
-                "Fluffiness is next to godliness.",
-                "A good brush is pure bliss.",
-                "I bring the sunshine wherever I go.",
-                "Tangly situations require purrsistence.",
-                "My fur is my crown."
+            details: 'Young, ambitious burglar',
+            image: 'img/orange.png',
+            answers: [
+                { question: "Where were you last night?", answer: "I was buried under a pile of cushions, having the most delightful dream about a giant ball of yarn!" },
+                { question: "What do you know about this place's security system?", answer: "Oh, it's very solid! Except for that one creaky floorboard near the kitchen. It makes a funny sound." },
+                { question: "Of the suspects, who do you think is guilty?", answer: "Set always looks like he's hiding something in his short fur. And Missy is very cunning. Definitely not Quaker, he's too sweet!" }
             ]
         }
     };
-
+    for (let img of document.querySelector('.character-selection').children) {
+        img.src = characters[img.id].image
+    }
     // Get references to DOM elements for character selection and side menu
     const characterImages = document.querySelectorAll('.character-img');
     const sideMenu = document.getElementById('sideMenu');
@@ -58,26 +71,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuCharacterName = document.getElementById('menuCharacterName');
     const menuCharacterImage = document.getElementById('menuCharacterImage');
     const menuCharacterDetails = document.getElementById('menuCharacterDetails');
-    const menuCharacterQuote = document.getElementById('menuCharacterQuote');
+    const menuCharacterQuestions = document.getElementById('menuCharacterQuestions'); // New element for questions
 
-    // Get references to DOM elements for the new reveal feature
+    // Get references to DOM elements for the new Reveal feature
     const revealButton = document.getElementById('revealButton');
     const revealModal = document.getElementById('revealModal');
-    const modalCloseBtn = document.querySelector('.modal-close-btn');
+    const revealModalCloseBtn = document.querySelector('.reveal-modal-close');
     const revealCatButtons = document.querySelectorAll('.reveal-cat-btn');
     const revealResult = document.getElementById('revealResult');
+
+    // Get references to DOM elements for the Clues feature
+    const cluesButton = document.getElementById('cluesButton');
+    const cluesModal = document.getElementById('cluesModal');
+    const cluesModalCloseBtn = document.querySelector('.clues-modal-close');
+
+    // Get references for the new Question button and main container
+    const questionButton = document.getElementById('questionButton');
+    const mainContainer = document.getElementById('mainContainer'); // The container holding H1 and character images
 
     let burglarCat = null; // Variable to store the randomly chosen burglar cat
 
     /**
-     * Returns a random quote from an array of quotes.
-     * @param {string[]} quotes - An array of strings representing quotes.
-     * @returns {string} A randomly selected quote.
+     * Handles displaying character details and their answers in the side menu.
+     * @param {Object} character - The character object containing name, details, image, and answers.
      */
-    function getRandomQuote(quotes) {
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        return quotes[randomIndex];
+    function displayCharacterInfo(character) {
+        menuCharacterName.textContent = character.name;
+        menuCharacterImage.src = character.image;
+        menuCharacterImage.alt = character.name; // Set alt text for accessibility
+        menuCharacterDetails.textContent = character.details;
+
+        // Clear previous questions and answers
+        menuCharacterQuestions.innerHTML = '';
+
+        // Populate with questions and answers
+        character.answers.forEach(item => {
+            const questionElement = document.createElement('h3');
+            questionElement.textContent = item.question;
+            menuCharacterQuestions.appendChild(questionElement);
+
+            const answerElement = document.createElement('p');
+            answerElement.textContent = item.answer;
+            menuCharacterQuestions.appendChild(answerElement);
+        });
+
+        sideMenu.classList.add('open');
     }
+
 
     // Add click event listeners to each character image for the side menu
     characterImages.forEach(img => {
@@ -86,15 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const character = characters[characterId]; // Retrieve character data from the 'characters' object
 
             if (character) {
-                // Populate the side menu with the selected character's data
-                menuCharacterName.textContent = character.name;
-                menuCharacterImage.src = character.image;
-                menuCharacterImage.alt = character.name; // Set alt text for accessibility
-                menuCharacterDetails.textContent = character.details;
-                menuCharacterQuote.textContent = getRandomQuote(character.quotes); // Get a random quote
-
-                // Open the side menu by adding the 'open' class
-                sideMenu.classList.add('open');
+                displayCharacterInfo(character);
             }
         });
     });
@@ -116,12 +148,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- reveal Feature Logic ---
+    // --- Reveal Feature Logic ---
 
-    // Event listener to open the reveal modal when the "reveal" button is clicked
+    // Event listener to open the reveal modal when the "Reveal" button is clicked
     revealButton.addEventListener('click', () => {
-        revealModal.classList.add('active'); // Show the modal
-        revealResult.innerHTML = ''; // Clear any previous results in the modal
+        revealModal.classList.add('active');
+        revealResult.innerHTML = '';
 
         // Randomly choose the burglar cat from the available characters
         const catKeys = Object.keys(characters);
@@ -136,15 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Event listener to close the reveal modal when its close button is clicked
-    modalCloseBtn.addEventListener('click', () => {
-        revealModal.classList.remove('active'); // Hide the modal
-    });
-
-    // Event listener to close the reveal modal if clicked outside its content area
-    window.addEventListener('click', (event) => {
-        if (event.target === revealModal) { // Check if the click was directly on the modal overlay
-            revealModal.classList.remove('active'); // Hide the modal
-        }
+    revealModalCloseBtn.addEventListener('click', () => {
+        revealModal.classList.remove('active');
     });
 
     // Add event listeners to the cat selection buttons within the reveal modal
@@ -162,15 +187,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Check if the chosen cat is the actual burglar
             if (chosenCat.name === burglarCat.name) {
-                revealResult.innerHTML = `<span style="color: #28a745;">Right. The culprit is</span>
-                <img src="${burglarCat.image}" alt="${burglarCat.name}" style="max-width: 120px; border-radius: 10px; margin-top: 10px;">`
+                revealResult.innerHTML = '<span style="color: #28a745;">Found the cat burglar!</span>'; // Green text for correct guess
             } else {
                 // Display message for incorrect guess, showing the correct burglar's name and image
                 revealResult.innerHTML = `
-                    <span style="color: #dc3545;">Wrong. The culprit is</span>
-                    <img src="${burglarCat.image}" alt="${burglarCat.name}" style="max-width: 120px; border-radius: 10px; margin-top: 10px;">
-                `; // Red text for incorrect guess
+                            <span style="color: #dc3545;">Wrong one. Here's whodunit:</span>
+                            <br>
+                            ${burglarCat.name}
+                            <br>
+                            <img src="${burglarCat.image}" alt="${burglarCat.name}" style="max-width: 120px; border-radius: 10px; margin-top: 10px;">
+                        `; // Red text for incorrect guess
             }
         });
+    });
+
+    // --- Clues Feature Logic ---
+
+    // Event listener to open the clues modal when the "Clues" button is clicked
+    cluesButton.addEventListener('click', () => {
+        cluesModal.classList.add('active'); // Show the modal
+    });
+
+    // Event listener to close the clues modal when its close button is clicked
+    cluesModalCloseBtn.addEventListener('click', () => {
+        cluesModal.classList.remove('active'); // Hide the modal
+    });
+
+    // --- Question Button Logic ---
+    questionButton.addEventListener('click', () => {
+        mainContainer.classList.toggle('visible'); // Toggle visibility of the main content
+    });
+
+    // Global click listener to close modals if clicking outside their content
+    window.addEventListener('click', (event) => {
+        if (event.target === revealModal) {
+            revealModal.classList.remove('active');
+        }
+        if (event.target === cluesModal) {
+            cluesModal.classList.remove('active');
+        }
     });
 });
