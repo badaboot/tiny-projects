@@ -1,0 +1,144 @@
+body {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    /* Arrange items vertically */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    color: #333;
+    text-align: center;
+}
+
+h1 {
+    color: #4a4a4a;
+    margin-bottom: 40px;
+    /* Space below header */
+    font-size: 3.5rem;
+    /* Larger font for main title */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.div-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    /* Space between the divs */
+    margin-bottom: 50px;
+    /* Space between divs and button */
+    flex-wrap: wrap;
+    /* Allow divs to wrap on smaller screens */
+}
+
+.placeholder-div {
+    width: 150px;
+    height: 150px;
+    background-color: #add8e6;
+    /* Light blue color */
+    border: 2px solid #87ceeb;
+    border-radius: 15px;
+    /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    /* Allow content to stack vertically */
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #333;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 10px;
+    /* Add padding for content */
+    text-align: center;
+}
+
+.placeholder-div h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    /* Space between h2 and p */
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.placeholder-div p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #555;
+}
+
+.placeholder-div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.play-button {
+    text-decoration: none;
+    padding: 20px 40px;
+    font-size: 2rem;
+    /* Large font for play button */
+    background-color: #28a745;
+    /* Green color */
+    color: white;
+    border: none;
+    border-radius: 15px;
+    /* More rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.play-button:hover {
+    background-color: #218838;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(40, 167, 69, 0.6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.8rem;
+        margin-bottom: 30px;
+    }
+
+    .div-container {
+        flex-direction: column;
+        /* Stack divs vertically on small screens */
+        gap: 15px;
+        margin-bottom: 40px;
+    }
+
+    .placeholder-div {
+        width: 80%;
+        /* Wider divs on small screens */
+        max-width: 250px;
+        /* Limit max width */
+        height: auto;
+        /* Allow height to adjust to content */
+        min-height: 120px;
+        /* Ensure a minimum height */
+    }
+
+    .play-button {
+        padding: 15px 30px;
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    .placeholder-div {
+        width: 90%;
+        height: auto;
+        min-height: 100px;
+    }
+
+    .play-button {
+        font-size: 1.5rem;
+        padding: 12px 25px;
+    }
+}

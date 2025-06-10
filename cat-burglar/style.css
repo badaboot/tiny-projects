@@ -1,0 +1,401 @@
+body {
+    font-family: 'Inter', sans-serif;
+    /* Using Inter font as per instructions */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    overflow-x: hidden;
+    /* Prevent horizontal scroll when menu is out */
+    color: #333;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    max-width: 90%;
+    /* Fluid width for container */
+    margin: 0 auto;
+}
+
+h1 {
+    color: #4a4a4a;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    /* Responsive font size */
+}
+
+.character-selection {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow images to wrap on smaller screens */
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.character-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 15px;
+    /* Rounded corners for images */
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.character-img:hover {
+    transform: translateY(-8px) scale(1.05);
+    /* Slight lift and scale on hover */
+    border-color: #007bff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* reveal Button */
+.reveal-button {
+    margin-top: 40px;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    background-color: #ff4757;
+    /* Red color */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+}
+
+.reveal-button:hover {
+    background-color: #e63946;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.6);
+}
+
+/* Side Menu Styles */
+.side-menu {
+    height: 100%;
+    width: 0;
+    /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    /* High z-index to ensure it's on top */
+    top: 0;
+    right: 0;
+    background-color: #333;
+    overflow-y: auto;
+    /* Allow scrolling for content if it overflows */
+    transition: 0.5s;
+    /* Smooth transition for opening/closing */
+    padding-top: 60px;
+    color: white;
+    text-align: center;
+    box-shadow: -8px 0 20px rgba(0, 0, 0, 0.4);
+    border-top-left-radius: 20px;
+    /* Rounded corners for the side menu */
+    border-bottom-left-radius: 20px;
+    display: flex;
+    /* Use flex for internal content alignment */
+    flex-direction: column;
+    align-items: center;
+}
+
+.side-menu.open {
+    width: 300px;
+    /* Default width when open */
+    /* Responsive width for smaller screens */
+    max-width: 80vw;
+    /* Occupy 80% of viewport width on small screens */
+}
+
+@media (max-width: 600px) {
+    .side-menu.open {
+        width: 250px;
+        /* Slightly smaller width on very small screens */
+    }
+
+    .character-img {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+.side-menu .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 40px;
+    /* Larger close button */
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    /* Reddish color for close button */
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.side-menu .close-btn:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.side-menu h2 {
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+    color: #8be9fd;
+    /* Light blue for character name */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.menu-character-image {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+    /* Circular image */
+    margin-bottom: 20px;
+    border: 4px solid #007bff;
+    /* Accent border */
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+    /* Glowing effect */
+}
+
+.side-menu p {
+    padding: 0 25px;
+    margin-bottom: 15px;
+    line-height: 1.6;
+    font-size: 1.1rem;
+    text-align: left;
+    /* Align text within paragraphs */
+}
+
+.side-menu .quote {
+    font-style: italic;
+    color: #a0a0a0;
+    font-size: 1rem;
+    margin-top: 25px;
+    padding: 10px 25px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.3);
+    text-align: center;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1001;
+    /* Sit on top of side menu */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    /* Optional blur effect */
+}
+
+.modal.active {
+    display: flex;
+    /* Show when active */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    /* Center the modal content */
+    padding: 30px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more responsive */
+    max-width: 500px;
+    /* Max width for larger screens */
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+    /* For close button positioning */
+    text-align: center;
+    animation: fadeInScale 0.3s ease-out forwards;
+    /* Animation for modal entry */
+    color: #333;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 36px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close-btn:hover,
+.modal-close-btn:focus {
+    color: #333;
+    text-decoration: none;
+}
+
+.modal-cat-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.reveal-cat-btn {
+    flex: 1 1 calc(50% - 15px);
+    /* Two buttons per row on larger screens */
+    max-width: 200px;
+    padding: 15px 10px;
+    font-size: 1.1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.reveal-cat-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.reveal-cat-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.reveal-result {
+    margin-top: 20px;
+    padding: 15px;
+    min-height: 100px;
+    /* Ensure space even when empty */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.reveal-result img {
+    max-width: 120px;
+    height: auto;
+    border-radius: 10px;
+    border: 2px solid #555;
+    margin-top: 10px;
+}
+
+/* Responsive adjustments for overall layout */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .character-selection {
+        gap: 15px;
+    }
+
+    .character-img {
+        width: 130px;
+        height: 130px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .character-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+    }
+
+    .character-selection {
+        gap: 10px;
+    }
+
+    .side-menu.open {
+        width: 100%;
+        /* Full width on very small screens */
+        border-radius: 0;
+    }
+
+    .side-menu h2 {
+        font-size: 1.8rem;
+    }
+
+    .menu-character-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .side-menu p {
+        font-size: 0.95rem;
+        padding: 0 15px;
+    }
+
+    .side-menu .quote {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+
+    .side-menu .close-btn {
+        font-size: 30px;
+        right: 15px;
+    }
+
+    .reveal-cat-btn {
+        flex: 1 1 100%;
+        /* One button per row on very small screens */
+        max-width: none;
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .modal-close-btn {
+        font-size: 30px;
+        right: 15px;
+    }
+}

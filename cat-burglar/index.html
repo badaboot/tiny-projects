@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cat Burglar Game</title>
+    <!--
+        Internal CSS for styling the game.
+        It handles layout, responsive design, and the side menu's appearance.
+    -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Whodunit?</h1>
+      <div class="character-selection">
+        <!--
+                Character images. Each has a unique ID used by JavaScript
+                to identify which character was clicked.
+                Placeholder images are used for demonstration.
+            -->
+        <img
+          src="https://placehold.co/150x150/007bff/ffffff?text=Quaker"
+          alt="Quaker"
+          id="quaker"
+          class="character-img"
+        />
+        <img
+          src="https://placehold.co/150x150/ff6b6b/ffffff?text=Missy"
+          alt="Missy"
+          id="missy"
+          class="character-img"
+        />
+        <img
+          src="https://placehold.co/150x150/28a745/ffffff?text=Set"
+          alt="Set"
+          id="set"
+          class="character-img"
+        />
+        <img
+          src="https://placehold.co/150x150/fd7e14/ffffff?text=Gigi"
+          alt="Gigi"
+          id="gigi"
+          class="character-img"
+        />
+      </div>
+      <!-- reveal button added to the main section -->
+      <button id="revealButton" class="reveal-button">Reveal</button>
+    </div>
+
+    <!--
+        The side menu element. It starts hidden (width: 0) and
+        opens when a character image is clicked.
+    -->
+    <div id="sideMenu" class="side-menu">
+      <!-- Close button for the side menu -->
+      <button class="close-btn">&times;</button>
+      <!-- Character details will be dynamically populated here -->
+      <h2 id="menuCharacterName"></h2>
+      <img
+        id="menuCharacterImage"
+        src=""
+        alt="Character Image"
+        class="menu-character-image"
+      />
+      <p id="menuCharacterDetails"></p>
+      <p id="menuCharacterQuote" class="quote"></p>
+    </div>
+
+    <!--
+        The reveal Modal element. It starts hidden and
+        opens when the "reveal" button is clicked.
+    -->
+    <div id="revealModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close-btn">&times;</span>
+        <h2>Who is the cat burglar?</h2>
+        <div class="modal-cat-buttons">
+          <!-- Buttons for each cat to be dynamically populated -->
+          <button id="reveal-quaker" class="reveal-cat-btn">Quaker</button>
+          <button id="reveal-missy" class="reveal-cat-btn">Missy</button>
+          <button id="reveal-set" class="reveal-cat-btn">Set</button>
+          <button id="reveal-gigi" class="reveal-cat-btn">Gigi</button>
+        </div>
+        <div id="revealResult" class="reveal-result">
+          <!-- Result message and image will go here -->
+        </div>
+      </div>
+    </div>
+
+    <!--
+        Internal JavaScript for game logic.
+        Handles data, event listeners, and dynamic content updates.
+    -->
+    <script src="script.js"></script>
+  </body>
+</html>
