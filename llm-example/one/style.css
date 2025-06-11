@@ -1,0 +1,41 @@
+body {
+    font-family: sans-serif;
+}
+
+#info {
+    font-size: 0.8rem;
+    background: #ddd;
+    border: solid 1px #444;
+    padding: 8px;
+}
+
+#llm_response::before {
+    content: "LLM's Response";
+    font-size: 0.85rem;
+    color: #50f;
+    display: block;
+    padding-bottom: 4px;
+}
+
+#llm_status::before {
+    content: "LLM's Status";
+    padding-bottom: 4px;
+    font-size: 0.85rem;
+    color: #50f;
+    display: block;
+}
+
+#llm_response {
+    font-size: 1.05rem;
+}
+
+#llm_status {
+    font-size: 0.8rem;
+}
+
+.box {
+    font-size: 0.9rem;
+    margin-top: 16px;
+    border: solid 1px #444;
+    padding: 8px;
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width" />
+    <title>LLM example</title>
+    <link href="style.css" rel="stylesheet" />
+    <!-- TODO: show history of chat, or at least the prompt that was asked -->
+  </head>
+  <body>
+    <div class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+      <div class="max-w-3xl w-full bg-white rounded-lg shadow-lg p-6 space-y-6">
+        <div id="info" class="text-gray-700 text-lg leading-relaxed">
+          With blobs, we can have web workers. I'm running a small LLM
+          (<strong>SmolLM2-360M-Instruct</strong>) in the background using a web
+          worker and <i>transformers.js</i>. This uses webgpu on Chrome.
+        </div>
+
+        <div
+          id="llm_status"
+          class="box bg-blue-50 border border-blue-200 text-blue-800 font-medium p-4 rounded-md text-center"
+        >
+          Uninitialized
+        </div>
+
+        <div
+          id="llm_response"
+          class="box bg-gray-50 border border-gray-200 p-4 rounded-md min-h-[150px] text-gray-800"
+        ></div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input
+            id="user_input"
+            type="text"
+            placeholder="First press the button to initialize the LLM"
+            autocomplete="off"
+            disabled
+            class="flex-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-200 disabled:cursor-not-allowed"
+          />
+          <input
+            type="button"
+            id="submit"
+            value="Initialize LLM"
+            class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-md hover:bg-blue-700 transition-colors cursor-pointer"
+          />
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script type="text/js-worker" src="worker.js"></script>
+
+    <script src="script.js"></script>
+  </body>
+</html>
