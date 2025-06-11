@@ -66,6 +66,7 @@ inputElem.addEventListener("keypress", (event) => {
         onMessageSend()
     }
 });
+const synth = window.speechSynthesis;
 function onMessageSend() {
     const input = inputElem.value.trim();
     const message = {
@@ -82,7 +83,7 @@ function onMessageSend() {
 
     inputElem.value = "";
     inputElem
-        .setAttribute("placeholder", "Generating...");
+        .setAttribute("placeholder", "Enter text...");
 
     const aiMessage = {
         content: "typing...",
@@ -92,11 +93,11 @@ function onMessageSend() {
 
     const onFinishGenerating = (finalMessage) => {
         updateLastMessage(finalMessage);
-
         const utterance = new SpeechSynthesisUtterance(finalMessage);
         utterance.lang = "zh-CN"; // Simplified Chinese
-        window.speechSynthesis.speak(utterance);
+        synth.speak(utterance);
         document.getElementById("send").disabled = false;
+        // need button that cancels;
         engine.runtimeStatsText().then((statsText) => {
             document.getElementById("chat-stats").classList.remove("hidden");
             document.getElementById("chat-stats").textContent = statsText;
@@ -111,6 +112,20 @@ function onMessageSend() {
     );
 }
 
+const getStopButton = () => {
+    // remove others
+    for (let elem of document.querySelectorAll('.stopTalk')) {
+        elem.parentElement.removeChild(elem)
+    }
+    const stopTalkButton = document.createElement("button");
+    stopTalkButton.textContent = 'Stop talking'
+    stopTalkButton.classList.add("stopTalk");
+    stopTalkButton.addEventListener('click', () => {
+        // cancel any in-progress speeches
+        synth.cancel();
+    })
+    return stopTalkButton
+}
 function appendMessage(message) {
     const chatBox = document.getElementById("chat-box");
     const container = document.createElement("div");
@@ -118,14 +133,15 @@ function appendMessage(message) {
     const newMessage = document.createElement("div");
     newMessage.classList.add("message");
     newMessage.textContent = message.content;
+    container.appendChild(newMessage);
 
     if (message.role === "user") {
         container.classList.add("user");
     } else {
         container.classList.add("assistant");
+        container.appendChild(getStopButton());
     }
 
-    container.appendChild(newMessage);
     chatBox.appendChild(container);
     chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the latest message
 }
@@ -146,13 +162,16 @@ availableModels.forEach((modelId) => {
     document.getElementById("model-selection").appendChild(option);
 });
 document.getElementById("model-selection").value = selectedModel;
-document
+const downloadButton = document
     .getElementById("download")
-    .addEventListener("click", function () {
-        initializeWebLLMEngine().then(() => {
-            document.getElementById("send").disabled = false;
-        });
+
+downloadButton.addEventListener("click", function () {
+    initializeWebLLMEngine().then(() => {
+        document.getElementById("send").disabled = false;
     });
+});
 document.getElementById("send").addEventListener("click", function () {
     onMessageSend();
 });
+
+downloadButton.click()
