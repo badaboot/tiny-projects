@@ -2,7 +2,11 @@ body,
 html {
     font-family: Arial, sans-serif;
     padding: 10px 20px;
-    max-width: 800px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .download-container {
@@ -79,13 +83,13 @@ html {
 }
 
 #user-input {
-    width: 70%;
+    width: 85%;
     padding: 10px;
     border: 1px solid #ccc;
 }
 
 button {
-    width: 25%;
+    width: 15%;
     padding: 10px;
     border: none;
     background-color: #007bff;
@@ -104,4 +108,10 @@ button:hover:not(:disabled) {
 
 .hidden {
     display: none;
+}
+
+details {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
 }

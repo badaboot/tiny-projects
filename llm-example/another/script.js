@@ -59,8 +59,15 @@ async function streamingGenerating(
 }
 
 /*************** UI logic ***************/
+const inputElem = document.getElementById("user-input")
+inputElem.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        onMessageSend()
+    }
+});
 function onMessageSend() {
-    const input = document.getElementById("user-input").value.trim();
+    const input = inputElem.value.trim();
     const message = {
         content: input,
         role: "user",
@@ -73,9 +80,8 @@ function onMessageSend() {
     messages.push(message);
     appendMessage(message);
 
-    document.getElementById("user-input").value = "";
-    document
-        .getElementById("user-input")
+    inputElem.value = "";
+    inputElem
         .setAttribute("placeholder", "Generating...");
 
     const aiMessage = {
