@@ -45,12 +45,14 @@ async function streamingGenerating(
             messages,
         });
         for await (const chunk of completion) {
+            if (isStopTalk) break
             const curDelta = chunk.choices[0].delta.content;
             if (curDelta) {
                 curMessage += curDelta;
             }
             onUpdate(curMessage);
         }
+        console.log('is stop talking', isStopTalk)
         const finalMessage = await engine.getMessage();
         onFinish(finalMessage);
     } catch (err) {
@@ -66,8 +68,10 @@ inputElem.addEventListener("keypress", (event) => {
         onMessageSend()
     }
 });
+let isStopTalk = false
 const synth = window.speechSynthesis;
 function onMessageSend() {
+    isStopTalk = false
     const input = inputElem.value.trim();
     const message = {
         content: input,
@@ -123,6 +127,7 @@ const getStopButton = () => {
     stopTalkButton.addEventListener('click', () => {
         // cancel any in-progress speeches
         synth.cancel();
+        isStopTalk = true
     })
     return stopTalkButton
 }
